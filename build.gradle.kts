@@ -15,9 +15,11 @@ repositories {
     jcenter()
     maven("https://maven.wso2.org/nexus/content/groups/wso2-public/")
     maven("https://jitpack.io")
+    mavenCentral()
 }
 
 dependencies {
+    implementation("com.google.guava:guava:31.1-jre")
     if(gradle.startParameter.isOffline) {
         implementation(fileTree("lib"))
     } else {
