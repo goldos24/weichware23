@@ -1,7 +1,6 @@
 package sc.player2023.logic;
 
 import sc.api.plugins.ITeam;
-import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -9,11 +8,11 @@ import java.util.List;
 
 public class PVSMoveGetter implements MoveGetter {
     private int pvs(@Nonnull ImmutableGameState gameState, int depth, int alpha, int beta, @Nonnull Rater rater) {
-        if(depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
+        List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
+        if(depth < 0 || gameState.isOver() || possibleMoves.isEmpty() || timeMeasurer.ranOutOfTime()) {
             return rater.rate(gameState);
         }
         boolean firstChild = true;
-        List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         int score;
         for(Move move : possibleMoves) {
             ImmutableGameState childGameState = GameRuleLogic.withMovePerformed(gameState, move);
@@ -42,7 +41,7 @@ public class PVSMoveGetter implements MoveGetter {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         for(Move move : possibleMoves) {
             ImmutableGameState childGameState = GameRuleLogic.withMovePerformed(gameState, move);
-            int currentRating = -pvs(childGameState, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, rater);
+            int currentRating = -pvs(childGameState, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, rater);
             if(currentRating > highestRating) {
                 bestMove = move;
             }

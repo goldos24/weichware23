@@ -35,7 +35,7 @@ public class Logic implements IGameHandler {
     long startTime = System.currentTimeMillis();
     log.info("Es wurde ein Zug von {} angefordert.", gameState.getCurrentTeam());
 
-    MoveGetter moveGetter = new PureMCTSMoveGetter();
+    MoveGetter moveGetter = new PVSMoveGetter();
     Rater rater = new StupidRater();
     ImmutableGameState immutableGameState = new ImmutableGameState(gameState);
     Move move = moveGetter.getBestMove(immutableGameState, gameState.getCurrentTeam(), rater);

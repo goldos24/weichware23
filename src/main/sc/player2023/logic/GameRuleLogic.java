@@ -13,7 +13,9 @@ public class GameRuleLogic {
     }
 
     public static List<Move> getPossibleMoves(ImmutableGameState gameState) {
-        return gameState.getGameState().getPossibleMoves();
+        List<Move> potentialResult = gameState.getGameState().getPossibleMoves();
+        System.out.println(potentialResult.size());
+        return potentialResult;
     }
 
     public static boolean isTeamWinner(ImmutableGameState gameState, ITeam team) {
