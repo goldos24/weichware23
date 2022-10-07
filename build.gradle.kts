@@ -12,7 +12,7 @@ application {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven("https://maven.wso2.org/nexus/content/groups/wso2-public/")
     maven("https://jitpack.io")
     mavenCentral()
@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
     implementation("com.google.guava:guava:31.1-jre")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     if(gradle.startParameter.isOffline) {
         implementation(fileTree("lib"))
     } else {
@@ -31,4 +33,8 @@ tasks.shadowJar {
     archiveBaseName.set("penguins_2023_client")
     archiveClassifier.set("")
     destinationDirectory.set(rootDir)
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
