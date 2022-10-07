@@ -5,6 +5,7 @@ import sc.api.plugins.Team;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.ImmutableGameStateFactory;
+import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 public class Battle {
@@ -24,10 +25,16 @@ public class Battle {
         Fighter fighter1 = ownFighterTeam == Team.ONE ? ownFighter : opponentFighter;
         Fighter fighter2 = ownFighterTeam == Team.TWO ? ownFighter : opponentFighter;
         while (gameState.stillRunning()) {
-            gameState = gameState.withMove(fighter1.moveGetter().getBestMove(gameState, Team.ONE, fighter1.rater()));
+            Move nextMove = fighter1.moveGetter().getBestMove(gameState, Team.ONE, fighter1.rater());
+            if(nextMove == null)
+                break;
+            gameState = gameState.withMove(nextMove);
             if(gameState.isOver())
                 break;
-            gameState = gameState.withMove(fighter2.moveGetter().getBestMove(gameState, Team.TWO, fighter2.rater()));
+            nextMove = fighter2.moveGetter().getBestMove(gameState, Team.TWO, fighter2.rater());
+            if(nextMove == null)
+                break;
+            gameState = gameState.withMove(nextMove);
         }
         if(GameRuleLogic.isTeamWinner(gameState, ownFighterTeam))
             return BattleResult.ONE_WIN_FOR_OWN;

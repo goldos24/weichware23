@@ -1,7 +1,6 @@
 package sc.player2023.logic;
 
 import sc.api.plugins.ITeam;
-import sc.api.plugins.Team;
 import sc.plugin2023.GameState;
 
 import javax.annotation.Nonnull;
@@ -15,7 +14,7 @@ public class StupidRater implements Rater {
     @Override
     public int rate(@Nonnull ImmutableGameState immutableGameState)
     {
-        GameState gameState = immutableGameState.getGameState();
+        GameState gameState = immutableGameState.gameState();
         if(gameState.isOver()) {
             return RatingUtil.isTeamWinnerAfterGameEnd(gameState, gameState.getCurrentTeam()) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
         }
