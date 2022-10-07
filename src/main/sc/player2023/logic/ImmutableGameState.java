@@ -6,14 +6,12 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 
-public class ImmutableGameState {
+public record ImmutableGameState(@Nonnull GameState gameState) {
     public ImmutableGameState(@Nonnull GameState gameState) {
         this.gameState = gameState.clone();
     }
 
-    @Nonnull private GameState gameState;
-
-    ImmutableGameState withMove(@Nonnull Move move) { // TODO completely move into GameRuleLogic
+    public ImmutableGameState withMove(@Nonnull Move move) { // TODO completely move into GameRuleLogic
         ImmutableGameState result = new ImmutableGameState(this.gameState);
         result.gameState.performMove(move);
         return result;
@@ -23,11 +21,16 @@ public class ImmutableGameState {
         return RatingUtil.getCombinedPointsForTeam(gameState, team);
     }
 
-    GameState getGameState() {
+    @Override
+    public GameState gameState() {
         return gameState.clone();
     }
 
-    boolean isOver() {
+    public boolean isOver() {
         return gameState.isOver();
+    }
+
+    public boolean stillRunning() {
+        return !isOver();
     }
 }
