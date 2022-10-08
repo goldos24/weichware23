@@ -13,7 +13,8 @@ public class StupidMoveGetter implements MoveGetter {
         int bestRating = Integer.MIN_VALUE;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         for(Move move : possibleMoves) {
-            int currentRating = rater.rate(GameRuleLogic.withMovePerformed(gameState, move));
+            int currentRating = -rater.rate(GameRuleLogic.withMovePerformed(gameState, move));
+            System.out.println(currentRating +" : "+ bestRating);
             if(currentRating > bestRating) {
                 bestRating = currentRating;
                 bestMove = move;

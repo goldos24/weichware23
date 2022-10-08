@@ -27,7 +27,7 @@ public class GameStateFixture {
 
     static ImmutableGameState createTestGameState() {
         GameState gameState = new GameState(createTestBoard());
-        return new ImmutableGameState(gameState);
+        return ImmutableGameStateFactory.createFromGameState(gameState);
     }
 
     private static List<Field> createSingleBoardFieldLine() {

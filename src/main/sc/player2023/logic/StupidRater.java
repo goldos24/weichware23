@@ -20,8 +20,8 @@ public class StupidRater implements Rater {
         }
         ITeam team = gameState.getCurrentTeam();
         ITeam opponent = team.opponent();
-        int ownPoints = RatingUtil.getCombinedPointsForTeam(gameState, team);
-        int opponentPoints = RatingUtil.getCombinedPointsForTeam(gameState, opponent);
-        return ownPoints - opponentPoints;
+        int ownPoints = immutableGameState.getPointsForTeam(team);
+        int opponentPoints = immutableGameState.getPointsForTeam(opponent);
+        return (ownPoints - opponentPoints);
     }
 }

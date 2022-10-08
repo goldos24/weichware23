@@ -37,7 +37,7 @@ public class Logic implements IGameHandler {
 
     MoveGetter moveGetter = new PVSMoveGetter();
     Rater rater = new StupidRater();
-    ImmutableGameState immutableGameState = new ImmutableGameState(gameState);
+    ImmutableGameState immutableGameState = ImmutableGameStateFactory.createFromGameState(gameState);
     Move move = moveGetter.getBestMove(immutableGameState, gameState.getCurrentTeam(), rater);
     log.info("Sende {} nach {}ms.", move, System.currentTimeMillis() - startTime);
     return move;

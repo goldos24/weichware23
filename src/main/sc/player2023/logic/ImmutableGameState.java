@@ -1,24 +1,20 @@
 package sc.player2023.logic;
 
+import com.google.common.collect.ImmutableMap;
 import sc.api.plugins.ITeam;
 import sc.plugin2023.GameState;
-import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 
-public record ImmutableGameState(@Nonnull GameState gameState) {
-    public ImmutableGameState(@Nonnull GameState gameState) {
+public record ImmutableGameState(@Nonnull GameState gameState, @Nonnull ImmutableMap<ITeam, Integer> teamPointsMap) {
+    public ImmutableGameState(@Nonnull GameState gameState, @Nonnull ImmutableMap<ITeam, Integer> teamPointsMap) {
         this.gameState = gameState.clone();
+        this.teamPointsMap = teamPointsMap;
     }
-
-    public ImmutableGameState withMove(@Nonnull Move move) { // TODO completely move into GameRuleLogic
-        ImmutableGameState result = new ImmutableGameState(this.gameState);
-        result.gameState.performMove(move);
-        return result;
-    }
-
     public int getPointsForTeam(ITeam team) {
-        return RatingUtil.getCombinedPointsForTeam(gameState, team);
+        var result = teamPointsMap.get(team);
+        assert result != null;
+        return result;
     }
 
     @Override
