@@ -28,13 +28,13 @@ public class Battle {
             Move nextMove = moveGetter1.getBestMove(gameState, Team.ONE, rater1);
             if(nextMove == null)
                 break;
-            gameState = gameState.withMove(nextMove);
+            gameState = GameRuleLogic.withMovePerformed(gameState, nextMove);
             if(gameState.isOver())
                 break;
             nextMove = fighter2.moveGetter().getBestMove(gameState, Team.TWO, fighter2.rater());
             if(nextMove == null)
                 break;
-            gameState = gameState.withMove(nextMove);
+            gameState = GameRuleLogic.withMovePerformed(gameState, nextMove);
         }
         if(GameRuleLogic.isTeamWinner(gameState, ownFighterTeam))
             return BattleResult.ONE_WIN_FOR_OWN;
