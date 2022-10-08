@@ -2,9 +2,7 @@ package sc.player2023.comparison;
 
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
-import sc.player2023.logic.GameRuleLogic;
-import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.ImmutableGameStateFactory;
+import sc.player2023.logic.*;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -25,7 +23,9 @@ public class Battle {
         Fighter fighter1 = ownFighterTeam == Team.ONE ? ownFighter : opponentFighter;
         Fighter fighter2 = ownFighterTeam == Team.TWO ? ownFighter : opponentFighter;
         while (gameState.stillRunning()) {
-            Move nextMove = fighter1.moveGetter().getBestMove(gameState, Team.ONE, fighter1.rater());
+            Rater rater1 = fighter1.rater();
+            MoveGetter moveGetter1 = fighter1.moveGetter();
+            Move nextMove = moveGetter1.getBestMove(gameState, Team.ONE, rater1);
             if(nextMove == null)
                 break;
             gameState = gameState.withMove(nextMove);
