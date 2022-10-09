@@ -14,8 +14,6 @@ public class GameRuleLogic {
         GameState realGameState = gameState.gameState();
         ITeam team = realGameState.getCurrentTeam();
         var teamPointsMap = gameState.teamPointsMap();
-        System.out.println(realGameState.getBoard());
-        System.out.println(move.getFrom());
         var targetField = realGameState.getBoard().get(move.getTo());
         System.out.println(targetField.getFish());
         Integer ownPoints = teamPointsMap.get(team);
