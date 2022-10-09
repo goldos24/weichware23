@@ -11,14 +11,14 @@ public class Battle {
     public static BattleResult run(@Nonnull Fighter ownFighter, @Nonnull Fighter opponentFighter, @Nonnull BattleData battleData) {
         @Nonnull BattleResult result = BattleResult.EMPTY;
         for (int currentRun = 0; currentRun < battleData.runs(); ++currentRun) {
-            result = result.plus(biDirectionalFight(ownFighter, opponentFighter));
+            result = result.plus(biDirectionalFight(ownFighter, opponentFighter, battleData));
         }
         return result;
     }
 
     @Nonnull
-    private static BattleResult monoDirectionalFight(@Nonnull Fighter ownFighter, @Nonnull Fighter opponentFighter, @Nonnull ITeam ownFighterTeam) {
-        ImmutableGameState gameState = ImmutableGameStateFactory.createAny();
+    private static BattleResult monoDirectionalFight(@Nonnull Fighter ownFighter, @Nonnull Fighter opponentFighter, @Nonnull ITeam ownFighterTeam, @Nonnull BattleData battleData) {
+        @Nonnull ImmutableGameState gameState = battleData.testBoard() == null ? ImmutableGameStateFactory.createAny() : battleData.testBoard();
         ITeam opponentTeam = ownFighterTeam.opponent();
         Fighter fighter1 = ownFighterTeam == Team.ONE ? ownFighter : opponentFighter;
         Fighter fighter2 = ownFighterTeam == Team.TWO ? ownFighter : opponentFighter;
@@ -44,7 +44,7 @@ public class Battle {
     }
 
     @Nonnull
-    private static BattleResult biDirectionalFight(@Nonnull Fighter ownFighter, @Nonnull Fighter opponentFighter) {
-        return monoDirectionalFight(ownFighter, opponentFighter, Team.ONE).plus(monoDirectionalFight(ownFighter, opponentFighter, Team.TWO));
+    private static BattleResult biDirectionalFight(@Nonnull Fighter ownFighter, @Nonnull Fighter opponentFighter, @Nonnull BattleData battleData) {
+        return monoDirectionalFight(ownFighter, opponentFighter, Team.ONE, battleData).plus(monoDirectionalFight(ownFighter, opponentFighter, Team.TWO, battleData));
     }
 }

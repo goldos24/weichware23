@@ -15,7 +15,6 @@ public class GameRuleLogic {
         ITeam team = realGameState.getCurrentTeam();
         var teamPointsMap = gameState.teamPointsMap();
         var targetField = realGameState.getBoard().get(move.getTo());
-        System.out.println(targetField.getFish());
         Integer ownPoints = teamPointsMap.get(team);
         Integer opponentPoints = teamPointsMap.get(team.opponent());
         assert ownPoints != null;
@@ -25,7 +24,6 @@ public class GameRuleLogic {
                 put(team, ownPoints + targetField.getFish()).
                 build();
         realGameState.performMove(move);
-        System.out.println(teamPointsMap);
         return new ImmutableGameState(realGameState, teamPointsMap);
     }
 
