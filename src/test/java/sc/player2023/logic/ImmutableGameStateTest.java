@@ -2,8 +2,6 @@ package sc.player2023.logic;
 
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Team;
-import sc.plugin2023.Game;
-import sc.plugin2023.GameState;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class ImmutableGameStateTest {
 
-    private ImmutableGameState gameState = GameStateFixture.createTestGameStateOneFishPerField();
+    private final ImmutableGameState gameState = GameStateFixture.createTestGameStateOneFishPerField();
 
     @Test
     void getPointsForTeamOne() {
