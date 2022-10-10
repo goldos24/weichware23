@@ -18,7 +18,7 @@ public class BoardFixture {
     private static final int PENGUIN_START_Y = 0;
     private static final int BOARD_WIDTH = 8;
     private static final int BOARD_HEIGHT = 8;
-    private static final int DEFAULT_FISH_COUNT = 1;
+    static final int DEFAULT_FISH_COUNT = 1;
     private static final int DEFAULT_MORE_FISH_X = 1;
     private static final int DEFAULT_MORE_FISH_Y = 0;
 
