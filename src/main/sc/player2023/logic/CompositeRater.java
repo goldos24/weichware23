@@ -7,12 +7,12 @@ import javax.annotation.concurrent.Immutable;
 public record CompositeRater(Rater[] raters) implements Rater {
 
     @Override
-    public int rate(@Nonnull ImmutableGameState immutableGameState)
-    {
+    public int rate(@Nonnull ImmutableGameState state) {
         int result = 0;
         for(Rater rater : raters) {
-            result += rater.rate(immutableGameState);
+            result += rater.rate(state);
         }
         return result;
     }
+    
 }
