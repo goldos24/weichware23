@@ -9,13 +9,14 @@ import java.util.List;
 
 public class PotentialFishRater implements Rater {
     @Override
-    public int rate(@NotNull ImmutableGameState gameState) {
-        int result = 0;
+    public Rating rate(@NotNull ImmutableGameState gameState) {
+        Rating result = Rating.ZERO;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         Board board = gameState.gameState().getBoard();
-        for(Move move : possibleMoves) {
+        for (Move move : possibleMoves) {
             Field moveTargetField = board.get(move.getTo());
-            result += moveTargetField.getFish();
+            int fish = moveTargetField.getFish();
+            result = result.add(fish);
         }
         return result;
     }

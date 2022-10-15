@@ -6,22 +6,22 @@ import sc.plugin2023.GameState;
 import javax.annotation.Nonnull;
 
 public class StupidRater implements Rater {
-    public StupidRater()
-    {
+    public StupidRater() {
 
     }
 
     @Override
-    public int rate(@Nonnull ImmutableGameState immutableGameState)
-    {
+    public Rating rate(@Nonnull ImmutableGameState immutableGameState) {
         GameState gameState = immutableGameState.gameState();
-        if(gameState.isOver()) {
-            return RatingUtil.isTeamWinnerAfterGameEnd(gameState, gameState.getCurrentTeam()) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        if (gameState.isOver()) {
+            return RatingUtil.isTeamWinnerAfterGameEnd(gameState, gameState.getCurrentTeam()) ? Rating.POSITIVE_INFINITY
+                    : Rating.NEGATIVE_INFINITY;
         }
         ITeam team = gameState.getCurrentTeam();
         ITeam opponent = team.opponent();
         int ownPoints = immutableGameState.getPointsForTeam(team);
         int opponentPoints = immutableGameState.getPointsForTeam(opponent);
-        return (ownPoints - opponentPoints);
+        int pointDifference = ownPoints - opponentPoints;
+        return new Rating(pointDifference);
     }
 }

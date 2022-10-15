@@ -3,15 +3,17 @@ package sc.player2023.logic;
 import javax.annotation.Nonnull;
 
 public class GameStateWithContinuation {
-    @Nonnull ImmutableGameState gameState;
-    private boolean shouldContinue;
+    @Nonnull
+    ImmutableGameState gameState;
+    private final boolean shouldContinue;
 
     private GameStateWithContinuation(@Nonnull ImmutableGameState gameState, boolean shouldContinue) {
         this.gameState = gameState;
         this.shouldContinue = shouldContinue;
     }
 
-    public @Nonnull ImmutableGameState getGameState() {
+    public @Nonnull
+    ImmutableGameState getGameState() {
         return gameState;
     }
 

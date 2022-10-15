@@ -10,11 +10,12 @@ public class StupidMoveGetter implements MoveGetter {
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team, @Nonnull Rater rater) {
         Move bestMove = null;
-        int bestRating = Integer.MIN_VALUE;
+        Rating bestRating = Rating.NEGATIVE_INFINITY;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
-        for(Move move : possibleMoves) {
-            int currentRating = -rater.rate(GameRuleLogic.withMovePerformed(gameState, move));
-            if(currentRating > bestRating) {
+        for (Move move : possibleMoves) {
+            Rating ratedGameState = rater.rate(GameRuleLogic.withMovePerformed(gameState, move));
+            Rating currentRating = ratedGameState.negate();
+            if (currentRating.isGreaterThan(bestRating)) {
                 bestRating = currentRating;
                 bestMove = move;
             }
