@@ -28,7 +28,8 @@ class StupidMoveGetterTest {
     @Test
     void stupidRaterTest() {
         Rater rater = new StupidRater();
-        assertEquals(-BoardFixture.DEFAULT_MORE_FISH_COUNT, rater.rate(testGameState));
+        Rating expected = new Rating(-BoardFixture.DEFAULT_MORE_FISH_COUNT);
+        assertEquals(expected, rater.rate(testGameState));
 
     }
 }

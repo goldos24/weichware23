@@ -10,6 +10,7 @@ import sc.plugin2023.GameState;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static sc.player2023.logic.Rating.ZERO;
 
 class DistanceRaterTest {
     private static final Coordinates TEST_COORDINATE_1 = new Coordinates(1, 1);
@@ -36,6 +37,6 @@ class DistanceRaterTest {
     void rate() {
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         Rater rater = new DistanceRater();
-        assertEquals(0, rater.rate(testGameState));
+        assertEquals(ZERO, rater.rate(testGameState));
     }
 }

@@ -13,6 +13,9 @@ public record Rating(double rating) {
     public static final Rating NEGATIVE_INFINITY = new Rating(Double.NEGATIVE_INFINITY);
 
     public static final Rating POSITIVE_INFINITY = new Rating(Double.POSITIVE_INFINITY);
+    public static final Rating ONE = new Rating(1.0);
+    public static final Rating TWO = new Rating(2.0);
+    public static final Rating FIVE = new Rating(5.0);
 
     public Rating add(Rating other) {
         return this.add(other.rating);

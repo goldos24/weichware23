@@ -10,6 +10,8 @@ class PotentialFishRaterTest {
     void rate() {
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         Rater rater = new PotentialFishRater();
-        assertEquals(BoardFixture.DEFAULT_MORE_FISH_COUNT + 7 * BoardFixture.DEFAULT_FISH_COUNT, rater.rate(testGameState));
+        int rating = BoardFixture.DEFAULT_MORE_FISH_COUNT + 7 * BoardFixture.DEFAULT_FISH_COUNT;
+        Rating expected = new Rating(rating);
+        assertEquals(expected, rater.rate(testGameState));
     }
 }
