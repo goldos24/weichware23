@@ -27,7 +27,7 @@ class DistanceRaterTest {
         Pair<Coordinates, Team> currentPenguin = new Pair<>(new Coordinates(4, 0), Team.ONE);
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         int ownDistances = 2 + 4 + 6;
-        GameState gameState = testGameState.gameState();
+        GameState gameState = testGameState.getGameState();
         Board board = gameState.getBoard();
         Collection<Pair<Coordinates, Team>> penguins =  board.getPenguins();
         assertEquals(ownDistances, DistanceRater.getCombinedDistancesToOtherPenguins(currentPenguin, penguins));

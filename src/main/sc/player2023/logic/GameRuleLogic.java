@@ -11,9 +11,9 @@ import java.util.List;
 public class GameRuleLogic {
     @Nonnull
     public static ImmutableGameState withMovePerformed(ImmutableGameState gameState, Move move) {
-        GameState realGameState = gameState.gameState();
+        GameState realGameState = gameState.getGameState();
         ITeam team = realGameState.getCurrentTeam();
-        var teamPointsMap = gameState.teamPointsMap();
+        var teamPointsMap = gameState.getTeamPointsMap();
         var targetField = realGameState.getBoard().get(move.getTo());
         Integer ownPoints = teamPointsMap.get(team);
         Integer opponentPoints = teamPointsMap.get(team.opponent());
@@ -28,10 +28,10 @@ public class GameRuleLogic {
     }
 
     public static List<Move> getPossibleMoves(ImmutableGameState gameState) {
-        return gameState.gameState().getPossibleMoves();
+        return gameState.getGameState().getPossibleMoves();
     }
 
     public static boolean isTeamWinner(ImmutableGameState gameState, ITeam team) {
-        return RatingUtil.isTeamWinnerAfterGameEnd(gameState.gameState(), team);
+        return RatingUtil.isTeamWinnerAfterGameEnd(gameState.getGameState(), team);
     }
 }

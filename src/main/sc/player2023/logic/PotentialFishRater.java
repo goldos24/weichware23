@@ -12,7 +12,7 @@ public class PotentialFishRater implements Rater {
     public Rating rate(@NotNull ImmutableGameState gameState) {
         Rating result = Rating.ZERO;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
-        Board board = gameState.gameState().getBoard();
+        Board board = gameState.getGameState().getBoard();
         for (Move move : possibleMoves) {
             Field moveTargetField = board.get(move.getTo());
             int fish = moveTargetField.getFish();

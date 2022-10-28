@@ -29,7 +29,7 @@ class DistanceRater implements Rater {
 
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
-        GameState realGameState = gameState.gameState();
+        GameState realGameState = gameState.getGameState();
         Collection<Pair<Coordinates, Team>> penguins = realGameState.getBoard().getPenguins();
         Rating result = Rating.ZERO;
         for (Pair<Coordinates, Team> currentPenguin : penguins) {

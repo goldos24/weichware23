@@ -12,7 +12,7 @@ public class StupidRater implements Rater {
 
     @Override
     public Rating rate(@Nonnull ImmutableGameState immutableGameState) {
-        GameState gameState = immutableGameState.gameState();
+        GameState gameState = immutableGameState.getGameState();
         if (gameState.isOver()) {
             return RatingUtil.isTeamWinnerAfterGameEnd(gameState, gameState.getCurrentTeam()) ? Rating.POSITIVE_INFINITY
                     : Rating.NEGATIVE_INFINITY;
