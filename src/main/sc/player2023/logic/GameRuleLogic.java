@@ -8,6 +8,7 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class GameRuleLogic {
     @Nonnull
@@ -30,6 +31,10 @@ public class GameRuleLogic {
 
     public static List<Move> getPossibleMoves(ImmutableGameState gameState) {
         return gameState.getGameState().getPossibleMoves();
+    }
+
+    public static Stream<Move> getPossibleMoveStream(ImmutableGameState gameState) {
+        return PossibleMoveStreamFactory.getPossibleMoves(gameState.getBoard(),gameState.getCurrentTeam());
     }
 
     public static boolean isTeamWinner(ImmutableGameState gameState, ITeam team) {
