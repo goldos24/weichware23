@@ -47,6 +47,16 @@ public class PossibleMoveIterator implements Iterator<Move> {
                 coordinates -> coordinates.plus(direction));
     }
 
+
+    static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
+                                                           @Nonnull Coordinates startCoordinate) {
+        @Nonnull Stream<Vector> directions = createCurrentDirectionStream();
+        Stream<Stream<Coordinates>> targetStreamStream =
+                directions.map(direction -> getPossibleTargetCoordsForPenguinInDirection(board, startCoordinate, direction));
+        Stream<Coordinates> targetStream = targetStreamStream.flatMap(target -> target);
+        return targetStream.map(target -> new Move(startCoordinate, target));
+    }
+
     public PossibleMoveIterator(BoardPeek board, ITeam team) {
         this.board = board;
         this.team = team;
