@@ -6,6 +6,7 @@ import sc.api.plugins.Team;
 import sc.plugin2023.Board;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class BoardPeek {
     /*
@@ -24,5 +25,27 @@ public class BoardPeek {
 
     public Collection<Pair<Coordinates, Team>> getPenguins() {
         return board.getPenguins();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BoardPeek boardPeek = (BoardPeek) o;
+        return Objects.equals(board, boardPeek.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board);
+    }
+
+    @Override
+    public String toString() {
+        return "BoardPeek {" + board + "}";
     }
 }
