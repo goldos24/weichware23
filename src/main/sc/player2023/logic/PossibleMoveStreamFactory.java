@@ -13,10 +13,7 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
-public class PossibleMoveStreamFactory implements Iterator<Move> {
-    BoardPeek board;
-    ITeam team;
-
+public class PossibleMoveStreamFactory{
     private static final int halfTileXChange = 1;
     private static final int fullTileXChange = 2;
     private static final int fullTileYChange = 1;
@@ -61,20 +58,5 @@ public class PossibleMoveStreamFactory implements Iterator<Move> {
         Stream<Stream<Move>> moveStreamStream =
                 ownPenguinStream.map(coordTeamPair -> getPossibleMovesForPenguin(board, coordTeamPair.getFirst()));
         return moveStreamStream.flatMap(move -> move);
-    }
-
-    public PossibleMoveStreamFactory(BoardPeek board, ITeam team) {
-        this.board = board;
-        this.team = team;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return false;
-    }
-
-    @Override
-    public Move next() {
-        return null;
     }
 }
