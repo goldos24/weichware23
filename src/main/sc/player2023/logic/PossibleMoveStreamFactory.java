@@ -9,7 +9,6 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
