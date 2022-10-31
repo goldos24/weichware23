@@ -5,8 +5,10 @@ import sc.api.plugins.ITeam;
 import sc.plugin2023.GameState;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
+@Immutable
 public final class ImmutableGameState {
     @Nonnull
     private final GameState gameState;

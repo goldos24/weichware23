@@ -5,9 +5,11 @@ import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.plugin2023.Board;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
 import java.util.Objects;
 
+@Immutable
 public class BoardPeek {
     /*
      * TODO:
