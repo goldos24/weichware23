@@ -36,7 +36,7 @@ public class Logic implements IGameHandler {
     log.info("Es wurde ein Zug von {} angefordert.", gameState.getCurrentTeam());
     log.info("Anzahl möglicher Züge: {}", gameState.getPossibleMoves().size());
 
-    MoveGetter moveGetter = new StupidMoveGetter();
+    MoveGetter moveGetter = new PVSMoveGetter();
     StupidRater stupidRater = new StupidRater();
     PotentialFishRater potentialFishRater = new PotentialFishRater();
     WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
