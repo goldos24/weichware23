@@ -19,12 +19,12 @@ public class GameStateFixture {
     public static final int POINTS_TEAM_TWO = 0;
     public static final int POINTS_TEAM_ONE = 5;
 
-    static ImmutableGameState createTestGameState() {
+    public static ImmutableGameState createTestGameState() {
         GameState gameState = new GameState(BoardFixture.createTestBoard());
         return ImmutableGameStateFactory.createFromGameState(gameState);
     }
 
-    static ImmutableGameState createTestGameStateOneFishPerField() {
+    public static ImmutableGameState createTestGameStateOneFishPerField() {
         GameState gameState = new GameState(BoardFixture.createTestBoardOneFishPerField());
         Map.Entry<Team, Integer> teamOne = entry(Team.ONE, POINTS_TEAM_ONE);
         Map.Entry<Team, Integer> teamTwo = entry(Team.TWO, POINTS_TEAM_TWO);

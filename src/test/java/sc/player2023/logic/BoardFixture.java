@@ -22,6 +22,10 @@ public class BoardFixture {
     private static final int DEFAULT_MORE_FISH_X = 1;
     private static final int DEFAULT_MORE_FISH_Y = 0;
 
+
+    private BoardFixture() {
+    }
+
     static Board createTestBoardOneFishPerField() {
         List<List<Field>> resultingFields = new ArrayList<>();
         for (int i = 0; i < BOARD_HEIGHT; ++i) {

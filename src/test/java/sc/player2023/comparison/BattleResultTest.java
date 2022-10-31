@@ -26,4 +26,15 @@ class BattleResultTest {
         assertEquals(result1, expected);
         assertEquals(result2, expected);
     }
+
+    @Test
+    void testToString() {
+        int ownWins = 2, otherWins = 3;
+        BattleResult result1 = new BattleResult(ownWins, otherWins);
+        BattleResult result2 = new BattleResult(ownWins, otherWins);
+        String resultString1 = result1.toString();
+        String resultString2 = result2.toString();
+        assertEquals(resultString1, resultString2, "toString");
+
+    }
 }
