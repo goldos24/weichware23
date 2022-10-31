@@ -15,12 +15,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PossibleMoveIteratorTest {
+class PossibleMoveStreamFactoryTest {
 
     @Test
     void getPossibleTargetCoordsForPenguinInDirection() {
         BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
-        Stream<Coordinates> coordStream = PossibleMoveIterator.getPossibleTargetCoordsForPenguinInDirection(
+        Stream<Coordinates> coordStream = PossibleMoveStreamFactory.getPossibleTargetCoordsForPenguinInDirection(
                 board,
                 BoardFixture.firstPenguinCoords,
                 new Vector(-2, 0)
@@ -39,7 +39,7 @@ class PossibleMoveIteratorTest {
                 mutableGameState.getPossibleMoves().stream().filter(move -> Objects.equals(move.getFrom(), penguinPos));
         Set<Move> expected = expectedMoveStream.collect(Collectors.toSet());
         BoardPeek board = gameState.getBoard();
-        Set<Move> got = PossibleMoveIterator.getPossibleMovesForPenguin(board, penguinPos).collect(Collectors.toSet());
+        Set<Move> got = PossibleMoveStreamFactory.getPossibleMovesForPenguin(board, penguinPos).collect(Collectors.toSet());
         assertEquals(expected, got);
     }
 
@@ -51,7 +51,7 @@ class PossibleMoveIteratorTest {
                 mutableGameState.getPossibleMoves().stream();
         Set<Move> expected = expectedMoveStream.collect(Collectors.toSet());
         BoardPeek board = gameState.getBoard();
-        Set<Move> got = PossibleMoveIterator.getPossibleMoves(board, Team.ONE).collect(Collectors.toSet());
+        Set<Move> got = PossibleMoveStreamFactory.getPossibleMoves(board, Team.ONE).collect(Collectors.toSet());
         assertEquals(expected, got);
     }
 }

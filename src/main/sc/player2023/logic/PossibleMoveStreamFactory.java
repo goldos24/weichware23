@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
-public class PossibleMoveIterator implements Iterator<Move> {
+public class PossibleMoveStreamFactory implements Iterator<Move> {
     BoardPeek board;
     ITeam team;
 
@@ -63,7 +63,7 @@ public class PossibleMoveIterator implements Iterator<Move> {
         return moveStreamStream.flatMap(move -> move);
     }
 
-    public PossibleMoveIterator(BoardPeek board, ITeam team) {
+    public PossibleMoveStreamFactory(BoardPeek board, ITeam team) {
         this.board = board;
         this.team = team;
     }
