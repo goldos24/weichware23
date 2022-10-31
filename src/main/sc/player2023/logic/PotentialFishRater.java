@@ -19,6 +19,6 @@ public class PotentialFishRater implements Rater {
     public Rating rate(@NotNull ImmutableGameState gameState) {
         BoardPeek board = gameState.getBoard();
         ITeam team = gameState.getCurrentTeam();
-        return getPotentialFishForTeam(board, team);
+        return getPotentialFishForTeam(board, team).subtract(getPotentialFishForTeam(board, team.opponent()));
     }
 }

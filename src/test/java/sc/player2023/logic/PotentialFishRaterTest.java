@@ -1,17 +1,40 @@
 package sc.player2023.logic;
 
 import org.junit.jupiter.api.Test;
+import sc.api.plugins.Team;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PotentialFishRaterTest {
 
+    private static final int OWN_NORMAL_FIELD_COUNT = 7;
+    private static final int OPPONENT_NORMAL_FIELD_COUNT = 50;
+
+    @Test
+    void getPotentialFishForTeam() {
+        ImmutableGameState testGameState = GameStateFixture.createTestGameState();
+        int expectedRating = BoardFixture.DEFAULT_MORE_FISH_COUNT + OWN_NORMAL_FIELD_COUNT * BoardFixture.DEFAULT_FISH_COUNT;
+        Rating expected = new Rating(expectedRating);
+        Rating got = PotentialFishRater.getPotentialFishForTeam(testGameState.getBoard(), testGameState.getCurrentTeam());
+        assertEquals(expected, got);
+    }
+
+    @Test
+    void getPotentialFishForTeamTwo() {
+        ImmutableGameState testGameState = GameStateFixture.createTestGameState();
+        int expectedRating = OPPONENT_NORMAL_FIELD_COUNT * BoardFixture.DEFAULT_FISH_COUNT;
+        Rating expected = new Rating(expectedRating);
+        Rating got = PotentialFishRater.getPotentialFishForTeam(testGameState.getBoard(), Team.TWO);
+        assertEquals(expected, got);
+    }
+
     @Test
     void rate() {
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         Rater rater = new PotentialFishRater();
-        int rating = BoardFixture.DEFAULT_MORE_FISH_COUNT + 7 * BoardFixture.DEFAULT_FISH_COUNT;
-        Rating expected = new Rating(rating);
-        assertEquals(expected, rater.rate(testGameState));
+        Rating expected = new Rating(BoardFixture.DEFAULT_MORE_FISH_COUNT +
+                (OWN_NORMAL_FIELD_COUNT - OPPONENT_NORMAL_FIELD_COUNT) * BoardFixture.DEFAULT_FISH_COUNT);
+        Rating got = rater.rate(testGameState);
+        assertEquals(expected, got);
     }
 }
