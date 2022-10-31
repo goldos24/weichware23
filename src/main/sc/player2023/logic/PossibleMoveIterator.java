@@ -31,9 +31,6 @@ public class PossibleMoveIterator implements Iterator<Move> {
             new Vector(-halfTileXChange, -fullTileYChange), // bottom left
     };
 
-    @Nonnull
-    private final Stream<Coordinates> remainingOwnPenguinPositions;
-
     private static Stream<Vector> createCurrentDirectionStream() {
         return Arrays.stream(possibleMoveDirections);
     }
@@ -57,13 +54,18 @@ public class PossibleMoveIterator implements Iterator<Move> {
         return targetStream.map(target -> new Move(startCoordinate, target));
     }
 
-    public PossibleMoveIterator(BoardPeek board, ITeam team) {
-        this.board = board;
-        this.team = team;
+    static Stream<Move> getPossibleMoves(BoardPeek board, ITeam team) {
         Stream<Pair<Coordinates, Team>> penguinStream = board.getPenguins().stream();
         Stream<Pair<Coordinates, Team>> ownPenguinStream = penguinStream.filter(
                 coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);
-        this.remainingOwnPenguinPositions = ownPenguinStream.map(Pair::getFirst);
+        Stream<Stream<Move>> moveStreamStream =
+                ownPenguinStream.map(coordTeamPair -> getPossibleMovesForPenguin(board, coordTeamPair.getFirst()));
+        return moveStreamStream.flatMap(move -> move);
+    }
+
+    public PossibleMoveIterator(BoardPeek board, ITeam team) {
+        this.board = board;
+        this.team = team;
     }
 
     @Override

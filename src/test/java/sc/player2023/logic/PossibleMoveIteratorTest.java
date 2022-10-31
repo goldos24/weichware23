@@ -2,6 +2,7 @@ package sc.player2023.logic;
 
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
+import sc.api.plugins.Team;
 import sc.api.plugins.Vector;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
@@ -39,6 +40,18 @@ class PossibleMoveIteratorTest {
         Set<Move> expected = expectedMoveStream.collect(Collectors.toSet());
         BoardPeek board = gameState.getBoard();
         Set<Move> got = PossibleMoveIterator.getPossibleMovesForPenguin(board, penguinPos).collect(Collectors.toSet());
+        assertEquals(expected, got);
+    }
+
+    @Test
+    void getPossibleMoves() {
+        ImmutableGameState gameState = GameStateFixture.createTestGameState();
+        GameState mutableGameState = new GameState(BoardFixture.createTestBoard());
+        Stream<Move> expectedMoveStream =
+                mutableGameState.getPossibleMoves().stream();
+        Set<Move> expected = expectedMoveStream.collect(Collectors.toSet());
+        BoardPeek board = gameState.getBoard();
+        Set<Move> got = PossibleMoveIterator.getPossibleMoves(board, Team.ONE).collect(Collectors.toSet());
         assertEquals(expected, got);
     }
 }
