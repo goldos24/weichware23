@@ -6,4 +6,10 @@ public class TimeMeasurerFixture {
         timeMeasurer.reset();
         return timeMeasurer;
     }
+
+    public static TimeMeasurer createAlreadyRunningInfiniteTimeMeasurer() {
+        TimeMeasurer timeMeasurer = new TimeMeasurer(Long.MAX_VALUE - System.currentTimeMillis() - 2); // if an overflow happens, 2 is subtracted, so it is a positive value again
+        timeMeasurer.reset();
+        return timeMeasurer;
+    }
 }

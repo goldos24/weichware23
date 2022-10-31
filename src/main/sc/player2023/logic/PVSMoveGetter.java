@@ -61,6 +61,7 @@ public class PVSMoveGetter implements MoveGetter {
             ImmutableGameState childGameState = GameRuleLogic.withMovePerformed(gameState, move);
             Rating currentRating = pvs(childGameState, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, rater).negate();
             if (currentRating.isGreaterThan(highestRating)) {
+                highestRating = currentRating;
                 bestMove = move;
             }
         }
