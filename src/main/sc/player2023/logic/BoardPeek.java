@@ -4,6 +4,7 @@ import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.plugin2023.Board;
+import sc.plugin2023.Field;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
@@ -27,6 +28,10 @@ public class BoardPeek {
 
     public Collection<Pair<Coordinates, Team>> getPenguins() {
         return board.getPenguins();
+    }
+
+    public Field get(Coordinates position) {
+        return board.get(position);
     }
 
     @Override
