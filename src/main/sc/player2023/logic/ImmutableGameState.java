@@ -33,6 +33,7 @@ public final class ImmutableGameState {
         return result;
     }
 
+    @Deprecated
     public GameState getGameState() {
         return gameState.clone();
     }
