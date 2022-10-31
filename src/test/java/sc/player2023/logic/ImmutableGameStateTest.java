@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class ImmutableGameStateTest {
 
+
+
     private final ImmutableGameState gameState = GameStateFixture.createTestGameStateOneFishPerField();
 
     @Test
@@ -73,5 +75,10 @@ class ImmutableGameStateTest {
         String expected = expectedGameState.toString();
         String actual = gameState.toString();
         assertEquals(expected, actual, "same");
+    }
+
+    @Test
+    void getCurrentTeam() {
+        assertEquals(gameState.getCurrentTeam(), Team.ONE);
     }
 }

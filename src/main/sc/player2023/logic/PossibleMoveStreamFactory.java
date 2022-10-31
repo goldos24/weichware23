@@ -50,7 +50,7 @@ public class PossibleMoveStreamFactory{
         return targetStream.map(target -> new Move(startCoordinate, target));
     }
 
-    static Stream<Move> getPossibleMoves(BoardPeek board, ITeam team) {
+    public static Stream<Move> getPossibleMoves(BoardPeek board, ITeam team) {
         Stream<Pair<Coordinates, Team>> penguinStream = board.getPenguins().stream();
         Stream<Pair<Coordinates, Team>> ownPenguinStream = penguinStream.filter(
                 coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);

@@ -27,6 +27,10 @@ public final class ImmutableGameState {
         this.board = new BoardPeek(this.gameState.getBoard());
     }
 
+    public ITeam getCurrentTeam() {
+        return gameState.getCurrentTeam();
+    }
+
     public int getPointsForTeam(ITeam team) {
         var result = teamPointsMap.get(team);
         assert result != null;
