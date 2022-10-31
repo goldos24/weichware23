@@ -1,23 +1,24 @@
 package sc.player2023.logic;
 
 import org.jetbrains.annotations.NotNull;
-import sc.plugin2023.Board;
-import sc.plugin2023.Field;
+import sc.api.plugins.ITeam;
 import sc.plugin2023.Move;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public class PotentialFishRater implements Rater {
+
+    static Rating getPotentialFishForTeam(BoardPeek board, ITeam team) {
+        Stream<Move> moveStream = PossibleMoveStreamFactory.getPossibleMoves(board, team);
+        Stream<Rating> ratingStream = moveStream.map(move -> new Rating(board.get(move.getTo()).getFish()));
+        return ratingStream.reduce(Rating::add).
+                orElse(Rating.ZERO);
+    }
+
     @Override
     public Rating rate(@NotNull ImmutableGameState gameState) {
-        Rating result = Rating.ZERO;
-        List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
-        Board board = gameState.getGameState().getBoard();
-        for (Move move : possibleMoves) {
-            Field moveTargetField = board.get(move.getTo());
-            int fish = moveTargetField.getFish();
-            result = result.add(fish);
-        }
-        return result;
+        BoardPeek board = gameState.getBoard();
+        ITeam team = gameState.getCurrentTeam();
+        return getPotentialFishForTeam(board, team);
     }
 }
