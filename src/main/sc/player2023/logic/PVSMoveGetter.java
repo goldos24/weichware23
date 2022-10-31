@@ -38,7 +38,18 @@ public class PVSMoveGetter implements MoveGetter {
         return new Rating(alpha);
     }
 
-    TimeMeasurer timeMeasurer = new TimeMeasurer(Logic.MAX_TIME);
+    public PVSMoveGetter() {
+        this.depth = 1;
+        this.timeMeasurer = new TimeMeasurer(Logic.MAX_TIME);
+    }
+
+    public PVSMoveGetter(int depth, TimeMeasurer timeMeasurer) {
+        this.depth = depth;
+        this.timeMeasurer = timeMeasurer;
+    }
+
+    private final int depth;
+    private final TimeMeasurer timeMeasurer;
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team, @Nonnull Rater rater) {
@@ -48,7 +59,7 @@ public class PVSMoveGetter implements MoveGetter {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = GameRuleLogic.withMovePerformed(gameState, move);
-            Rating currentRating = pvs(childGameState, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, rater).negate();
+            Rating currentRating = pvs(childGameState, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, rater).negate();
             if (currentRating.isGreaterThan(highestRating)) {
                 bestMove = move;
             }
