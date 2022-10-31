@@ -1,6 +1,7 @@
 package sc.player2023.logic;
 
 import com.google.common.collect.ImmutableMap;
+import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
@@ -33,5 +34,9 @@ public class GameRuleLogic {
 
     public static boolean isTeamWinner(ImmutableGameState gameState, ITeam team) {
         return RatingUtil.isTeamWinnerAfterGameEnd(gameState.getGameState(), team);
+    }
+
+    public static boolean canMoveTo(@Nonnull BoardPeek board, @Nonnull Coordinates target) {
+        return board.get(target).getFish() != 0;
     }
 }

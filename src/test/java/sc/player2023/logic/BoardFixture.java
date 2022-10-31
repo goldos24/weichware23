@@ -14,8 +14,8 @@ import java.util.List;
 public class BoardFixture {
     static final int DEFAULT_MORE_FISH_COUNT = 3;
     private static final int PENGUIN_COUNT = 4;
-    private static final int PENGUIN_START_X = 2;
-    private static final int PENGUIN_START_Y = 0;
+    static final int PENGUIN_START_X = 2;
+    static final int PENGUIN_START_Y = 0;
     private static final int BOARD_WIDTH = 8;
     private static final int BOARD_HEIGHT = 8;
     static final int DEFAULT_FISH_COUNT = 1;
