@@ -20,6 +20,9 @@ public class StupidMoveGetter implements MoveGetter {
                 bestMove = move;
             }
         }
+        if(bestMove == null && possibleMoves.size() > 0) {
+            return possibleMoves.get(0);
+        }
         return bestMove;
     }
 }
