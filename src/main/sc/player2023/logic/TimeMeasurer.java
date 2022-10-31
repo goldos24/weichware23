@@ -1,6 +1,10 @@
 package sc.player2023.logic;
 
 public class TimeMeasurer {
+    long getLastTimestamp() {
+        return lastTimestamp;
+    }
+
     private long lastTimestamp;
     private final long maxTime;
 
