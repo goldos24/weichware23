@@ -11,7 +11,6 @@ class GameRuleLogicTest {
     void canMoveTo() {
         BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
         assertTrue(GameRuleLogic.canMoveTo(board, new Coordinates(0, 0)));
-        assertFalse(GameRuleLogic.canMoveTo(board, new Coordinates(BoardFixture.PENGUIN_START_X*2,
-                BoardFixture.PENGUIN_START_Y)));
+        assertFalse(GameRuleLogic.canMoveTo(board, BoardFixture.firstPenguinCoords));
     }
 }
