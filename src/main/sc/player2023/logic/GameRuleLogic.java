@@ -36,7 +36,19 @@ public class GameRuleLogic {
         return RatingUtil.isTeamWinnerAfterGameEnd(gameState.getGameState(), team);
     }
 
+    public static final int BOARD_WIDTH = 8;
+    public static final int BOARD_HEIGHT = 8;
+    public static final int RIGHTMOST_X = 1+BOARD_WIDTH*2;
+
+    public static boolean coordsValid(Coordinates coordinates) {
+        if(coordinates == null)
+            return false;
+        int x = coordinates.getX();
+        int y = coordinates.getY();
+        return x >= 0 && x <= RIGHTMOST_X && y >= 0 && y < BOARD_HEIGHT && x % 2 == y % 2;
+    }
+
     public static boolean canMoveTo(@Nonnull BoardPeek board, @Nonnull Coordinates target) {
-        return board.get(target).getFish() != 0;
+        return coordsValid(target) && board.get(target).getFish() != 0;
     }
 }

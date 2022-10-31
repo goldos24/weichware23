@@ -17,8 +17,6 @@ public class BoardFixture {
     private static final int PENGUIN_COUNT = 4;
     static final int PENGUIN_START_X = 2;
     static final int PENGUIN_START_Y = 0;
-    private static final int BOARD_WIDTH = 8;
-    private static final int BOARD_HEIGHT = 8;
     static final int DEFAULT_FISH_COUNT = 1;
     private static final int DEFAULT_MORE_FISH_X = 1;
     private static final int DEFAULT_MORE_FISH_Y = 0;
@@ -35,23 +33,23 @@ public class BoardFixture {
 
     static Board createTestBoardOneFishPerField() {
         List<List<Field>> resultingFields = new ArrayList<>();
-        for (int i = 0; i < BOARD_HEIGHT; ++i) {
+        for (int i = 0; i < GameRuleLogic.BOARD_HEIGHT; ++i) {
             resultingFields.add(createSingleBoardFieldLine());
         }
         return new Board(resultingFields);
     }
 
     private static List<Field> createSingleBoardFieldLine() {
-        List<Field> result = new ArrayList<>(BOARD_WIDTH);
-        for (int i = 0; i < BOARD_WIDTH; ++i) {
+        List<Field> result = new ArrayList<>(GameRuleLogic.BOARD_WIDTH);
+        for (int i = 0; i < GameRuleLogic.BOARD_WIDTH; ++i) {
             result.add(new Field(DEFAULT_FISH_COUNT, null));
         }
         return result;
     }
 
     static Board createTestBoard() {
-        List<List<Field>> resultingFields = new ArrayList<>(BOARD_HEIGHT);
-        for (int i = 0; i < BOARD_HEIGHT; ++i) {
+        List<List<Field>> resultingFields = new ArrayList<>(GameRuleLogic.BOARD_HEIGHT);
+        for (int i = 0; i < GameRuleLogic.BOARD_HEIGHT; ++i) {
             resultingFields.add(createSingleBoardFieldLine());
         }
         resultingFields.get(DEFAULT_MORE_FISH_Y).set(DEFAULT_MORE_FISH_X, new Field(DEFAULT_MORE_FISH_COUNT, null));
