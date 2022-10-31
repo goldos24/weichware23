@@ -38,7 +38,7 @@ public class GameRuleLogic {
 
     public static final int BOARD_WIDTH = 8;
     public static final int BOARD_HEIGHT = 8;
-    public static final int RIGHTMOST_X = 1+BOARD_WIDTH*2;
+    public static final int RIGHTMOST_X = BOARD_WIDTH*2-1;
 
     public static boolean coordsValid(Coordinates coordinates) {
         if(coordinates == null)
