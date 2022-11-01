@@ -7,8 +7,8 @@ import sc.plugin2023.Board;
 import sc.plugin2023.Field;
 
 import javax.annotation.concurrent.Immutable;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Immutable
 public class BoardPeek {
@@ -24,6 +24,20 @@ public class BoardPeek {
 
     public BoardPeek(Board board) {
         this.board = board;
+    }
+
+
+    public static BoardPeek fromStreams(Stream<Field> fields) { // assumes field.count() == 64
+        List<List<Field>> fieldsForBoard = new ArrayList<>(GameRuleLogic.BOARD_HEIGHT);
+        Iterator<Field> fieldIterator = fields.iterator();
+        for (int y = 0; y < GameRuleLogic.BOARD_HEIGHT; ++y) {
+            List<Field> fieldRow = new ArrayList<>(GameRuleLogic.BOARD_WIDTH);
+            for(int x = 0; x < GameRuleLogic.BOARD_WIDTH; ++x) {
+                fieldRow.add(fieldIterator.next());
+            }
+            fieldsForBoard.add(fieldRow);
+        }
+        return new BoardPeek(new Board(fieldsForBoard));
     }
 
     public Collection<Pair<Coordinates, Team>> getPenguins() {

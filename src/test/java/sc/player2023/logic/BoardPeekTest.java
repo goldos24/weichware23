@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.plugin2023.Field;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardPeekTest {
@@ -13,5 +15,14 @@ class BoardPeekTest {
         BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
         Field field = board.get(new Coordinates(0, 0));
         assertEquals(field.getFish(), BoardFixture.DEFAULT_FISH_COUNT);
+    }
+
+    @Test
+    void fromStreams() {
+        // Simple copy
+        BoardPeek initialBoard = new BoardPeek(BoardFixture.createTestBoard());
+        Stream<Coordinates> coordStream = GameRuleLogic.createBoardCoordinateStream();
+        BoardPeek streamCopiedBoard = BoardPeek.fromStreams(coordStream.map(initialBoard::get));
+        assertEquals(initialBoard, streamCopiedBoard);
     }
 }
