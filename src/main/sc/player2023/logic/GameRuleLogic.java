@@ -62,6 +62,18 @@ public class GameRuleLogic {
         return x >= 0 && x <= RIGHTMOST_X && y >= 0 && y < BOARD_HEIGHT && x % 2 == y % 2;
     }
 
+    public static Coordinates nextCoord(Coordinates coordinates) {
+        int nextXInLine = coordinates.getX() + 2;
+        int nextY = coordinates.getY() + 1;
+        boolean xOverflow = nextXInLine > RIGHTMOST_X;
+        int realNextX = xOverflow ? nextY % 2 : nextXInLine;
+        return new Coordinates(realNextX, xOverflow ? nextY : coordinates.getY());
+    }
+
+    public static Stream<Coordinates> createBoardCoordinateStream() {
+        return Stream.iterate(new Coordinates(0, 0), GameRuleLogic::coordsValid, GameRuleLogic::nextCoord);
+    }
+
     public static boolean canMoveTo(@Nonnull BoardPeek board, @Nonnull Coordinates target) {
         return coordsValid(target) && board.get(target).getFish() != 0;
     }

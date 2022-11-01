@@ -49,4 +49,14 @@ class GameRuleLogicTest {
             assertTrue(GameRuleLogic.coordsValid(validCoord));
         }
     }
+    @Test
+    void nextCoord() {
+        assertEquals(new Coordinates(2, 0), GameRuleLogic.nextCoord(new Coordinates(0,0)));
+        assertEquals(new Coordinates(1, 1), GameRuleLogic.nextCoord(new Coordinates(14,0)));
+    }
+
+    @Test
+    void createBoardCoordinateStream() {
+        assertEquals(GameRuleLogic.createBoardCoordinateStream().filter(GameRuleLogic::coordsValid).count(), 64);
+    }
 }
