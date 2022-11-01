@@ -32,8 +32,8 @@ class GameRuleLogicTest {
     void allPenguinsPlaced() {
         BoardPeek emptyBoard = new BoardPeek(BoardFixture.createTestBoardOneFishPerField());
         BoardPeek normalBoard = new BoardPeek(BoardFixture.createTestBoard());
-        assertFalse(GameRuleLogic.allPenguinsPlaced(emptyBoard));
-        assertTrue(GameRuleLogic.allPenguinsPlaced(normalBoard));
+        assertFalse(GameRuleLogic.allPenguinsPlaced(emptyBoard, Team.ONE));
+        assertTrue(GameRuleLogic.allPenguinsPlaced(normalBoard, Team.ONE));
     }
 
     @Test

@@ -1,8 +1,10 @@
 package sc.player2023.logic;
 
 import com.google.common.collect.ImmutableMap;
+import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
+import sc.api.plugins.Team;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 
@@ -41,9 +43,11 @@ public class GameRuleLogic {
         return RatingUtil.isTeamWinnerAfterGameEnd(gameState.getGameState(), team);
     }
 
-    private static final int MAX_PENGUIN_COUNT = 8;
-    public static boolean allPenguinsPlaced(@Nonnull BoardPeek board) {
-        return board.getPenguins().size() == MAX_PENGUIN_COUNT;
+    private static final int MAX_PENGUIN_COUNT_FOR_SINGLE_TEAM = 4;
+    public static boolean allPenguinsPlaced(@Nonnull BoardPeek board, @Nonnull ITeam team) {
+        Stream<Pair<Coordinates, Team>> ownPenguins =
+                board.getPenguins().stream().filter(coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);
+        return ownPenguins.count() >= MAX_PENGUIN_COUNT_FOR_SINGLE_TEAM;
     }
 
     public static final int BOARD_WIDTH = 8;
