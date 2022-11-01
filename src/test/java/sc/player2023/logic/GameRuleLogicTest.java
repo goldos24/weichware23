@@ -29,6 +29,14 @@ class GameRuleLogicTest {
     }
 
     @Test
+    void allPenguinsPlaced() {
+        BoardPeek emptyBoard = new BoardPeek(BoardFixture.createTestBoardOneFishPerField());
+        BoardPeek normalBoard = new BoardPeek(BoardFixture.createTestBoard());
+        assertFalse(GameRuleLogic.allPenguinsPlaced(emptyBoard));
+        assertTrue(GameRuleLogic.allPenguinsPlaced(normalBoard));
+    }
+
+    @Test
     void coordsValid() {
         List<Coordinates> invalidCoords = List.of(new Coordinates(-2, 0), new Coordinates(2, 1),
                 new Coordinates(1, 2), new Coordinates(16, 0));

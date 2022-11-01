@@ -41,6 +41,11 @@ public class GameRuleLogic {
         return RatingUtil.isTeamWinnerAfterGameEnd(gameState.getGameState(), team);
     }
 
+    private static final int MAX_PENGUIN_COUNT = 8;
+    public static boolean allPenguinsPlaced(@Nonnull BoardPeek board) {
+        return board.getPenguins().size() == MAX_PENGUIN_COUNT;
+    }
+
     public static final int BOARD_WIDTH = 8;
     public static final int BOARD_HEIGHT = 8;
     public static final int RIGHTMOST_X = BOARD_WIDTH*2-1;
