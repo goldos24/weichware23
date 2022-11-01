@@ -55,7 +55,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
                 playRandomMove(clonedGameState);
             }*/
             while (!clonedGameState.isOver()) {
-                GameStateWithContinuation gameStateWithContinuation = playRandomMove(gameState);
+                GameStateWithContinuation gameStateWithContinuation = playRandomMove(clonedGameState);
                 if (gameStateWithContinuation.shouldStopAlgorithm()) {
                     break;
                 }
