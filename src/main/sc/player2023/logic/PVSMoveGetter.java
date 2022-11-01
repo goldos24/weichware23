@@ -9,8 +9,8 @@ import java.util.List;
 public class PVSMoveGetter implements MoveGetter {
     private Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
                        @Nonnull Rater rater) {
-        List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
-        if (depth < 0 || gameState.isOver() || possibleMoves.isEmpty() || timeMeasurer.ranOutOfTime()) {
+        Iterable<Move> possibleMoves = new PossibleMoveIterable(gameState);
+        if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
             return rater.rate(gameState);
         }
         boolean firstChild = true;
