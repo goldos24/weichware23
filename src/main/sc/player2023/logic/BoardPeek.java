@@ -2,9 +2,11 @@ package sc.player2023.logic;
 
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
+import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.plugin2023.Board;
 import sc.plugin2023.Field;
+import sc.plugin2023.Move;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.*;
@@ -38,6 +40,17 @@ public class BoardPeek {
             fieldsForBoard.add(fieldRow);
         }
         return new BoardPeek(new Board(fieldsForBoard));
+    }
+
+    public BoardPeek withMovePerformed(Move move, ITeam team) {
+        Stream<Coordinates> coordStream = GameRuleLogic.createBoardCoordinateStream();
+        return fromStreams(coordStream.map(coordinates -> {
+            if(Objects.equals(coordinates, move.getFrom()))
+                return new Field(0, null);
+            if(Objects.equals(coordinates, move.getTo()))
+                return new Field(0, (Team) team); // The field to be moved from and thus the penguin
+            return get(move.getTo());
+        }));
     }
 
     public Collection<Pair<Coordinates, Team>> getPenguins() {
