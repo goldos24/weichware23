@@ -11,8 +11,4 @@ public class RatingUtil {
     public static int getCombinedPointsForTeam(@Nonnull GameState gameState, ITeam team) {
         return IntStream.of(gameState.getPointsForTeam(team)).sum();
     }
-
-    public static boolean isTeamWinnerAfterGameEnd(GameState gameState, ITeam team) {
-        return RatingUtil.getCombinedPointsForTeam(gameState, team) > RatingUtil.getCombinedPointsForTeam(gameState, team.opponent());
-    }
 }
