@@ -32,7 +32,7 @@ public class GameRuleLogic {
     }
 
     public static List<Move> getPossibleMoves(ImmutableGameState gameState) {
-        return gameState.getGameState().getPossibleMoves();
+        return getPossibleMoveStream(gameState).toList();
     }
 
     public static Stream<Move> getPossibleMoveStream(ImmutableGameState gameState) {
@@ -40,7 +40,7 @@ public class GameRuleLogic {
     }
 
     public static boolean isTeamWinner(ImmutableGameState gameState, ITeam team) {
-        return RatingUtil.isTeamWinnerAfterGameEnd(gameState.getGameState(), team);
+        return gameState.getPointsForTeam(team) > gameState.getPointsForTeam(team.opponent());
     }
 
     private static final int MAX_PENGUIN_COUNT_FOR_SINGLE_TEAM = 4;

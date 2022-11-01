@@ -3,7 +3,6 @@ package sc.player2023.logic;
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
-import sc.plugin2023.GameState;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -29,12 +28,12 @@ class DistanceRater implements Rater {
 
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
-        GameState realGameState = gameState.getGameState();
-        Collection<Pair<Coordinates, Team>> penguins = realGameState.getBoard().getPenguins();
+        BoardPeek board = gameState.getBoard();
+        Collection<Pair<Coordinates, Team>> penguins = board.getPenguins();
         Rating result = Rating.ZERO;
         for (Pair<Coordinates, Team> currentPenguin : penguins) {
             int combinedDistance = getCombinedDistancesToOtherPenguins(currentPenguin, penguins);
-            if (currentPenguin.getSecond() == realGameState.getCurrentTeam()) {
+            if (currentPenguin.getSecond() == gameState.getCurrentTeam()) {
                 result = result.add(combinedDistance);
             }
             else {
