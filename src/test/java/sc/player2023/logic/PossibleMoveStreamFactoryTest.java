@@ -47,6 +47,17 @@ class PossibleMoveStreamFactoryTest {
     void getPossibleMoves() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
         GameState mutableGameState = new GameState(BoardFixture.createTestBoard());
+        possibleMoveEquivalenceCheck(gameState, mutableGameState);
+    }
+
+    @Test
+    void getPossibleMovesAtBeginning() {
+        ImmutableGameState gameState = GameStateFixture.createTestGameStateOneFishPerField();
+        GameState mutableGameState = new GameState(BoardFixture.createTestBoardOneFishPerField());
+        possibleMoveEquivalenceCheck(gameState, mutableGameState);
+    }
+
+    private static void possibleMoveEquivalenceCheck(ImmutableGameState gameState, GameState mutableGameState) {
         Stream<Move> expectedMoveStream =
                 mutableGameState.getPossibleMoves().stream();
         Set<Move> expected = expectedMoveStream.collect(Collectors.toSet());

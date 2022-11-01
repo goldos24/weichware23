@@ -50,12 +50,22 @@ public class PossibleMoveStreamFactory{
         return targetStream.map(target -> new Move(startCoordinate, target));
     }
 
-    public static Stream<Move> getPossibleMoves(BoardPeek board, ITeam team) {
+    public static Stream<Move> getPossibleMovesInNormalCase(BoardPeek board, ITeam team) {
         Stream<Pair<Coordinates, Team>> penguinStream = board.getPenguins().stream();
         Stream<Pair<Coordinates, Team>> ownPenguinStream = penguinStream.filter(
                 coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);
         Stream<Stream<Move>> moveStreamStream =
                 ownPenguinStream.map(coordTeamPair -> getPossibleMovesForPenguin(board, coordTeamPair.getFirst()));
         return moveStreamStream.flatMap(move -> move);
+    }
+
+    public static Stream<Move> getPossibleMovesAtBeginning(BoardPeek board) {
+        return GameRuleLogic.createBoardCoordinateStream().filter(coordinates -> board.get(coordinates).getFish() == 1).
+                map(target -> new Move(null, target));
+    }
+
+    public static Stream<Move> getPossibleMoves(BoardPeek board, ITeam team) {
+        return GameRuleLogic.allPenguinsPlaced(board, team) ?
+                getPossibleMovesInNormalCase(board, team) : getPossibleMovesAtBeginning(board);
     }
 }
