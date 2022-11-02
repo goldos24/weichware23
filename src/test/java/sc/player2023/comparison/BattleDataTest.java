@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Till Fransson
@@ -17,6 +16,8 @@ class BattleDataTest {
     private final int runs = 2;
 
     private final BattleData data = new BattleData(runs, gameState);
+
+    private final BattleData dataWithEmptyState = new BattleData(runs);
 
     @Test
     void testEquals() {
@@ -59,5 +60,16 @@ class BattleDataTest {
     @Test
     void testBoard() {
         assertEquals(gameState, data.testBoard(), "testBoard");
+    }
+
+    @Test
+    void runsEmptyState() {
+        int actual = dataWithEmptyState.runs();
+        assertEquals(runs, actual, "runs()");
+    }
+
+    @Test
+    void testBoardWithEmptyState() {
+        assertNull(dataWithEmptyState.testBoard(), "testBoard");
     }
 }
