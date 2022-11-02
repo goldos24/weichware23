@@ -136,10 +136,10 @@ public class BoardPeek {
         for (var penguinCoordTeam : penguinCoordinateTeamMap.entrySet()) {
             Coordinates coord = penguinCoordTeam.getKey();
             if(coord.equals(move.getFrom())) {
-                penguinCoordinateTeamMapBuilder.put(coord, (Team)team);
+                penguinCoordinateTeamMapBuilder.put(coord, penguinCoordTeam.getValue());
                 continue;
             }
-            penguinCoordinateTeamMapBuilder.put(coord, (Team)team);
+            penguinCoordinateTeamMapBuilder.put(coord, penguinCoordTeam.getValue());
         }
         return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                 newIfFishFieldThenFishModulo2OtherwisePenguinCount,
@@ -160,7 +160,7 @@ public class BoardPeek {
             boolean greaterThanTwo = getBitFrom8x8BitSet(x, y, greaterThanTwoBitSet);
             long oddBitSet = ifFishFieldThenFishModulo2OtherwisePenguinCount;
             boolean odd = getBitFrom8x8BitSet(x, y, oddBitSet);
-            int fishCount = (greaterThanTwo ? 2 : 0) + (odd ? 1 : 0);
+            int fishCount = (greaterThanTwo ? 3 : 1) + (odd ? 0 : 1);
             return new Field(fishCount, null);
         }
         boolean isPenguin = getBitFrom8x8BitSet(x, y, ifFishFieldThenFishModulo2OtherwisePenguinCount);
