@@ -119,7 +119,6 @@ public class BoardPeek {
                 toX, toY,
                 nonZeroFishCount, false
         ); // penguin at target => no fish
-        System.out.println(move);
         if(move.getFrom() == null) {
             return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                     newIfFishFieldThenFishModulo2OtherwisePenguinCount,
