@@ -49,7 +49,7 @@ public class BoardPeek {
                 return new Field(0, null);
             if(Objects.equals(coordinates, move.getTo()))
                 return new Field(0, (Team) team); // The field to be moved from and thus the penguin
-            return get(move.getTo());
+            return get(coordinates);
         }));
     }
 

@@ -5,7 +5,6 @@ import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
-import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -15,10 +14,9 @@ import java.util.stream.Stream;
 public class GameRuleLogic {
     @Nonnull
     public static ImmutableGameState withMovePerformed(ImmutableGameState gameState, Move move) {
-        GameState realGameState = gameState.getGameState();
-        ITeam team = realGameState.getCurrentTeam();
+        ITeam team = gameState.getCurrentTeam();
         var teamPointsMap = gameState.getTeamPointsMap();
-        var targetField = realGameState.getBoard().get(move.getTo());
+        var targetField = gameState.getBoard().get(move.getTo());
         Integer ownPoints = teamPointsMap.get(team);
         Integer opponentPoints = teamPointsMap.get(team.opponent());
         assert ownPoints != null;
@@ -27,8 +25,12 @@ public class GameRuleLogic {
                 put(team.opponent(), opponentPoints).
                 put(team, ownPoints + targetField.getFish()).
                 build();
-        realGameState.performMove(move);
-        return new ImmutableGameState(realGameState, teamPointsMap);
+        BoardPeek newBoard = gameState.getBoard().withMovePerformed(move, gameState.getCurrentTeam());
+        return new ImmutableGameState(teamPointsMap, newBoard, gameState.getCurrentTeam().opponent());
+    }
+
+    public static boolean anyPossibleMovesForPlayer(@Nonnull BoardPeek board, @Nonnull ITeam team) {
+        return PossibleMoveStreamFactory.getPossibleMoves(board, team).findFirst().isPresent();
     }
 
     public static List<Move> getPossibleMoves(ImmutableGameState gameState) {
