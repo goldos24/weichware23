@@ -27,10 +27,12 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     }
     private static final int fishCountBitMask = 0b11;
     private static final int penguinInitialOffset = 2;
-    private static final int penguinCoordOffset = 6;
-    private static final int penguinCoordBitMask = 0b111111;
+    private static final int penguinCoordsOffset = 6;
+    private static final int penguinCoordOffset = 3;
+    private static final int penguinCoordsBitMask = 0b111111;
+    private static final int penguinCoordBitMask = 0b111;
 
-    private PenguinCollection(int teamOnePenguins, int teamTwoPenguins) {
+    PenguinCollection(int teamOnePenguins, int teamTwoPenguins) {
         this.teamOnePenguins = teamOnePenguins;
         this.teamTwoPenguins = teamTwoPenguins;
     }
@@ -40,13 +42,8 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         for(var penguin : other) {
             int current = penguin.getSecond() == Team.ONE ? teamOne : teamTwo;
             int teamPenguinCount = current & fishCountBitMask;
-            current = (current & ~fishCountBitMask) | ((teamPenguinCount+1)&fishCountBitMask);
-            int x = penguin.getFirst().getX()/2; // compensate for Uni Keil alternating X
-            int y = penguin.getFirst().getY();
-            int combinedCoords = ((y << penguinCoordOffset/2) | x) & penguinCoordBitMask;
-            int positionOffset = (teamPenguinCount)*penguinCoordOffset+penguinInitialOffset;
-            int nonCoordBitMask = ~(penguinCoordBitMask << positionOffset);
-            current = (current & nonCoordBitMask) | (combinedCoords << positionOffset);
+            current = (current & ~fishCountBitMask) | ((teamPenguinCount +1)&fishCountBitMask);
+            current = getBitSetWithPenguinAtPos(penguin, current, teamPenguinCount);
             if(penguin.getSecond() == Team.ONE) {
                 teamOne = current;
             }
@@ -55,6 +52,28 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
             }
         }
         return new PenguinCollection(teamOne, teamTwo);
+    }
+
+    static int getPenguinCountInBitSet(int bitset) {
+        return bitset & fishCountBitMask;
+    }
+
+    static Coordinates getCoordsAtBitSetIndex(int bitset, int index) {
+        int startPos = penguinInitialOffset + index * penguinCoordsOffset;
+        int yStartPos = startPos + penguinCoordOffset;
+        int x = (bitset & (penguinCoordBitMask << startPos)) >> startPos;
+        int y = (bitset & (penguinCoordBitMask << yStartPos)) >> yStartPos;
+        return new Coordinates(x*2+y%2, y);
+    }
+
+    private static int getBitSetWithPenguinAtPos(Pair<Coordinates, Team> penguin, int current, int position) {
+        int x = penguin.getFirst().getX()/2; // compensate for Uni Keil alternating X
+        int y = penguin.getFirst().getY();
+        int combinedCoords = ((y << penguinCoordOffset) | x) & penguinCoordsBitMask;
+        int positionOffset = position * penguinCoordsOffset +penguinInitialOffset;
+        int nonCoordBitMask = ~(penguinCoordsBitMask << positionOffset);
+        current = (current & nonCoordBitMask) | (combinedCoords << positionOffset);
+        return current;
     }
 
     @Nonnull

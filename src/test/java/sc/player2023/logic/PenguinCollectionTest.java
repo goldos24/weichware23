@@ -19,4 +19,16 @@ class PenguinCollectionTest {
         int got = PenguinCollection.fromOtherPenguinCollection(penguinCollection).teamTwoPenguins;
         assertEquals(expectedTeamTwo, got);
     }
+
+    @Test void getPenguinCountInBitSet() {
+        int testBitSet = 0b00100101;
+        assertEquals(1, PenguinCollection.getPenguinCountInBitSet(testBitSet));
+    }
+
+    @Test void getCoordsAtBitSetIndex() {
+        int testBitSet = 0b00100101;
+        Coordinates expected = new Coordinates(3, 1);
+        Coordinates got = PenguinCollection.getCoordsAtBitSetIndex(testBitSet, 0);
+        assertEquals(expected, got);
+    }
 }
