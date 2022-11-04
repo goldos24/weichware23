@@ -1,11 +1,9 @@
 package sc.player2023.logic;
 
-import com.google.common.collect.ImmutableList;
 import sc.api.plugins.ITeam;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
