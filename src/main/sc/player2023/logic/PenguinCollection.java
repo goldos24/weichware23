@@ -1,5 +1,6 @@
 package sc.player2023.logic;
 
+import kotlin.NotImplementedError;
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
@@ -7,6 +8,8 @@ import sc.api.plugins.Team;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     int teamOnePenguins, teamTwoPenguins;
@@ -25,7 +28,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     public boolean contains(Object o) {
         return false;
     }
-    private static final int fishCountBitMask = 0b11;
+    private static final int penguinCountBitMask = 0b11;
     private static final int penguinInitialOffset = 2;
     private static final int penguinCoordsOffset = 6;
     private static final int penguinCoordOffset = 3;
@@ -41,9 +44,9 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         int teamOne = 0, teamTwo = 0;
         for(var penguin : other) {
             int current = penguin.getSecond() == Team.ONE ? teamOne : teamTwo;
-            int teamPenguinCount = current & fishCountBitMask;
-            current = (current & ~fishCountBitMask) | ((teamPenguinCount +1)&fishCountBitMask);
-            current = getBitSetWithPenguinAtPos(penguin, current, teamPenguinCount);
+            int teamPenguinCount = current & penguinCountBitMask;
+            current = (current & ~penguinCountBitMask) | ((teamPenguinCount +1)& penguinCountBitMask);
+            current = getBitSetWithPenguinAtPos(penguin.getFirst(), current, teamPenguinCount);
             if(penguin.getSecond() == Team.ONE) {
                 teamOne = current;
             }
@@ -55,7 +58,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     }
 
     static int getPenguinCountInBitSet(int bitset) {
-        return bitset & fishCountBitMask;
+        return bitset & penguinCountBitMask;
     }
 
     static Coordinates getCoordsAtBitSetIndex(int bitset, int index) {
@@ -66,9 +69,9 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         return new Coordinates(x*2+y%2, y);
     }
 
-    private static int getBitSetWithPenguinAtPos(Pair<Coordinates, Team> penguin, int current, int position) {
-        int x = penguin.getFirst().getX()/2; // compensate for Uni Keil alternating X
-        int y = penguin.getFirst().getY();
+    static int getBitSetWithPenguinAtPos(Coordinates penguinCoords, int current, int position) {
+        int x = penguinCoords.getX()/2; // compensate for Uni Keil alternating X
+        int y = penguinCoords.getY();
         int combinedCoords = ((y << penguinCoordOffset) | x) & penguinCoordsBitMask;
         int positionOffset = position * penguinCoordsOffset +penguinInitialOffset;
         int nonCoordBitMask = ~(penguinCoordsBitMask << positionOffset);
@@ -76,52 +79,61 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         return current;
     }
 
+    static Stream<Pair<Coordinates, Team>> getPenguinStreamForTeam(int bitset, Team team) {
+        int length = bitset & penguinCountBitMask;
+        IntStream indices = IntStream.iterate(0, index -> index < length, index -> index + 1);
+        return indices.mapToObj(index -> new Pair<>(getCoordsAtBitSetIndex(bitset, index), team));
+    }
+
     @Nonnull
     @Override
     public Iterator<Pair<Coordinates, Team>> iterator() {
-        return null;
+        var streamTeamOne = getPenguinStreamForTeam(teamOnePenguins, Team.ONE);
+        var streamTeamTwo = getPenguinStreamForTeam(teamTwoPenguins, Team.TWO);
+        var combinedStream = Stream.concat(streamTeamOne, streamTeamTwo);
+        return combinedStream.iterator();
     }
 
     @Nonnull
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        throw new NotImplementedError();
     }
 
     @Nonnull
     @Override
     public <T> T[] toArray(@Nonnull T[] a) {
-        return null;
+        throw new NotImplementedError();
     }
 
     @Override
     public boolean add(Pair<Coordinates, Team> coordinatesTeamPair) {
-        return false;
+        throw new NotImplementedError();
     }
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        throw new NotImplementedError();
     }
 
     @Override
     public boolean containsAll(@Nonnull Collection<?> c) {
-        return false;
+        throw new NotImplementedError();
     }
 
     @Override
     public boolean addAll(@Nonnull Collection<? extends Pair<Coordinates, Team>> c) {
-        return false;
+        throw new NotImplementedError();
     }
 
     @Override
     public boolean removeAll(@Nonnull Collection<?> c) {
-        return false;
+        throw new NotImplementedError();
     }
 
     @Override
     public boolean retainAll(@Nonnull Collection<?> c) {
-        return false;
+        throw new NotImplementedError();
     }
 
     @Override
