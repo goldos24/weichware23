@@ -149,7 +149,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
 
     @Override
     public void clear() {
-
+        throw new NotImplementedError();
     }
 
     @Override
