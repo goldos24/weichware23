@@ -1,5 +1,7 @@
 package sc.player2023.logic;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -8,7 +10,7 @@ import java.util.List;
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 
 public class PVSMoveGetter implements MoveGetter {
-    private Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
+    private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
                        @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
         Iterable<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
@@ -40,17 +42,29 @@ public class PVSMoveGetter implements MoveGetter {
     }
 
     public PVSMoveGetter() {
-        this.depth = 1;
-    }
 
-    public PVSMoveGetter(int depth) {
-        this.depth = depth;
     }
-
-    private final int depth;
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
+        Move bestMove = null;
+        int depth = 0;
+        while (!timeMeasurer.ranOutOfTime() || depth == 0) {
+            Move currentMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth);
+            if(currentMove == null) {
+                continue;
+            }
+            if(timeMeasurer.ranOutOfTime() && depth != 0) {
+                break;
+            }
+            bestMove = currentMove;
+            depth++;
+        }
+        return bestMove;
+    }
+
+    @Nullable
+    static Move getBestMoveForDepth(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer, int depth) {
         Rating highestRating = Rating.NEGATIVE_INFINITY;
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);

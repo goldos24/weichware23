@@ -11,7 +11,7 @@ class PVSMoveGetterTest {
     void yieldsAnyIfGivenNoTime() {
         Rater rater = new StupidRater();
         TimeMeasurer timeMeasurer = TimeMeasurerFixture.createAlreadyRunningZeroTimeMeasurer();
-        PVSMoveGetter moveGetter = new PVSMoveGetter(2);
+        PVSMoveGetter moveGetter = new PVSMoveGetter();
         try {
             Thread.sleep(2);
         } catch (InterruptedException ignored) {}
@@ -28,8 +28,7 @@ class PVSMoveGetterTest {
         TimeMeasurer timeMeasurer = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
         int depth = 0;
         Rater rater = new StupidRater();
-        PVSMoveGetter moveGetter = new PVSMoveGetter(depth);
-        Move move = moveGetter.getBestMove(gameState, rater, timeMeasurer);
+        Move move = PVSMoveGetter.getBestMoveForDepth(gameState, rater, timeMeasurer, depth);
         assertEquals(bestMove, move);
     }
 
@@ -39,8 +38,7 @@ class PVSMoveGetterTest {
         TimeMeasurer timeMeasurer = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
         int depth = 1;
         Rater rater = new StupidRater();
-        PVSMoveGetter moveGetter = new PVSMoveGetter(depth);
-        Move move = moveGetter.getBestMove(gameState, rater, timeMeasurer);
+        Move move = PVSMoveGetter.getBestMoveForDepth(gameState, rater, timeMeasurer, depth);
         assertEquals(bestMove, move);
     }
 
