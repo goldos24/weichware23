@@ -12,12 +12,16 @@ import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 import static sc.player2023.logic.GameRuleLogic.createCurrentDirectionStream;
-import static sc.player2023.logic.GameRuleLogic.getPossibleTargetCoordsForPenguinInDirection;
 
 @SuppressWarnings("unused")
 public class PossibleMoveStreamFactory{
-
-
+    public static Stream<Coordinates> getPossibleTargetCoordsForPenguinInDirection(@Nonnull BoardPeek board,
+                                                                                   @Nonnull Coordinates startCoordinate,
+                                                                                   @Nonnull Vector direction) {
+        return Stream.iterate(startCoordinate.plus(direction),
+                coordinates -> GameRuleLogic.canMoveTo(board, coordinates),
+                coordinates -> coordinates.plus(direction));
+    }
 
     static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
                                                            @Nonnull Coordinates startCoordinate) {

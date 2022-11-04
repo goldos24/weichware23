@@ -3,10 +3,12 @@ package sc.player2023.logic;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.api.plugins.Vector;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +29,21 @@ class PossibleMoveStreamFactoryTest {
         Set<Move> got = PossibleMoveStreamFactory.getPossibleMovesForPenguin(board, penguinPos).collect(Collectors.toSet());
         assertEquals(expected, got);
     }
+
+
+    @Test
+    void getPossibleTargetCoordsForPenguinInDirection() {
+        BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
+        Stream<Coordinates> coordStream = PossibleMoveStreamFactory.getPossibleTargetCoordsForPenguinInDirection(
+                board,
+                BoardFixture.firstPenguinCoords,
+                new Vector(-2, 0)
+        );
+        List<Coordinates> got = coordStream.toList();
+        List<Coordinates> expected = List.of(new Coordinates(2, 0), new Coordinates(0,0));
+        assertEquals(expected, got);
+    }
+
 
     @Test
     void getPossibleMoves() {

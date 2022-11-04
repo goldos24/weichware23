@@ -50,15 +50,6 @@ public class GameRuleLogic {
         return Arrays.stream(possibleMoveDirections);
     }
 
-    // I don't see a use case other than in this class, so it doesn't get its own file
-    public static Stream<Coordinates> getPossibleTargetCoordsForPenguinInDirection(@Nonnull BoardPeek board,
-                                                                            @Nonnull Coordinates startCoordinate,
-                                                                            @Nonnull Vector direction) {
-        return Stream.iterate(startCoordinate.plus(direction),
-                coordinates -> GameRuleLogic.canMoveTo(board, coordinates),
-                coordinates -> coordinates.plus(direction));
-    }
-
     public static boolean anyPossibleMovesForPlayer(@Nonnull BoardPeek board, @Nonnull ITeam team) {
         return PossibleMoveStreamFactory.getPossibleMoves(board, team).findFirst().isPresent();
     }
