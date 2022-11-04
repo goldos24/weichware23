@@ -1,11 +1,9 @@
 package sc.player2023.logic;
 
-import com.google.common.collect.ImmutableList;
 import sc.api.plugins.ITeam;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
@@ -18,7 +16,7 @@ public class SortedPVSMoveGetter implements MoveGetter {
 
     private Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
                        @Nonnull Rater rater) {
-        List<Move> possibleMoves = sortPossibleMoves(gameState, rater);
+        List<Move> possibleMoves = MoveUtil.sortPossibleMoves(gameState, rater);
         if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
             return rater.rate(gameState);
         }
@@ -79,30 +77,6 @@ public class SortedPVSMoveGetter implements MoveGetter {
         }
         return bestMove;
     }
-
-    private static List<Move> sortPossibleMoves(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater) {
-        Iterable<Move> possibleMoves = new PossibleMoveIterable(gameState);
-
-        List<RatedMove> ratedMoves = new ArrayList<>();
-
-        for (Move possibleMove : possibleMoves) {
-            ImmutableGameState afterMove = withMovePerformed(gameState, possibleMove);
-            Rating rating = rater.rate(afterMove);
-            RatedMove ratedMove = new RatedMove(rating, possibleMove);
-            ratedMoves.add(ratedMove);
-        }
-
-        ratedMoves.sort(RatedMove::compareTo);
-
-        ImmutableList.Builder<Move> builder = new ImmutableList.Builder<>();
-
-        for (RatedMove ratedMove : ratedMoves) {
-            builder.add(ratedMove.move());
-        }
-        return builder.build();
-    }
-
-
 
 
 }
