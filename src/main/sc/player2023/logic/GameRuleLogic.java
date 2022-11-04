@@ -5,10 +5,12 @@ import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
+import sc.api.plugins.Vector;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,6 +30,33 @@ public class GameRuleLogic {
                 build();
         BoardPeek newBoard = gameState.getBoard().withMovePerformed(move, gameState.getCurrentTeam());
         return new ImmutableGameState(teamPointsMap, newBoard, gameState.getCurrentTeam().opponent());
+    }
+
+
+    private static final int halfTileXChange = 1;
+    private static final int fullTileXChange = 2;
+    private static final int fullTileYChange = 1;
+    @Nonnull
+    private static final Vector[] possibleMoveDirections = {
+            new Vector(-fullTileXChange, 0), // left
+            new Vector(-halfTileXChange, fullTileYChange), // top left
+            new Vector(halfTileXChange, fullTileYChange), // top right
+            new Vector(fullTileXChange, 0), // right
+            new Vector(halfTileXChange, -fullTileYChange), // bottom right
+            new Vector(-halfTileXChange, -fullTileYChange), // bottom left
+    };
+
+    public static Stream<Vector> createCurrentDirectionStream() {
+        return Arrays.stream(possibleMoveDirections);
+    }
+
+    // I don't see a use case other than in this class, so it doesn't get its own file
+    public static Stream<Coordinates> getPossibleTargetCoordsForPenguinInDirection(@Nonnull BoardPeek board,
+                                                                            @Nonnull Coordinates startCoordinate,
+                                                                            @Nonnull Vector direction) {
+        return Stream.iterate(startCoordinate.plus(direction),
+                coordinates -> GameRuleLogic.canMoveTo(board, coordinates),
+                coordinates -> coordinates.plus(direction));
     }
 
     public static boolean anyPossibleMovesForPlayer(@Nonnull BoardPeek board, @Nonnull ITeam team) {

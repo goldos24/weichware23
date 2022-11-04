@@ -9,37 +9,14 @@ import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.stream.Stream;
+
+import static sc.player2023.logic.GameRuleLogic.createCurrentDirectionStream;
+import static sc.player2023.logic.GameRuleLogic.getPossibleTargetCoordsForPenguinInDirection;
 
 @SuppressWarnings("unused")
 public class PossibleMoveStreamFactory{
-    private static final int halfTileXChange = 1;
-    private static final int fullTileXChange = 2;
-    private static final int fullTileYChange = 1;
 
-    @Nonnull
-    private static final Vector[] possibleMoveDirections = {
-            new Vector(-fullTileXChange, 0), // left
-            new Vector(-halfTileXChange, fullTileYChange), // top left
-            new Vector(halfTileXChange, fullTileYChange), // top right
-            new Vector(fullTileXChange, 0), // right
-            new Vector(halfTileXChange, -fullTileYChange), // bottom right
-            new Vector(-halfTileXChange, -fullTileYChange), // bottom left
-    };
-
-    private static Stream<Vector> createCurrentDirectionStream() {
-        return Arrays.stream(possibleMoveDirections);
-    }
-
-    // I don't see a use case other than in this class, so it doesn't get its own file
-    static Stream<Coordinates> getPossibleTargetCoordsForPenguinInDirection(@Nonnull BoardPeek board,
-                                                                      @Nonnull Coordinates startCoordinate,
-                                                                      @Nonnull Vector direction) {
-        return Stream.iterate(startCoordinate.plus(direction),
-                coordinates -> GameRuleLogic.canMoveTo(board, coordinates),
-                coordinates -> coordinates.plus(direction));
-    }
 
 
     static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
