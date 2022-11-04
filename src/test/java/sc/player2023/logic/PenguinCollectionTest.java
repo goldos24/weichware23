@@ -7,7 +7,6 @@ import sc.api.plugins.Team;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,18 +15,18 @@ class PenguinCollectionTest {
     @Test
     void fromOtherPenguinCollection() {
         List<Pair<Coordinates, Team>> penguinCollection = List.of(new Pair<>(new Coordinates(3, 1), Team.TWO));
-        int expectedTeamTwo = 0b00100101;
+        int expectedTeamTwo = 0b001001001;
         int got = PenguinCollection.fromOtherPenguinCollection(penguinCollection).teamTwoPenguins;
         assertEquals(expectedTeamTwo, got);
     }
 
     @Test void getPenguinCountInBitSet() {
-        int testBitSet = 0b00100101;
+        int testBitSet = 0b001001001;
         assertEquals(1, PenguinCollection.getPenguinCountInBitSet(testBitSet));
     }
 
     @Test void getCoordsAtBitSetIndex() {
-        int testBitSet = 0b00100101;
+        int testBitSet = 0b001001001;
         Coordinates expected = new Coordinates(3, 1);
         Coordinates got = PenguinCollection.getCoordsAtBitSetIndex(testBitSet, 0);
         assertEquals(expected, got);
@@ -35,15 +34,23 @@ class PenguinCollectionTest {
 
     @Test
     void getBitSetWithPenguinAtPos() {
-        int initial = 0b01001010;
-        int expected = 0b00100101001010;
+        int initial = 0b010010010;
+        int expected = 0b001001010010010;
         int got = PenguinCollection.getBitSetWithPenguinAtPos(new Coordinates(3, 1), initial, 1);
         assertEquals(expected, got);
     }
 
     @Test
+    void bitsetWithPenguinAdded() {
+        int initial = 0b010010001;
+        int expected = 0b001001010010010;
+        int got = PenguinCollection.bitsetWithPenguinAdded(new Coordinates(3, 1), initial);
+        assertEquals(expected, got);
+    }
+
+    @Test
     void getPenguinStreamForTeam() {
-        int bitset = 0b00100101001010;
+        int bitset = 0b001001010010010;
         List<Pair<Coordinates, Team>> expected = List.of(new Pair<>(new Coordinates(4, 2), Team.ONE),
                 new Pair<>(new Coordinates(3, 1), Team.ONE));
         List<Pair<Coordinates, Team>> got = PenguinCollection.getPenguinStreamForTeam(bitset, Team.ONE).toList();

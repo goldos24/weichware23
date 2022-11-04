@@ -1,6 +1,5 @@
 package sc.player2023.logic;
 
-import com.google.common.collect.ImmutableMap;
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
@@ -40,7 +39,7 @@ public class BoardPeek {
             ifFishFieldThenFishModulo2OtherwisePenguinCount,
             nonZeroFishCount;
 
-    final ImmutableMap<Coordinates, Team> penguinCoordinateTeamMap;
+    final PenguinCollection penguinCoordinateTeamMap;
 
     static long getBitSetPositionMask(int x, int y) {
         return 1L << (y * 8 + x);
@@ -70,7 +69,7 @@ public class BoardPeek {
         return field.getFish() % 2 == 1;
     }
 
-    public BoardPeek(long ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam, long ifFishFieldThenFishModulo2OtherwisePenguinCount, long nonZeroFishCount, ImmutableMap<Coordinates, Team> penguinCoordinateTeamMap) {
+    public BoardPeek(long ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam, long ifFishFieldThenFishModulo2OtherwisePenguinCount, long nonZeroFishCount, PenguinCollection penguinCoordinateTeamMap) {
         this.ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam = ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam;
         this.ifFishFieldThenFishModulo2OtherwisePenguinCount = ifFishFieldThenFishModulo2OtherwisePenguinCount;
         this.nonZeroFishCount = nonZeroFishCount;
@@ -81,8 +80,7 @@ public class BoardPeek {
         long ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam = 0;
         long ifFishFieldThenFishModulo2OtherwisePenguinCount = 0;
         long nonZeroFishCount = 0;
-        ImmutableMap.Builder<Coordinates, Team> penguinTeamMapBuilder =
-                ImmutableMap.builder();
+        List<Pair<Coordinates, Team>> penguinTeamMapBuilder = new ArrayList<>();
         Iterator<Field> fieldIterator = fields.iterator();
         for (int y = 0; y < GameRuleLogic.BOARD_HEIGHT; ++y) {
             for (int x = 0; x < GameRuleLogic.BOARD_WIDTH; ++x) {
@@ -99,13 +97,13 @@ public class BoardPeek {
                         field.getFish() != 0);
                 Team penguinTeam = field.getPenguin();
                 if(penguinTeam != null) {
-                    penguinTeamMapBuilder = penguinTeamMapBuilder.put(new Coordinates(x*2+y%2, y), penguinTeam);
+                    penguinTeamMapBuilder.add(new Pair<>(new Coordinates(x*2+y%2, y), penguinTeam));
                 }
             }
         }
         return new BoardPeek(ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                 ifFishFieldThenFishModulo2OtherwisePenguinCount, nonZeroFishCount,
-                penguinTeamMapBuilder.build());
+                PenguinCollection.fromOtherPenguinCollection(penguinTeamMapBuilder));
     }
 
     public BoardPeek withMovePerformed(Move move, ITeam team) {
@@ -123,8 +121,7 @@ public class BoardPeek {
             return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                     newIfFishFieldThenFishModulo2OtherwisePenguinCount,
                     newNonZeroFishCountBitSet,
-                    ImmutableMap.<Coordinates, Team>builder().putAll(penguinCoordinateTeamMap)
-                            .put(move.getTo(), (Team)team).build());
+                    penguinCoordinateTeamMap.withExtraPenguin(new Pair<>(move.getTo(), (Team) team)));
         }
         int fromX = move.getFrom().getX()/2, fromY = move.getFrom().getY();
         newIfFishFieldThenFishModulo2OtherwisePenguinCount = bitSet8x8WithSingleBitChanged(fromX, fromY,
@@ -132,24 +129,23 @@ public class BoardPeek {
         newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam = bitSet8x8WithSingleBitChanged(
                 fromX, fromY,
                 newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam, false); // nothing there = 0
-        ImmutableMap.Builder<Coordinates, Team> penguinCoordinateTeamMapBuilder = ImmutableMap.builder();
-        for (var penguinCoordTeam : penguinCoordinateTeamMap.entrySet()) {
-            Coordinates coord = penguinCoordTeam.getKey();
+        List<Pair<Coordinates, Team>> penguinCoordinateTeamMapBuilder = new ArrayList<>();
+        for (var penguinCoordTeam : penguinCoordinateTeamMap) {
+            Coordinates coord = penguinCoordTeam.getFirst();
             if(coord.equals(move.getFrom())) {
-                penguinCoordinateTeamMapBuilder.put(coord, penguinCoordTeam.getValue());
+                penguinCoordinateTeamMapBuilder.add(new Pair<>(coord, penguinCoordTeam.getSecond()));
                 continue;
             }
-            penguinCoordinateTeamMapBuilder.put(coord, penguinCoordTeam.getValue());
+            penguinCoordinateTeamMapBuilder.add(new Pair<>(coord, penguinCoordTeam.getSecond()));
         }
         return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                 newIfFishFieldThenFishModulo2OtherwisePenguinCount,
                 newNonZeroFishCountBitSet,
-                penguinCoordinateTeamMapBuilder.build());
+                PenguinCollection.fromOtherPenguinCollection(penguinCoordinateTeamMapBuilder));
     }
 
     public Collection<Pair<Coordinates, Team>> getPenguins() {
-        return penguinCoordinateTeamMap.entrySet().stream().map(coordinatesTeamEntry ->
-                new Pair<>(coordinatesTeamEntry.getKey(), coordinatesTeamEntry.getValue())).toList();
+        return penguinCoordinateTeamMap;
     }
 
     public Field get(Coordinates position) {

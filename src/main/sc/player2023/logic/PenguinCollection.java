@@ -28,8 +28,8 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     public boolean contains(Object o) {
         return false;
     }
-    private static final int penguinCountBitMask = 0b11;
-    private static final int penguinInitialOffset = 2;
+    private static final int penguinCountBitMask = 0b111;
+    private static final int penguinInitialOffset = 3;
     private static final int penguinCoordsOffset = 6;
     private static final int penguinCoordOffset = 3;
     private static final int penguinCoordsBitMask = 0b111111;
@@ -44,9 +44,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         int teamOne = 0, teamTwo = 0;
         for(var penguin : other) {
             int current = penguin.getSecond() == Team.ONE ? teamOne : teamTwo;
-            int teamPenguinCount = current & penguinCountBitMask;
-            current = (current & ~penguinCountBitMask) | ((teamPenguinCount +1)& penguinCountBitMask);
-            current = getBitSetWithPenguinAtPos(penguin.getFirst(), current, teamPenguinCount);
+            current = bitsetWithPenguinAdded(penguin.getFirst(), current);
             if(penguin.getSecond() == Team.ONE) {
                 teamOne = current;
             }
@@ -56,6 +54,22 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         }
         return new PenguinCollection(teamOne, teamTwo);
     }
+
+    static int bitsetWithPenguinAdded(Coordinates penguinCoords, int bitset) {
+        int teamPenguinCount = bitset & penguinCountBitMask;
+        bitset = (bitset & ~penguinCountBitMask) | ((teamPenguinCount +1)& penguinCountBitMask);
+        bitset = getBitSetWithPenguinAtPos(penguinCoords, bitset, teamPenguinCount);
+        return bitset;
+    }
+
+    public PenguinCollection withExtraPenguin(Pair<Coordinates, Team> penguin) {
+        Team team = penguin.getSecond();
+        return new PenguinCollection(
+                team == Team.ONE ? bitsetWithPenguinAdded(penguin.getFirst(), teamOnePenguins) : teamOnePenguins,
+                team == Team.TWO ? bitsetWithPenguinAdded(penguin.getFirst(), teamTwoPenguins) : teamTwoPenguins
+        );
+    }
+
 
     static int getPenguinCountInBitSet(int bitset) {
         return bitset & penguinCountBitMask;
@@ -88,10 +102,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     @Nonnull
     @Override
     public Iterator<Pair<Coordinates, Team>> iterator() {
-        var streamTeamOne = getPenguinStreamForTeam(teamOnePenguins, Team.ONE);
-        var streamTeamTwo = getPenguinStreamForTeam(teamTwoPenguins, Team.TWO);
-        var combinedStream = Stream.concat(streamTeamOne, streamTeamTwo);
-        return combinedStream.iterator();
+        return stream().iterator();
     }
 
     @Nonnull
@@ -139,5 +150,12 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public Stream<Pair<Coordinates, Team>> stream() {
+        var streamTeamOne = getPenguinStreamForTeam(teamOnePenguins, Team.ONE);
+        var streamTeamTwo = getPenguinStreamForTeam(teamTwoPenguins, Team.TWO);
+        return Stream.concat(streamTeamOne, streamTeamTwo);
     }
 }
