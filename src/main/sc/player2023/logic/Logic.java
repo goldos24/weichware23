@@ -43,7 +43,7 @@ public class Logic implements IGameHandler {
     Rater[] raters = {weightedStupidRater, potentialFishRater};
     Rater rater = new CompositeRater(raters);
     ImmutableGameState immutableGameState = ImmutableGameStateFactory.createFromGameState(gameState);
-    Move move = moveGetter.getBestMove(immutableGameState, gameState.getCurrentTeam(), rater);
+    Move move = moveGetter.getBestMove(immutableGameState, rater);
     log.info("Sende {} nach {}ms.", move, System.currentTimeMillis() - startTime);
     return move;
   }

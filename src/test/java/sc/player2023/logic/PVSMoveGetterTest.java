@@ -15,7 +15,7 @@ class PVSMoveGetterTest {
             Thread.sleep(2);
         } catch (InterruptedException ignored) {}
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        Move move = moveGetter.getBestMove(gameState, gameState.getCurrentTeam(), rater);
+        Move move = moveGetter.getBestMove(gameState, rater);
         assertNotNull(move);
     }
 
@@ -28,7 +28,7 @@ class PVSMoveGetterTest {
         int depth = 0;
         Rater rater = new StupidRater();
         PVSMoveGetter moveGetter = new PVSMoveGetter(depth, timeMeasurer);
-        Move move = moveGetter.getBestMove(gameState, gameState.getCurrentTeam(), rater);
+        Move move = moveGetter.getBestMove(gameState, rater);
         assertEquals(bestMove, move);
     }
 
@@ -39,7 +39,7 @@ class PVSMoveGetterTest {
         int depth = 1;
         Rater rater = new StupidRater();
         PVSMoveGetter moveGetter = new PVSMoveGetter(depth, timeMeasurer);
-        Move move = moveGetter.getBestMove(gameState, gameState.getCurrentTeam(), rater);
+        Move move = moveGetter.getBestMove(gameState, rater);
         assertEquals(bestMove, move);
     }
 

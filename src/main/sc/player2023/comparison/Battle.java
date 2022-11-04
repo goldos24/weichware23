@@ -25,13 +25,13 @@ public class Battle {
         while (gameState.stillRunning()) {
             Rater rater1 = fighter1.rater();
             MoveGetter moveGetter1 = fighter1.moveGetter();
-            Move nextMove = moveGetter1.getBestMove(gameState, Team.ONE, rater1);
+            Move nextMove = moveGetter1.getBestMove(gameState, rater1);
             if(nextMove == null)
                 break;
             gameState = GameRuleLogic.withMovePerformed(gameState, nextMove);
             if(gameState.isOver())
                 break;
-            nextMove = fighter2.moveGetter().getBestMove(gameState, Team.TWO, fighter2.rater());
+            nextMove = fighter2.moveGetter().getBestMove(gameState, fighter2.rater());
             if(nextMove == null)
                 break;
             gameState = GameRuleLogic.withMovePerformed(gameState, nextMove);

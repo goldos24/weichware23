@@ -1,6 +1,5 @@
 package sc.player2023.logic;
 
-import sc.api.plugins.ITeam;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -59,7 +58,7 @@ public class SortedPVSMoveGetter implements MoveGetter {
     private final TimeMeasurer timeMeasurer;
 
     @Override
-    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team, @Nonnull Rater rater) {
+    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater) {
         timeMeasurer.reset();
         Rating highestRating = Rating.NEGATIVE_INFINITY;
         Move bestMove = null;

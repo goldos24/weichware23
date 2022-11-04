@@ -16,7 +16,7 @@ class StupidMoveGetterTest {
         testGameState = GameStateFixture.createTestGameState();
         MoveGetter moveGetter = new StupidMoveGetter();
         Rater rater = new StupidRater();
-        Move move = moveGetter.getBestMove(testGameState, Team.ONE, rater);
+        Move move = moveGetter.getBestMove(testGameState, rater);
         testGameState = GameRuleLogic.withMovePerformed(testGameState, move);
     }
 
