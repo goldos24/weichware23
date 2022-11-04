@@ -4,5 +4,6 @@ import javax.annotation.Nonnull;
 import sc.plugin2023.Move;
 
 public interface MoveGetter {
-    Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater);
+    Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer);
+    // TimeMeasurer needs to be reset directly before function call
 }

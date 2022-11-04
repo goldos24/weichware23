@@ -25,6 +25,12 @@ public class Logic implements IGameHandler {
 
   public static final int MAX_TIME = 1900;
 
+  public static TimeMeasurer createDefaultRunningTimeMeasurer() {
+    TimeMeasurer result = new TimeMeasurer(MAX_TIME);
+    result.reset();
+    return result;
+  }
+
   public void onGameOver(@Nonnull GameResult data) {
     log.info("Das Spiel ist beendet, Ergebnis: {}", data);
   }
@@ -43,7 +49,8 @@ public class Logic implements IGameHandler {
     Rater[] raters = {weightedStupidRater, potentialFishRater};
     Rater rater = new CompositeRater(raters);
     ImmutableGameState immutableGameState = ImmutableGameStateFactory.createFromGameState(gameState);
-    Move move = moveGetter.getBestMove(immutableGameState, rater);
+    TimeMeasurer timeMeasurer = createDefaultRunningTimeMeasurer();
+    Move move = moveGetter.getBestMove(immutableGameState, rater, timeMeasurer);
     log.info("Sende {} nach {}ms.", move, System.currentTimeMillis() - startTime);
     return move;
   }

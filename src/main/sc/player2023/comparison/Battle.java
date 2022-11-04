@@ -22,16 +22,19 @@ public class Battle {
         ITeam opponentTeam = ownFighterTeam.opponent();
         Fighter fighter1 = ownFighterTeam == Team.ONE ? ownFighter : opponentFighter;
         Fighter fighter2 = ownFighterTeam == Team.TWO ? ownFighter : opponentFighter;
+        TimeMeasurer timeMeasurer = Logic.createDefaultRunningTimeMeasurer();
         while (gameState.stillRunning()) {
             Rater rater1 = fighter1.rater();
             MoveGetter moveGetter1 = fighter1.moveGetter();
-            Move nextMove = moveGetter1.getBestMove(gameState, rater1);
+            timeMeasurer.reset();
+            Move nextMove = moveGetter1.getBestMove(gameState, rater1, timeMeasurer);
             if(nextMove == null)
                 break;
             gameState = GameRuleLogic.withMovePerformed(gameState, nextMove);
             if(gameState.isOver())
                 break;
-            nextMove = fighter2.moveGetter().getBestMove(gameState, fighter2.rater());
+            timeMeasurer.reset();
+            nextMove = fighter2.moveGetter().getBestMove(gameState, fighter2.rater(), timeMeasurer);
             if(nextMove == null)
                 break;
             gameState = GameRuleLogic.withMovePerformed(gameState, nextMove);

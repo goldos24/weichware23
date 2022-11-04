@@ -7,7 +7,7 @@ import java.util.List;
 
 public class StupidMoveGetter implements MoveGetter {
     @Override
-    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater) {
+    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         Move bestMove = null;
         Rating bestRating = Rating.NEGATIVE_INFINITY;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);

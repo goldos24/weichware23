@@ -58,8 +58,8 @@ public class SortedPVSMoveGetter implements MoveGetter {
     private final TimeMeasurer timeMeasurer;
 
     @Override
-    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater) {
-        timeMeasurer.reset();
+    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
+        this.timeMeasurer.reset();
         Rating highestRating = Rating.NEGATIVE_INFINITY;
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);

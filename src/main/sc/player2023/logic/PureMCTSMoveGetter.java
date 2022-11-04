@@ -41,7 +41,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
     public static final int MAXIMAL_DEPTH = 5;
 
     @Override
-    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater) {
+    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
         ITeam team = gameState.getCurrentTeam();
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);

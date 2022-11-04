@@ -9,7 +9,7 @@ import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 
 public class PVSMoveGetter implements MoveGetter {
     private Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
-                       @Nonnull Rater rater) {
+                       @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
         Iterable<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
             return rater.rate(gameState);
@@ -20,14 +20,14 @@ public class PVSMoveGetter implements MoveGetter {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                Rating negated = pvs(childGameState, depth - 1, -beta, -alpha, rater).negate();
+                Rating negated = pvs(childGameState, depth - 1, -beta, -alpha, rater, timeMeasurer).negate();
                 score = negated.rating();
             }
             else {
-                Rating negated = pvs(childGameState, depth - 1, -alpha - 1, -alpha, rater).negate();
+                Rating negated = pvs(childGameState, depth - 1, -alpha - 1, -alpha, rater, timeMeasurer).negate();
                 score = negated.rating(); /* * search with a null window */
                 if (alpha < score && score < beta) {
-                    Rating otherNegated = pvs(childGameState, depth - 1, -beta, -score, rater).negate();
+                    Rating otherNegated = pvs(childGameState, depth - 1, -beta, -score, rater, timeMeasurer).negate();
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
                 }
             }
@@ -41,26 +41,23 @@ public class PVSMoveGetter implements MoveGetter {
 
     public PVSMoveGetter() {
         this.depth = 1;
-        this.timeMeasurer = new TimeMeasurer(Logic.MAX_TIME);
     }
 
-    public PVSMoveGetter(int depth, TimeMeasurer timeMeasurer) {
+    public PVSMoveGetter(int depth) {
         this.depth = depth;
-        this.timeMeasurer = timeMeasurer;
     }
 
     private final int depth;
-    private final TimeMeasurer timeMeasurer;
 
     @Override
-    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater) {
-        timeMeasurer.reset();
+    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         Rating highestRating = Rating.NEGATIVE_INFINITY;
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
-            Rating currentRating = pvs(childGameState, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, rater).negate();
+            Rating currentRating = pvs(childGameState, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, rater, timeMeasurer)
+                    .negate();
             if (currentRating.isGreaterThan(highestRating)) {
                 highestRating = currentRating;
                 bestMove = move;

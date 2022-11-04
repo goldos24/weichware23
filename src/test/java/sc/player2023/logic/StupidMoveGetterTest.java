@@ -16,7 +16,8 @@ class StupidMoveGetterTest {
         testGameState = GameStateFixture.createTestGameState();
         MoveGetter moveGetter = new StupidMoveGetter();
         Rater rater = new StupidRater();
-        Move move = moveGetter.getBestMove(testGameState, rater);
+        TimeMeasurer timeMeasurer = Logic.createDefaultRunningTimeMeasurer();
+        Move move = moveGetter.getBestMove(testGameState, rater, timeMeasurer);
         testGameState = GameRuleLogic.withMovePerformed(testGameState, move);
     }
 
