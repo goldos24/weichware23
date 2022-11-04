@@ -1,12 +1,13 @@
 package sc.player2023.logic;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
  * @author Till Fransson
  * @since 14.10.2022
  */
-public record Rating(double rating) {
+public record Rating(double rating) implements Comparable<Rating> {
 
     public static final Rating ZERO = new Rating(0.0);
 
@@ -71,5 +72,10 @@ public record Rating(double rating) {
     @Override
     public String toString() {
         return "Rating {" + rating + "}";
+    }
+
+    @Override
+    public int compareTo(@Nonnull Rating o) {
+        return Double.compare(rating, o.rating);
     }
 }
