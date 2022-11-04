@@ -1,4 +1,4 @@
-package sc.player2023.logic;
+package sc.player2023.logic.board;
 
 import kotlin.NotImplementedError;
 import kotlin.Pair;

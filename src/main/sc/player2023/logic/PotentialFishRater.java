@@ -2,6 +2,7 @@ package sc.player2023.logic;
 
 import org.jetbrains.annotations.NotNull;
 import sc.api.plugins.ITeam;
+import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Move;
 
 import java.util.stream.Stream;

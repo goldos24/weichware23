@@ -1,9 +1,10 @@
-package sc.player2023.logic;
+package sc.player2023.logic.board;
 
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
+import sc.player2023.logic.GameRuleLogic;
 import sc.plugin2023.Board;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;

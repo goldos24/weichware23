@@ -13,11 +13,11 @@ import java.util.List;
  * @since 09.10.2022
  */
 public class BoardFixture {
-    static final int DEFAULT_MORE_FISH_COUNT = 3;
+    public static final int DEFAULT_MORE_FISH_COUNT = 3;
     private static final int PENGUIN_COUNT = 4;
-    static final int PENGUIN_START_X = 2;
-    static final int PENGUIN_START_Y = 0;
-    static final int DEFAULT_FISH_COUNT = 1;
+    public static final int PENGUIN_START_X = 2;
+    public static final int PENGUIN_START_Y = 0;
+    public static final int DEFAULT_FISH_COUNT = 1;
     private static final int DEFAULT_MORE_FISH_X = 1;
     private static final int DEFAULT_MORE_FISH_Y = 0;
 
@@ -26,12 +26,12 @@ public class BoardFixture {
         return new Coordinates(x*2+y%2, y);
     }
 
-    static final Coordinates firstPenguinCoords = coordsFromXY(PENGUIN_START_X, PENGUIN_START_Y);
+    public static final Coordinates firstPenguinCoords = coordsFromXY(PENGUIN_START_X, PENGUIN_START_Y);
 
     private BoardFixture() {
     }
 
-    static Board createTestBoardOneFishPerField() {
+    public static Board createTestBoardOneFishPerField() {
         List<List<Field>> resultingFields = new ArrayList<>();
         for (int i = 0; i < GameRuleLogic.BOARD_HEIGHT; ++i) {
             resultingFields.add(createSingleBoardFieldLine());
@@ -47,7 +47,7 @@ public class BoardFixture {
         return result;
     }
 
-    static Board createTestBoard() {
+    public static Board createTestBoard() {
         List<List<Field>> resultingFields = new ArrayList<>(GameRuleLogic.BOARD_HEIGHT);
         for (int i = 0; i < GameRuleLogic.BOARD_HEIGHT; ++i) {
             resultingFields.add(createSingleBoardFieldLine());

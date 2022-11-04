@@ -4,8 +4,7 @@ import kotlin.Pair;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
-import sc.plugin2023.Board;
-import sc.plugin2023.GameState;
+import sc.player2023.logic.board.BoardPeek;
 
 import java.util.Collection;
 

@@ -1,9 +1,10 @@
-package sc.player2023.logic;
+package sc.player2023.logic.board;
 
 import kotlin.Pair;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.player2023.logic.board.PenguinCollection;
 
 import java.util.ArrayList;
 import java.util.List;

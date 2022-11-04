@@ -3,6 +3,7 @@ package sc.player2023.logic;
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.player2023.logic.board.BoardPeek;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
