@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class PenguinCutOffRater implements Rater {
 
-    private static final Map<Long, Double> possibleTargetCountRatings = Map.of(0L, 1.0, 1L, 0.5, 2L, 0.1);
+    private static final Map<Long, Double> possibleTargetCountRatings = Map.of(0L, 5.0, 1L, 0.2, 2L, 0.1);
 
     @Override
     public Rating rate(@NotNull ImmutableGameState gameState) {
