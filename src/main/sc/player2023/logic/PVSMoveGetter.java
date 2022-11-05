@@ -59,6 +59,8 @@ public class PVSMoveGetter implements MoveGetter {
             if(timeMeasurer.ranOutOfTime() && depth != 0) {
                 break;
             }
+            if(depth > GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT)
+                break;
             bestMove = currentMove;
             depth++;
         }

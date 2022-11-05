@@ -6,7 +6,8 @@ import sc.player2023.logic.rating.*;
 public class ComparisonProgram {
     public static void main(String[] args) {
         Rater rater = new CompositeRater(new Rater[]{new WeightedRater(5, new StupidRater()), new PotentialFishRater()});
-        Fighter mctsFighter = new Fighter(new PureMCTSMoveGetter(), rater);
+        Rater enhancedRater = new CompositeRater(new Rater[] {rater, new WeightedRater(20, new UselessPenguinRater())});
+        Fighter mctsFighter = new Fighter(new PVSMoveGetter(), enhancedRater);
         Fighter pvsFighter = new Fighter(new PVSMoveGetter(), rater);
         BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(1));
         System.out.println(result);
