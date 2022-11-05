@@ -2,6 +2,8 @@ package sc.player2023.logic;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
@@ -12,6 +14,9 @@ import java.util.List;
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 
 public class PVSMoveGetter implements MoveGetter {
+
+    private static final Logger log = LoggerFactory.getLogger(PVSMoveGetter.class);
+
     private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
                               @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
         Iterable<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
@@ -64,6 +69,7 @@ public class PVSMoveGetter implements MoveGetter {
             bestMove = currentMove;
             depth++;
         }
+        log.info("PVS Depth : {}", depth-1);
         return bestMove;
     }
 
