@@ -1,6 +1,7 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rater;
 
 import org.junit.jupiter.api.Test;
+import sc.player2023.logic.rating.Rating;
 
 import static org.junit.jupiter.api.Assertions.*;
 

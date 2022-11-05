@@ -1,4 +1,4 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rating;
 
 import org.jetbrains.annotations.NotNull;
 import sc.plugin2023.Move;

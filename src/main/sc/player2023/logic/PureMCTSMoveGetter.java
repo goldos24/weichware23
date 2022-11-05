@@ -1,6 +1,8 @@
 package sc.player2023.logic;
 
 import sc.api.plugins.ITeam;
+import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;

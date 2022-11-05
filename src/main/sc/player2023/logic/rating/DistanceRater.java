@@ -1,20 +1,23 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rating;
 
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.Rating;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-class DistanceRater implements Rater {
-    static int getDistance(Coordinates coordinates1, Coordinates coordinates2) {
+public class DistanceRater implements Rater {
+    public static int getDistance(Coordinates coordinates1, Coordinates coordinates2) {
         return Math.abs(coordinates1.getX() - coordinates2.getX()) + Math.abs(
                 coordinates2.getY() - coordinates1.getY());
     }
 
-    static int getCombinedDistancesToOtherPenguins(Pair<Coordinates, Team> currentPenguin,
+    public static int getCombinedDistancesToOtherPenguins(Pair<Coordinates, Team> currentPenguin,
                                                    Collection<Pair<Coordinates, Team>> penguins) {
         int result = 0;
         for (Pair<Coordinates, Team> currentOtherPenguin : penguins) {

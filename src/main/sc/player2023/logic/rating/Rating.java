@@ -1,4 +1,4 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rating;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;

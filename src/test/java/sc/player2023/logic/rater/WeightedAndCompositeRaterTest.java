@@ -1,10 +1,16 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rater;
 
 import org.junit.jupiter.api.Test;
+import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.ImmutableGameStateFactory;
+import sc.player2023.logic.rating.CompositeRater;
+import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.rating.WeightedRater;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static sc.player2023.logic.Rating.FIVE;
-import static sc.player2023.logic.Rating.TWO;
+import static sc.player2023.logic.rating.Rating.FIVE;
+import static sc.player2023.logic.rating.Rating.TWO;
 
 
 class WeightedAndCompositeRaterTest {

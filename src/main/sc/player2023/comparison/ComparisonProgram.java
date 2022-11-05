@@ -1,6 +1,7 @@
 package sc.player2023.comparison;
 
 import sc.player2023.logic.*;
+import sc.player2023.logic.rating.*;
 
 public class ComparisonProgram {
     public static void main(String[] args) {

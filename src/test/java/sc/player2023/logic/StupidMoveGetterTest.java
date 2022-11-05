@@ -3,6 +3,9 @@ package sc.player2023.logic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Team;
+import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.rating.StupidRater;
 import sc.plugin2023.Move;
 
 import static org.junit.jupiter.api.Assertions.*;

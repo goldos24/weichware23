@@ -1,4 +1,4 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rating;
 
 import sc.api.plugins.ITeam;
 import sc.plugin2023.GameState;

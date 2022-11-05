@@ -1,15 +1,19 @@
-package sc.player2023.logic;
+package sc.player2023.logic.rater;
 
 import kotlin.Pair;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.player2023.logic.GameStateFixture;
+import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.rating.DistanceRater;
+import sc.player2023.logic.rating.Rater;
 
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static sc.player2023.logic.Rating.ZERO;
+import static sc.player2023.logic.rating.Rating.ZERO;
 
 class DistanceRaterTest {
     private static final Coordinates TEST_COORDINATE_1 = new Coordinates(1, 1);

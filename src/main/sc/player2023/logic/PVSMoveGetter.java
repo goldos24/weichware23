@@ -2,6 +2,8 @@ package sc.player2023.logic;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -11,7 +13,7 @@ import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 
 public class PVSMoveGetter implements MoveGetter {
     private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, double alpha, double beta,
-                       @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
+                              @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
         Iterable<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
             return rater.rate(gameState);

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sc.api.plugins.IGameState;
 import sc.player.IGameHandler;
+import sc.player2023.logic.rating.*;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 import sc.shared.GameResult;

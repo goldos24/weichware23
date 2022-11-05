@@ -1,6 +1,8 @@
 package sc.player2023.logic;
 
 import javax.annotation.Nonnull;
+
+import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 
 public interface MoveGetter {

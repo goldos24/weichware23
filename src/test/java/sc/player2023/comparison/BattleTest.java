@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.ImmutableGameStateFactory;
 import sc.player2023.logic.StupidMoveGetter;
-import sc.player2023.logic.StupidRater;
+import sc.player2023.logic.rating.StupidRater;
 
 class BattleTest {
     @Test

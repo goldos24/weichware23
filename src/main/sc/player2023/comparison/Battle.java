@@ -3,6 +3,7 @@ package sc.player2023.comparison;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.player2023.logic.*;
+import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
