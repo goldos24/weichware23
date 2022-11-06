@@ -13,7 +13,9 @@ public class ImmutableMCTSTree {
 
     public ImmutableMCTSTree(@Nonnull ImmutableGameState initialGameState) {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(initialGameState);
-        Stream<ImmutableMCTSTreeNode> nodeStream = possibleMoves.stream().map(ImmutableMCTSTreeNode::new);
+        Stream<ImmutableMCTSTreeNode> nodeStream = possibleMoves.stream().map(move -> {
+            return new ImmutableMCTSTreeNode(move, initialGameState);
+        });
         this.rootChildNodes = nodeStream.toList();
     }
 
