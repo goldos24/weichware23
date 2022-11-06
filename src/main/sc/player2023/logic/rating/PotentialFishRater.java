@@ -17,7 +17,7 @@ import static sc.player2023.logic.PossibleMoveStreamFactory.getPossibleMovesInNo
 public class PotentialFishRater implements Rater {
 /*
     public static Rating getPotentialFishForTeam(BoardPeek board, ITeam team) {
-        Stream<Move> moveStream = PossibleMoveStreamFactory.getPossibleMoves(board, team);
+        Stream<Move> moveStream = PossibleMoveStreamFactory.getPossibleMovesInNormalCase(board, team);
         Stream<Rating> ratingStream = moveStream.map(move -> new Rating(board.get(move.getTo()).getFish()));
         return ratingStream.reduce(Rating::add).
                 orElse(Rating.ZERO);

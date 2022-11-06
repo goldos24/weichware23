@@ -10,7 +10,7 @@ public class ComparisonProgram {
         Rater hopefullyBetterRater = new CompositeRater(new Rater[] {rater, new WeightedRater(20, new PenguinCutOffRater())});
         Fighter mctsFighter = new Fighter(new PVSMoveGetter(), enhancedRater);
         Fighter pvsFighter = new Fighter(new PVSMoveGetter(), hopefullyBetterRater);
-        BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(1));
+        BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(20));
         System.out.println(result);
     }
 }
