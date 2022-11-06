@@ -45,10 +45,10 @@ public class Logic implements IGameHandler {
 
     MoveGetter moveGetter = new PVSMoveGetter();
     StupidRater stupidRater = new StupidRater();
-    PotentialFishRater potentialFishRater = new PotentialFishRater();
+    ReachableFishRater reachableFishRater = new ReachableFishRater();
     WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(20, new PenguinCutOffRater());
-    Rater[] raters = {weightedStupidRater, potentialFishRater, weightedUselessPenguinRater};
+    Rater[] raters = {weightedStupidRater, new PotentialFishRater(), reachableFishRater, weightedUselessPenguinRater};
     Rater rater = new CompositeRater(raters);
     ImmutableGameState immutableGameState = ImmutableGameStateFactory.createFromGameState(gameState);
     TimeMeasurer timeMeasurer = createDefaultRunningTimeMeasurer();

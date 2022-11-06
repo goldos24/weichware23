@@ -14,6 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ReachableFishRaterTest {
 
+    @Test
+    void indexToCoordsToIndex() {
+        List<Coordinates> expected = GameRuleLogic.createBoardCoordinateStream().toList();
+        List<Coordinates> got = expected.stream().map(ReachableFishRater::coordsToIndex).
+                map(ReachableFishRater::indexToCoords).toList();
+        assertEquals(expected, got);
+    }
+
     static int compareCoords(Coordinates a, Coordinates b) {
         if(a.getX() == b.getX()) {
             return Integer.compare(a.getY(), b.getY());
