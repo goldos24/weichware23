@@ -32,6 +32,18 @@ public class GameRuleLogic {
         return new ImmutableGameState(teamPointsMap, newBoard, gameState.getCurrentTeam().opponent());
     }
 
+	public static int getRandomMoveIndex(List<Move> possibleMoves) {
+		return (int) Math.round(Math.random() * (possibleMoves.size() - 1));
+	}
+
+	@Nonnull
+	public static ImmutableGameState withRandomMovePerformed(ImmutableGameState gameState) {
+		List<Move> moves = GameRuleLogic.getPossibleMoves(gameState);
+		int randomMoveIndex = getRandomMoveIndex(moves);
+		Move randomMove = moves.get(randomMoveIndex);
+		return GameRuleLogic.withMovePerformed(gameState, randomMove);
+	}
+
 
     private static final int halfTileXChange = 1;
     private static final int fullTileXChange = 2;
