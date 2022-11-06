@@ -5,6 +5,7 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -36,5 +37,36 @@ public class ImmutableMCTSTree {
     @Nonnull
     public Selection select() {
         return new Selection(this.rootNode);
+    }
+
+    /**
+     * Traces a node in the MCTS tree structure using the list of indices provided.
+     * <br>
+     * For each entry in the list, this function advances layer by layer until all
+     * indices are exhausted or until the last node has no children.
+     *
+     * @param stepsToNode The list of indices to trace the node in the tree structure
+     * @return The node, at depth = length of stepsToNode
+     */
+    @Nullable
+    public ImmutableMCTSTreeNode trace(List<Integer> stepsToNode) {
+        ImmutableMCTSTreeNode currentNode = this.rootNode;
+        for (Integer index : stepsToNode) {
+            List<ImmutableMCTSTreeNode> children = currentNode.getChildren();
+
+            if (index > children.size()) {
+                return null;
+            }
+
+            currentNode = children.get(index);
+        }
+        return currentNode;
+    }
+
+    @Nonnull
+    public Expansion expand(List<Integer> stepsToSelectedNode) {
+        ImmutableMCTSTreeNode tracedNode = this.trace(stepsToSelectedNode);
+        assert tracedNode != null;
+        return new Expansion(tracedNode);
     }
 }

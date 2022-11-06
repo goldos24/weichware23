@@ -15,6 +15,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
 
     // TODO: find a more suitable exploration weight for this game
     public static final double EXPLORATION_WEIGHT = Math.sqrt(2);
+    public static final int EXPANSION_AMOUNT = 2;
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
@@ -24,6 +25,14 @@ public class PureMCTSMoveGetter implements MoveGetter {
         while (!timer.ranOutOfTime()) {
             Selection selection = tree.select();
             List<Integer> selectedPath = selection.complete();
+            Expansion expansion = tree.expand(selectedPath);
+
+            // Dead end, no expansion is possible
+            if (!expansion.isPossible()) {
+                continue;
+            }
+
+            ImmutableMCTSTreeNode expandedNode = expansion.expandAndSimulate(EXPANSION_AMOUNT);
         }
 
         return tree.bestMove();
