@@ -1,5 +1,6 @@
 package sc.player2023.logic;
 
+import sc.player2023.logic.mcts.ImmutableMCTSTree;
 import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 

@@ -1,4 +1,7 @@
-package sc.player2023.logic;
+package sc.player2023.logic.mcts;
+
+import sc.player2023.logic.GameRuleLogic;
+import sc.player2023.logic.ImmutableGameState;
 
 import javax.annotation.Nonnull;
 
