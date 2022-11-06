@@ -1,17 +1,21 @@
 package sc.player2023.logic.rating;
 
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
+import sc.api.plugins.Team;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static sc.player2023.logic.PossibleMoveStreamFactory.getPossibleMovesForPenguin;
 import static sc.player2023.logic.PossibleMoveStreamFactory.getPossibleMovesInNormalCase;
 
 public class PotentialFishRater implements Rater {
@@ -28,19 +32,21 @@ public class PotentialFishRater implements Rater {
         Rating rating = Rating.ZERO;
         BoardPeek board = gameState.getBoard();
         Stream<Move> possibleMovesStream = getPossibleMovesInNormalCase(board, team);
-        List<Move> possibleMoves = possibleMovesStream.toList();
-        for (Move possibleMove : possibleMoves) {
-            Coordinates fieldPosition = possibleMove.getTo();
-            Field field = board.get(fieldPosition);
+
+        Stream<Coordinates> positionsStream = possibleMovesStream.map(Move::getTo);
+        Set<Coordinates> reachablePositions = positionsStream.collect(Collectors.toSet());
+
+        for (Coordinates position : reachablePositions) {
+            Field field = board.get(position);
             int fish = field.getFish();
             rating = rating.add(fish);
         }
+
         return rating;
     }
 
     @Override
     public Rating rate(@NotNull ImmutableGameState gameState) {
-        BoardPeek board = gameState.getBoard();
         ITeam team = gameState.getCurrentTeam();
         return getPotentialFishForTeam(gameState, team).subtract(getPotentialFishForTeam(gameState, team.opponent()));
     }

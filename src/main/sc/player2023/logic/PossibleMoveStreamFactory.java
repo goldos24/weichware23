@@ -26,7 +26,7 @@ public class PossibleMoveStreamFactory{
     }
 
     @Nonnull
-    static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
+    public static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
                                                            @Nonnull Coordinates startCoordinate) {
         @Nonnull Stream<Vector> directions = createCurrentDirectionStream();
         Stream<Stream<Coordinates>> targetStreamStream =
