@@ -1,11 +1,9 @@
-package sc.player2023.logic.rater;
+package sc.player2023.logic.rating;
 
 import org.junit.jupiter.api.Test;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.rating.PenguinCutOffRater;
-import sc.player2023.logic.rating.Rater;
-import sc.player2023.logic.rating.Rating;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PenguinCutOffRaterTest {
