@@ -1,7 +1,9 @@
-package sc.player2023.logic;
+package sc.player2023.logic.mcts;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sc.player2023.logic.GameStateFixture;
+import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.mcts.ImmutableMCTSTree;
 import sc.player2023.logic.mcts.ImmutableMCTSTreeNode;
 import sc.player2023.logic.mcts.Selection;
