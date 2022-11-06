@@ -15,6 +15,8 @@ import static sc.player2023.logic.GameRuleLogic.createCurrentDirectionStream;
 
 @SuppressWarnings("unused")
 public class PossibleMoveStreamFactory{
+
+    @Nonnull
     public static Stream<Coordinates> getPossibleTargetCoordsForPenguinInDirection(@Nonnull BoardPeek board,
                                                                                    @Nonnull Coordinates startCoordinate,
                                                                                    @Nonnull Vector direction) {
@@ -23,6 +25,7 @@ public class PossibleMoveStreamFactory{
                 coordinates -> coordinates.plus(direction));
     }
 
+    @Nonnull
     static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
                                                            @Nonnull Coordinates startCoordinate) {
         @Nonnull Stream<Vector> directions = createCurrentDirectionStream();
@@ -32,6 +35,7 @@ public class PossibleMoveStreamFactory{
         return targetStream.map(target -> new Move(startCoordinate, target));
     }
 
+    @Nonnull
     public static Stream<Move> getPossibleMovesInNormalCase(BoardPeek board, ITeam team) {
         Stream<Pair<Coordinates, Team>> penguinStream = board.getPenguins().stream();
         Stream<Pair<Coordinates, Team>> ownPenguinStream = penguinStream.filter(
@@ -41,11 +45,13 @@ public class PossibleMoveStreamFactory{
         return moveStreamStream.flatMap(move -> move);
     }
 
+    @Nonnull
     public static Stream<Move> getPossibleMovesAtBeginning(BoardPeek board) {
         return GameRuleLogic.createBoardCoordinateStream().filter(coordinates -> board.get(coordinates).getFish() == 1).
                 map(target -> new Move(null, target));
     }
 
+    @Nonnull
     public static Stream<Move> getPossibleMoves(BoardPeek board, ITeam team) {
         return GameRuleLogic.allPenguinsPlaced(board, team) ?
                 getPossibleMovesInNormalCase(board, team) : getPossibleMovesAtBeginning(board);

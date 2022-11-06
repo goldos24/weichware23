@@ -18,7 +18,7 @@ class PotentialFishRaterTest {
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         int expectedRating = BoardFixture.DEFAULT_MORE_FISH_COUNT + OWN_NORMAL_FIELD_COUNT * BoardFixture.DEFAULT_FISH_COUNT;
         Rating expected = new Rating(expectedRating);
-        Rating got = PotentialFishRater.getPotentialFishForTeam(testGameState.getBoard(), testGameState.getCurrentTeam());
+        Rating got = PotentialFishRater.getPotentialFishForTeam(testGameState, testGameState.getCurrentTeam());
         assertEquals(expected, got);
     }
 
@@ -27,7 +27,7 @@ class PotentialFishRaterTest {
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         int expectedRating = OPPONENT_NORMAL_FIELD_COUNT * BoardFixture.DEFAULT_FISH_COUNT;
         Rating expected = new Rating(expectedRating);
-        Rating got = PotentialFishRater.getPotentialFishForTeam(testGameState.getBoard(), Team.TWO);
+        Rating got = PotentialFishRater.getPotentialFishForTeam(testGameState, Team.TWO);
         assertEquals(expected, got);
     }
 
