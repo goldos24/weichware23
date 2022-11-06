@@ -1,6 +1,6 @@
 package sc.player2023.logic;
 
-import sc.player2023.logic.mcts.ExpansionSimulation;
+import sc.player2023.logic.mcts.Expansion;
 import sc.player2023.logic.mcts.ImmutableMCTSTree;
 import sc.player2023.logic.mcts.ImmutableMCTSTreeNode;
 import sc.player2023.logic.mcts.Selection;
@@ -8,6 +8,7 @@ import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class PureMCTSMoveGetter implements MoveGetter {
     private final TimeMeasurer timer = new TimeMeasurer(1900);
@@ -22,7 +23,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
         ImmutableMCTSTree tree = new ImmutableMCTSTree(gameState);
         while (!timer.ranOutOfTime()) {
             Selection selection = tree.select();
-            ExpansionSimulation expansionSimulation = new ExpansionSimulation();
+            List<Integer> selectedPath = selection.complete();
         }
 
         return tree.bestMove();
