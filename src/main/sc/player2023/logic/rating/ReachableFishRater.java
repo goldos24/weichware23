@@ -45,6 +45,14 @@ public class ReachableFishRater implements Rater {
 
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
-        return null;
+        Rating result = new Rating(0);
+        BoardPeek board = gameState.getBoard();
+        for(var penguin : board.getPenguins()) {
+            double prefix = penguin.getSecond() == gameState.getCurrentTeam() ? 1 : -1;
+            int fishCount = getReachableFishFromCoordinate(penguin.getFirst(), board);
+            Rating currentPenguinRating = new Rating(prefix * fishCount);
+            result = result.add(currentPenguinRating);
+        }
+        return result;
     }
 }
