@@ -48,8 +48,7 @@ class ReachableFishRaterTest {
     void rate() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
         Rater rater = new ReachableFishRater();
-        int ownNotStuckPenguinCount = 2, otherNotStuckPenguinCount = 4;
-        Rating expected = new Rating((ownNotStuckPenguinCount - otherNotStuckPenguinCount) * REACHABLE_FISH_ON_DEFAULT_BOARD);
+        Rating expected = Rating.ZERO;
         Rating got = rater.rate(gameState);
         assertEquals(expected, got);
     }
