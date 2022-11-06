@@ -18,18 +18,29 @@ public class ReachableFishRater implements Rater {
     }
 
     static void addReachableCoordsToSet(Set<Coordinates> set, Coordinates startCoords, BoardPeek board) {
-        if(!GameRuleLogic.coordsValid(startCoords)) {
-            return;
-        }
         if(set.contains(startCoords)) {
-            return;
-        }
-        if(board.get(startCoords).getFish() == 0) {
             return;
         }
         set.add(startCoords);
         Stream<Coordinates> directlyReachableCoords = GameRuleLogic.createCurrentDirectionStream().map(startCoords::plus);
-        directlyReachableCoords.forEach(coordinates -> addReachableCoordsToSet(set, coordinates, board));
+        directlyReachableCoords.forEach(coordinates -> {
+            if(!GameRuleLogic.coordsValid(coordinates)) {
+                return;
+            }
+            if(board.get(coordinates).getFish() == 0) {
+                return;
+            }
+            addReachableCoordsToSet(set, coordinates, board);
+        });
+    }
+
+    static int getReachableFishFromCoordinate(Coordinates startCoords, BoardPeek board) {
+        Set<Coordinates> coords = getReachableCoordsFromCoordinate(startCoords, board);
+        int result = 0;
+        for(Coordinates coord : coords) {
+            result += board.get(coord).getFish();
+        }
+        return result;
     }
 
     @Override
