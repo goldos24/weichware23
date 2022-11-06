@@ -1,7 +1,8 @@
-package sc.player2023.logic;
+package sc.player2023.logic.mcts;
 
 import com.google.common.collect.ImmutableMap;
 import sc.api.plugins.ITeam;
+import sc.player2023.logic.ImmutableGameState;
 
 import javax.annotation.Nonnull;
 

@@ -2,15 +2,16 @@ package sc.player2023.logic.mcts;
 
 import sc.api.plugins.ITeam;
 import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.PlayoutResult;
 import sc.player2023.logic.PureMCTSMoveGetter;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class ImmutableMCTSTreeNode {
+
     public record Statistics(int visits, int wins) {
         public static Statistics zeroed() {
             return new Statistics(0, 0);
@@ -29,7 +30,7 @@ public class ImmutableMCTSTreeNode {
     private final Statistics statistics;
 
     /* The move that lead to the current game state */
-    @Nonnull
+    @Nullable
     private final Move move;
 
     @Nonnull
@@ -38,14 +39,21 @@ public class ImmutableMCTSTreeNode {
     @Nonnull
     private final List<ImmutableMCTSTreeNode> children;
 
-    public ImmutableMCTSTreeNode(@Nonnull Statistics statistics, @Nonnull Move move, @Nonnull ImmutableGameState gameState, @Nonnull List<ImmutableMCTSTreeNode> children) {
+    public ImmutableMCTSTreeNode(@Nonnull ImmutableGameState gameState) {
+        this.statistics = Statistics.zeroed();
+        this.move = null;
+        this.gameState = gameState;
+        this.children = List.of();
+    }
+
+    public ImmutableMCTSTreeNode(@Nonnull Statistics statistics, @Nullable Move move, @Nonnull ImmutableGameState gameState, @Nonnull List<ImmutableMCTSTreeNode> children) {
         this.statistics = statistics;
         this.move = move;
         this.gameState = gameState;
         this.children = children;
     }
 
-    public ImmutableMCTSTreeNode(@Nonnull Move move, @Nonnull ImmutableGameState gameState) {
+    public ImmutableMCTSTreeNode(@Nullable Move move, @Nonnull ImmutableGameState gameState) {
         this.statistics = Statistics.zeroed();
         this.move = move;
         this.gameState = gameState;
@@ -59,12 +67,22 @@ public class ImmutableMCTSTreeNode {
 
     @Nonnull
     public ImmutableGameState getGameState() {
-        return gameState;
+        return this.gameState;
     }
 
-    @Nonnull
+    @Nullable
     public Move getMove() {
         return this.move;
+    }
+
+
+    @Nonnull
+    public List<ImmutableMCTSTreeNode> getChildren() {
+        return this.children;
+    }
+
+    public boolean hasChildren() {
+        return !this.children.isEmpty();
     }
 
     /**
@@ -82,7 +100,7 @@ public class ImmutableMCTSTreeNode {
     /*
      * Wrapper for the UCT formula with a default exploration weight of sqrt(2).
      */
-    private double uct(int parentNodeVisits) {
+    public double uct(int parentNodeVisits) {
         return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT);
     }
 
@@ -99,8 +117,7 @@ public class ImmutableMCTSTreeNode {
         Statistics newStatistics;
         if (resultTeam == currentTeam) {
             newStatistics = this.statistics.addWin();
-        }
-        else {
+        } else {
             newStatistics = this.statistics.addLossOrDraw();
         }
 
