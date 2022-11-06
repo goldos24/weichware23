@@ -13,12 +13,27 @@ public class PlayoutResult {
     }
 
     @Nonnull
-    ImmutableMap<ITeam, Integer> points;
-    Kind kind;
+    private final ImmutableMap<ITeam, Integer> points;
+    private final ITeam affectedTeam;
+    private final Kind kind;
 
-    private PlayoutResult(Kind kind, @Nonnull ImmutableMap<ITeam, Integer> points) {
+    private PlayoutResult(Kind kind, ITeam affectedTeam, @Nonnull ImmutableMap<ITeam, Integer> points) {
         this.kind = kind;
+        this.affectedTeam = affectedTeam;
         this.points = points;
+    }
+
+    @Nonnull
+    public ImmutableMap<ITeam, Integer> getPoints() {
+        return points;
+    }
+
+    public ITeam getAffectedTeam() {
+        return affectedTeam;
+    }
+
+    public Kind getKind() {
+        return kind;
     }
 
     @Nonnull
@@ -40,12 +55,12 @@ public class PlayoutResult {
         ImmutableMap<ITeam, Integer> points = makePointsMap(team, teamPoints, opponentPoints);
 
         if (teamPoints > opponentPoints) {
-            return new PlayoutResult(Kind.WIN, points);
+            return new PlayoutResult(Kind.WIN, team, points);
         }
         if (teamPoints < opponentPoints) {
-            return new PlayoutResult(Kind.LOSS, points);
+            return new PlayoutResult(Kind.LOSS, team, points);
         }
-        return new PlayoutResult(Kind.DRAW, points);
+        return new PlayoutResult(Kind.DRAW, team, points);
     }
 
     @Nonnull
