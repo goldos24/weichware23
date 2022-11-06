@@ -4,9 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.mcts.ImmutableMCTSTree;
-import sc.player2023.logic.mcts.ImmutableMCTSTreeNode;
-import sc.player2023.logic.mcts.Selection;
 
 import java.util.List;
 
@@ -29,9 +26,9 @@ public class SelectionTest {
     }
 
     @Test
-    void selectionReturnsInitialGameStateTest() {
+    void selectionYieldsRootNodeTest() {
         List<Integer> selectedNodeTrace = this.selection.complete();
-        assertEquals(selectedNodeTrace.size(), 0);
+        assertEquals(0, selectedNodeTrace.size());
 
         ImmutableMCTSTreeNode selectedNode = this.tree.trace(selectedNodeTrace);
         assertNotNull(selectedNode);
