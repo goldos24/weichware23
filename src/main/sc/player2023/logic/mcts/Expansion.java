@@ -6,7 +6,7 @@ import sc.player2023.logic.ImmutableGameState;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Expansion {
@@ -27,26 +27,30 @@ public class Expansion {
         Move randomMove = moves.get(randomMoveIndex);
         ImmutableGameState gameStateWithRandomMove = GameRuleLogic.withMovePerformed(parentGameState, randomMove);
 
-        ITeam currentTeam = gameStateWithRandomMove.getCurrentTeam();
         Playout playout = new Playout(gameStateWithRandomMove);
         ImmutableGameState playedOutGameState = playout.complete();
+        ITeam currentTeam = gameStateWithRandomMove.getCurrentTeam();
         PlayoutResult result = PlayoutResult.of(playedOutGameState, currentTeam);
 
-        return new ImmutableMCTSTreeNode(randomMove, gameStateWithRandomMove).withPlayoutResult(result);
+        Statistics statistics = Statistics.ofPlayoutResult(result, currentTeam);
+        return new ImmutableMCTSTreeNode(statistics, randomMove, gameStateWithRandomMove, List.of());
     }
 
-    @Nullable
+    @Nonnull
     public ImmutableMCTSTreeNode expandAndSimulate(int expansionAmount) {
         ImmutableGameState selectedGameState = this.selectedNode.getGameState();
         if (selectedGameState.isOver()) {
-            return null;
+            throw new UnsupportedOperationException("Can't expand game state that was already over");
         }
 
-        ImmutableMCTSTreeNode expandedNode = this.selectedNode;
+        List<ImmutableMCTSTreeNode> children = new ArrayList<>();
+        Statistics totalStatistics = this.selectedNode.getStatistics();
         for (int i = 0; i < expansionAmount; ++i ) {
             ImmutableMCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState);
-            expandedNode = expandedNode.withChild(simulatedNode);
+            totalStatistics = totalStatistics.add(simulatedNode.getStatistics());
+            children.add(simulatedNode);
         }
-        return expandedNode;
+
+        return this.selectedNode.withStatistics(totalStatistics).withChildren(children);
     }
 }
