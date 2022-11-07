@@ -1,6 +1,5 @@
 package sc.player2023.logic;
 
-import com.google.common.collect.ImmutableMap;
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
@@ -17,17 +16,10 @@ import java.util.stream.Stream;
 public class GameRuleLogic {
     @Nonnull
     public static ImmutableGameState withMovePerformed(ImmutableGameState gameState, Move move) {
-        ITeam team = gameState.getCurrentTeam();
-        var teamPointsMap = gameState.getTeamPointsMap();
         var targetField = gameState.getBoard().get(move.getTo());
-        Integer ownPoints = teamPointsMap.get(team);
-        Integer opponentPoints = teamPointsMap.get(team.opponent());
-        assert ownPoints != null;
-        assert opponentPoints != null;
-        teamPointsMap = ImmutableMap.<ITeam, Integer>builder().
-                put(team.opponent(), opponentPoints).
-                put(team, ownPoints + targetField.getFish()).
-                build();
+        var teamPointsMap = new Integer[] {gameState.getPointsForTeam(Team.ONE), gameState.getPointsForTeam(Team.TWO)};
+        int addedPoints = targetField.getFish();
+        teamPointsMap[((Team)gameState.getCurrentTeam()).ordinal()] += addedPoints;
         BoardPeek newBoard = gameState.getBoard().withMovePerformed(move, gameState.getCurrentTeam());
         return new ImmutableGameState(teamPointsMap, newBoard, gameState.getCurrentTeam().opponent());
     }
