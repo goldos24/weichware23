@@ -75,16 +75,31 @@ public class PVSMoveGetter implements MoveGetter {
 
     @Nullable
     static Move getBestMoveForDepth(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer, int depth) {
-        Rating highestRating = Rating.NEGATIVE_INFINITY;
+        double alpha = Double.NEGATIVE_INFINITY, score = Double.NEGATIVE_INFINITY, beta = Double.POSITIVE_INFINITY;
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
+        boolean firstChild = true;
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
-            Rating currentRating = pvs(childGameState, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, rater, timeMeasurer)
-                    .negate();
-            if (currentRating.isGreaterThan(highestRating)) {
-                highestRating = currentRating;
+            if (firstChild) {
+                firstChild = false;
+                Rating negated = pvs(childGameState, depth - 1, -beta, -alpha, rater, timeMeasurer).negate();
+                score = negated.rating();
+            }
+            else {
+                Rating negated = pvs(childGameState, depth - 1, -alpha - 1, -alpha, rater, timeMeasurer).negate();
+                score = negated.rating(); /* * search with a null window */
+                if (alpha < score && score < beta) {
+                    Rating otherNegated = pvs(childGameState, depth - 1, -beta, -score, rater, timeMeasurer).negate();
+                    score = otherNegated.rating(); /* if it failed high, do a full re-search */
+                }
+            }
+            if(score > alpha) {
                 bestMove = move;
+            }
+            alpha = Math.max(alpha, score);
+            if (alpha >= beta) {
+                break; /* beta cut-off */
             }
         }
         if (bestMove == null && possibleMoves.size() > 0) {
