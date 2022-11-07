@@ -6,8 +6,6 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class ImmutableMCTSTree {
     @Nonnull
@@ -17,21 +15,31 @@ public class ImmutableMCTSTree {
         this.rootNode = new ImmutableMCTSTreeNode(initialGameState);
     }
 
+    public ImmutableMCTSTree(@Nonnull ImmutableMCTSTreeNode rootNode) {
+        this.rootNode = rootNode;
+    }
+
+    @Nonnull
+    public ImmutableMCTSTreeNode getRootNode() {
+        return this.rootNode;
+    }
+
     @Nullable
     public Move bestMove() {
-        Stream<ImmutableMCTSTreeNode> childNodeStream = this.rootNode.getChildren().stream();
+        Move bestMove = null;
+        int bestWins = Integer.MIN_VALUE;
 
-        Optional<ImmutableMCTSTreeNode> bestNode = childNodeStream.max((a, b) -> {
-            int winsOfA = a.getStatistics().wins();
-            int winsOfB = b.getStatistics().wins();
-            return Integer.compare(winsOfA, winsOfB);
-        });
+        for (ImmutableMCTSTreeNode node : this.rootNode.getChildren()) {
+            Statistics nodeStatistics = node.getStatistics();
 
-        if (bestNode.isEmpty()) {
-            return null;
+            int wins = nodeStatistics.wins();
+            if (wins > bestWins) {
+                bestMove = node.getMove();
+                bestWins = wins;
+            }
         }
 
-        return bestNode.get().getMove();
+        return bestMove;
     }
 
     @Nonnull
@@ -39,28 +47,12 @@ public class ImmutableMCTSTree {
         return new Selection(this.rootNode);
     }
 
-    /**
-     * Traces a node in the MCTS tree structure using the list of indices provided.
-     * <br>
-     * For each entry in the list, this function advances layer by layer until all
-     * indices are exhausted or until the last node has no children.
-     *
-     * @param stepsToNode The list of indices to trace the node in the tree structure
-     * @return The node, at depth = length of stepsToNode
-     */
     @Nullable
     public ImmutableMCTSTreeNode trace(List<Integer> stepsToNode) {
-        ImmutableMCTSTreeNode currentNode = this.rootNode;
-        for (Integer index : stepsToNode) {
-            List<ImmutableMCTSTreeNode> children = currentNode.getChildren();
-
-            if (index > children.size()) {
-                return null;
-            }
-
-            currentNode = children.get(index);
+        if (stepsToNode.isEmpty()) {
+            return this.rootNode;
         }
-        return currentNode;
+        return this.rootNode.trace(stepsToNode);
     }
 
     @Nonnull

@@ -1,30 +1,19 @@
 package sc.player2023.logic.mcts;
 
 import sc.api.plugins.ITeam;
+import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.PureMCTSMoveGetter;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class ImmutableMCTSTreeNode {
-
-    public record Statistics(int visits, int wins) {
-        public static Statistics zeroed() {
-            return new Statistics(0, 0);
-        }
-
-        public Statistics addWin() {
-            return new Statistics(this.visits + 1, this.wins + 1);
-        }
-
-        public Statistics addLossOrDraw() {
-            return new Statistics(this.visits + 1, this.wins);
-        }
-    }
 
     @Nonnull
     private final Statistics statistics;
@@ -86,12 +75,36 @@ public class ImmutableMCTSTreeNode {
     }
 
     /**
+     * Traces a node in the MCTS tree structure using the list of indices provided.
+     * <br>
+     * For each entry in the list, this function advances layer by layer until all
+     * indices are exhausted or until the last node has no children.
+     *
+     * @param stepsToNode The list of indices to trace the node in the tree structure
+     * @return The node, at depth = length of stepsToNode
+     */
+    @Nullable
+    public ImmutableMCTSTreeNode trace(List<Integer> stepsToNode) {
+        ImmutableMCTSTreeNode currentNode = this;
+        for (Integer index : stepsToNode) {
+            List<ImmutableMCTSTreeNode> children = currentNode.getChildren();
+
+            if (index > children.size()) {
+                return null;
+            }
+
+            currentNode = children.get(index);
+        }
+        return currentNode;
+    }
+
+    /**
      * Implementation of the UCT formula, as stated on the MCTS Wikipedia page:
      * https://en.wikipedia.org/wiki/Monte_Carlo_tree_search#Exploration_and_exploitation
      */
     public double uct(int parentNodeVisits, double explorationWeight) {
-        double nodeWins = this.statistics.wins;
-        double nodeVisits = this.statistics.visits;
+        double nodeWins = this.statistics.wins();
+        double nodeVisits = this.statistics.visits();
         double exploitation = nodeWins / nodeVisits;
         double exploration = Math.log(parentNodeVisits) / nodeVisits;
         return exploitation + explorationWeight * exploration;
@@ -112,16 +125,14 @@ public class ImmutableMCTSTreeNode {
     @Nonnull
     public ImmutableMCTSTreeNode withPlayoutResult(@Nonnull PlayoutResult result) {
         ITeam currentTeam = this.gameState.getCurrentTeam();
-        ITeam resultTeam = result.getAffectedTeam();
+        Statistics newStatistics = this.statistics.addPlayoutResult(result, currentTeam);
+        return this.withStatistics(newStatistics);
+    }
 
-        Statistics newStatistics;
-        if (resultTeam == currentTeam) {
-            newStatistics = this.statistics.addWin();
-        } else {
-            newStatistics = this.statistics.addLossOrDraw();
-        }
-
-        return new ImmutableMCTSTreeNode(newStatistics, this.move, this.gameState, this.children);
+    @Nonnull
+    public ImmutableMCTSTreeNode withMove(@Nonnull Move move) {
+        ImmutableGameState gameStateWithMove = GameRuleLogic.withMovePerformed(this.gameState, move);
+        return new ImmutableMCTSTreeNode(move, gameStateWithMove);
     }
 
     @Nonnull
@@ -134,11 +145,72 @@ public class ImmutableMCTSTreeNode {
     }
 
     @Nonnull
+    public ImmutableMCTSTreeNode withBackpropagatedChildAfterSteps(@Nonnull List<Integer> steps, @Nonnull ImmutableMCTSTreeNode childNode) {
+        // No steps -> Child is added to the current node
+        if (steps.isEmpty()) {
+            Statistics newStatistics = this.statistics.add(childNode.statistics);
+            return this.withStatistics(newStatistics).withChild(childNode);
+        }
+
+        int nodeIndex = steps.get(0);
+        List<Integer> restNodeIndices = steps.subList(1, steps.size());
+
+        List<ImmutableMCTSTreeNode> currentChildren = this.children;
+        ImmutableMCTSTreeNode targettedChild = currentChildren.get(nodeIndex);
+        ImmutableMCTSTreeNode newChild = targettedChild.withBackpropagatedChildAfterSteps(restNodeIndices, childNode);
+
+        // Replace node at nodeIndex with the new child
+        List<ImmutableMCTSTreeNode> children = new ArrayList<>();
+        Statistics newStatistics = this.statistics;
+
+        for (int i = 0; i < currentChildren.size(); ++i) {
+            ImmutableMCTSTreeNode child;
+            if (i == nodeIndex) {
+                child = newChild;
+            } else {
+                child = currentChildren.get(i);
+            }
+            children.add(child);
+            newStatistics = newStatistics.add(child.getStatistics());
+        }
+
+        return this.withStatistics(newStatistics).withChildren(children);
+    }
+
+    @Nonnull
     public ImmutableMCTSTreeNode withChildren(@Nonnull List<ImmutableMCTSTreeNode> childNodes) {
         Stream<ImmutableMCTSTreeNode> childrenStream = this.children.stream();
         Stream<ImmutableMCTSTreeNode> childrenStreamWithNewNodes = Stream.concat(childrenStream, childNodes.stream());
         List<ImmutableMCTSTreeNode> newChildren = childrenStreamWithNewNodes.toList();
 
         return new ImmutableMCTSTreeNode(this.statistics, this.move, this.gameState, newChildren);
+    }
+
+    public int calculateSize() {
+        Stream<ImmutableMCTSTreeNode> childrenStream = this.children.stream();
+        return 1 + childrenStream.mapToInt(ImmutableMCTSTreeNode::calculateSize).sum();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ImmutableMCTSTreeNode that = (ImmutableMCTSTreeNode) o;
+
+        if (!statistics.equals(that.statistics)) return false;
+        if (!Objects.equals(move, that.move)) return false;
+        if (!gameState.equals(that.gameState)) return false;
+        return children.equals(that.children);
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableMCTSTreeNode{" +
+            "statistics=" + statistics +
+            ", move=" + move +
+            ", gameState=" + gameState +
+            ", children=" + children +
+            '}';
     }
 }
