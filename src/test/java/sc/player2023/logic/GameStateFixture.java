@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.plugin2023.GameState;
+import sc.plugin2023.Move;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Map.entry;
 
@@ -32,4 +34,12 @@ public class GameStateFixture {
         return new ImmutableGameState(gameState, pointsMap);
     }
 
+    public static ImmutableGameState createPlayedOutTestGameState(Function<ImmutableGameState, Move> movePicker) {
+        ImmutableGameState currentGameState = createTestGameState();
+        while (!currentGameState.isOver()) {
+            Move move = movePicker.apply(currentGameState);
+            currentGameState = GameRuleLogic.withMovePerformed(currentGameState, move);
+        }
+        return currentGameState;
+    }
 }

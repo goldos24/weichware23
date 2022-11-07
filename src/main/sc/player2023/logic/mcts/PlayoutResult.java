@@ -7,7 +7,8 @@ import sc.player2023.logic.ImmutableGameState;
 import javax.annotation.Nonnull;
 
 public class PlayoutResult {
-    private enum Kind {
+    public enum Kind {
+        NONE,
         WIN,
         DRAW,
         LOSS
@@ -55,6 +56,10 @@ public class PlayoutResult {
 
         ImmutableMap<ITeam, Integer> points = makePointsMap(team, teamPoints, opponentPoints);
 
+        if (!gameState.isOver()) {
+            return new PlayoutResult(Kind.NONE, team, points);
+        }
+
         if (teamPoints > opponentPoints) {
             return new PlayoutResult(Kind.WIN, team, points);
         }
@@ -72,5 +77,14 @@ public class PlayoutResult {
     @Nonnull
     public static PlayoutResult ofOpponentTeam(@Nonnull ImmutableGameState gameState) {
         return of(gameState, gameState.getCurrentTeam().opponent());
+    }
+
+    @Override
+    public String toString() {
+        return "PlayoutResult{" +
+            "points=" + points +
+            ", affectedTeam=" + affectedTeam +
+            ", kind=" + kind +
+            '}';
     }
 }
