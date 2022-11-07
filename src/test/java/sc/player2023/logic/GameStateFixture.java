@@ -1,6 +1,9 @@
 package sc.player2023.logic;
 
 import sc.plugin2023.GameState;
+import sc.plugin2023.Move;
+
+import java.util.function.Function;
 
 /**
  * @author Till Fransson
@@ -21,6 +24,15 @@ public class GameStateFixture {
         GameState gameState = new GameState(BoardFixture.createTestBoardOneFishPerField());
         Integer[] pointsMap = new Integer[] {POINTS_TEAM_ONE, POINTS_TEAM_TWO};
         return new ImmutableGameState(gameState, pointsMap);
+    }
+
+    public static ImmutableGameState createPlayedOutTestGameState(Function<ImmutableGameState, Move> movePicker) {
+        ImmutableGameState currentGameState = createTestGameState();
+        while (!currentGameState.isOver()) {
+            Move move = movePicker.apply(currentGameState);
+            currentGameState = GameRuleLogic.withMovePerformed(currentGameState, move);
+        }
+        return currentGameState;
     }
 
 }
