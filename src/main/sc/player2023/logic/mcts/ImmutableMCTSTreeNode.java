@@ -142,12 +142,12 @@ public class ImmutableMCTSTreeNode {
         List<Integer> restNodeIndices = steps.subList(1, steps.size());
 
         List<ImmutableMCTSTreeNode> currentChildren = this.children;
-        ImmutableMCTSTreeNode targettedChild = currentChildren.get(nodeIndex);
-        ImmutableMCTSTreeNode newChild = targettedChild.withBackpropagatedChildAfterSteps(restNodeIndices, childNode);
+        ImmutableMCTSTreeNode targetedChild = currentChildren.get(nodeIndex);
+        ImmutableMCTSTreeNode newChild = targetedChild.withBackpropagatedChildAfterSteps(restNodeIndices, childNode);
 
         // Replace node at nodeIndex with the new child
         List<ImmutableMCTSTreeNode> children = new ArrayList<>();
-        Statistics newStatistics = this.statistics;
+        Statistics totalStatistics = this.statistics;
 
         for (int i = 0; i < currentChildren.size(); ++i) {
             ImmutableMCTSTreeNode child;
@@ -157,10 +157,12 @@ public class ImmutableMCTSTreeNode {
                 child = currentChildren.get(i);
             }
             children.add(child);
-            newStatistics = newStatistics.add(child.getStatistics());
+            totalStatistics = totalStatistics.add(child.getStatistics());
         }
 
-        return this.withStatistics(newStatistics).withChildren(children);
+        // Statistics need to be inverted for the parent node
+        Statistics invertedTotalStatistics = totalStatistics.inverted();
+        return this.withStatistics(invertedTotalStatistics).withChildren(children);
     }
 
     @Nonnull
@@ -170,11 +172,6 @@ public class ImmutableMCTSTreeNode {
         List<ImmutableMCTSTreeNode> newChildren = childrenStreamWithNewNodes.toList();
 
         return new ImmutableMCTSTreeNode(this.statistics, this.move, this.gameState, newChildren);
-    }
-
-    public int calculateSize() {
-        Stream<ImmutableMCTSTreeNode> childrenStream = this.children.stream();
-        return 1 + childrenStream.mapToInt(ImmutableMCTSTreeNode::calculateSize).sum();
     }
 
     @Override

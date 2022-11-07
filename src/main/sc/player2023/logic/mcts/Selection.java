@@ -39,9 +39,9 @@ public class Selection {
             }
         }
 
-        // UCT always yielded NaN -> just return the first node
+        // UCT always yielded NaN -> return a random index
         if (bestIndex == -1) {
-            return 0;
+            return (int)Math.round(Math.random() * children.size());
         }
 
         return bestIndex;

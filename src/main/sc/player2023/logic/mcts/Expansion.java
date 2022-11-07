@@ -47,10 +47,13 @@ public class Expansion {
         Statistics totalStatistics = this.selectedNode.getStatistics();
         for (int i = 0; i < expansionAmount; ++i ) {
             ImmutableMCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState);
-            totalStatistics = totalStatistics.add(simulatedNode.getStatistics());
+            Statistics opponentStatistics = simulatedNode.getStatistics();
+            totalStatistics = totalStatistics.add(opponentStatistics);
             children.add(simulatedNode);
         }
 
-        return this.selectedNode.withStatistics(totalStatistics).withChildren(children);
+        // Statistics need to be inverted for the parent node
+        Statistics invertedTotalStatistics = totalStatistics.inverted();
+        return this.selectedNode.withStatistics(invertedTotalStatistics).withChildren(children);
     }
 }

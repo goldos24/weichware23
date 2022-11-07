@@ -23,6 +23,17 @@ public record Statistics(int visits, int wins) {
         return new Statistics(this.visits + other.visits, this.wins + other.wins);
     }
 
+    /**
+     * Returns a new Statistics instance, with wins = visits - wins
+     * <br>
+     * This essentially means the Statistics from the perspective of the opponent.
+     *
+     * @return Statistics with wins = visits - wins
+     */
+    public Statistics inverted() {
+        return new Statistics(this.visits, this.visits - this.wins);
+    }
+
     private Statistics addCurrentTeamBasedPlayoutResult(PlayoutResult result) {
         PlayoutResult.Kind kind = result.getKind();
 

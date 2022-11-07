@@ -1,5 +1,7 @@
 package sc.player2023.logic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sc.player2023.logic.mcts.Expansion;
 import sc.player2023.logic.mcts.ImmutableMCTSTree;
 import sc.player2023.logic.mcts.ImmutableMCTSTreeNode;
@@ -11,7 +13,9 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PureMCTSMoveGetter implements MoveGetter {
-    private final TimeMeasurer timer = new TimeMeasurer(500);
+    private static final Logger log = LoggerFactory.getLogger(PureMCTSMoveGetter.class);
+
+    private final TimeMeasurer timer = new TimeMeasurer(1000);
 
     // TODO: find a more suitable exploration weight for this game
     public static final double EXPLORATION_WEIGHT = Math.sqrt(2);
@@ -23,7 +27,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
 
         ImmutableMCTSTree tree = new ImmutableMCTSTree(gameState);
 
-        System.out.println("MCTS begins");
+        log.info("MCTS begins");
 
         long totalSelectionPathLength = 0;
         long selections = 0;
@@ -58,12 +62,12 @@ public class PureMCTSMoveGetter implements MoveGetter {
         }
 
         ImmutableMCTSTreeNode treeRootNode = tree.getRootNode();
-        System.out.printf("MCTS completed, tree size: %d\n", treeRootNode.calculateSize());
-        System.out.printf("Root node visits: %d\n", tree.getRootNode().getStatistics().visits());
-        System.out.printf("Average selection path length: %f\n", (double)totalSelectionPathLength / selections);
+        log.info("Root node visits: {}", treeRootNode.getStatistics().visits());
+        log.info("Root node wins: {}", treeRootNode.getStatistics().wins());
+        log.info("Average selection path length: {}", (double)totalSelectionPathLength / selections);
 
         Move move = tree.bestMove();
-        System.out.printf("Selected move: %s\n", move);
+        log.info("Selected move: {}", move);
         return move;
     }
 }
