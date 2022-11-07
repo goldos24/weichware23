@@ -1,7 +1,5 @@
 package sc.player2023.logic;
 
-import com.google.common.collect.ImmutableMap;
-import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.player2023.logic.rating.RatingUtil;
 import sc.plugin2023.GameState;
@@ -17,11 +15,10 @@ public class ImmutableGameStateFactory {
 
     @Nonnull
     public static ImmutableGameState createFromGameState(@Nonnull GameState gameState) {
-        var teamPointsMapBuilder = ImmutableMap.<ITeam, Integer>builder();
-        for(ITeam team : Team.values()) {
-            teamPointsMapBuilder.put(team, RatingUtil.getCombinedPointsForTeam(gameState, team));
+        Integer[] teamPointsMap = new Integer[2];
+        for(Team team : Team.values()) {
+            teamPointsMap[team.ordinal()] = RatingUtil.getCombinedPointsForTeam(gameState, team);
         }
-        var teamPointsMap = teamPointsMapBuilder.build();
         return new ImmutableGameState(gameState.clone(), teamPointsMap);
     }
 }

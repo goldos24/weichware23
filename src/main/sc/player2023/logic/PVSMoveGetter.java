@@ -73,6 +73,10 @@ public class PVSMoveGetter implements MoveGetter {
         return bestMove;
     }
 
+    public static Move getBestMoveWithDepthOfThree(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
+        return getBestMoveForDepth(gameState, rater, timeMeasurer, 3);
+    }
+
     @Nullable
     static Move getBestMoveForDepth(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer, int depth) {
         double alpha = Double.NEGATIVE_INFINITY, score = Double.NEGATIVE_INFINITY, beta = Double.POSITIVE_INFINITY;

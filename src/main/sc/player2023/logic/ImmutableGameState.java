@@ -1,18 +1,19 @@
 package sc.player2023.logic;
 
-import com.google.common.collect.ImmutableMap;
 import sc.api.plugins.ITeam;
+import sc.api.plugins.Team;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.GameState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Immutable
 public final class ImmutableGameState {
     @Nonnull
-    private final ImmutableMap<ITeam, Integer> teamPointsMap;
+    private final Integer[] teamPointsMap;
 
     public BoardPeek getBoard() {
         return board;
@@ -20,13 +21,13 @@ public final class ImmutableGameState {
 
     private final BoardPeek board;
 
-    public ImmutableGameState(@Nonnull GameState gameState, @Nonnull ImmutableMap<ITeam, Integer> teamPointsMap) {
+    public ImmutableGameState(@Nonnull GameState gameState, @Nonnull Integer[] teamPointsMap) {
         this.teamPointsMap = teamPointsMap;
         this.board = new BoardPeek(gameState.getBoard());
         this.supposedCurrentTeam = gameState.getCurrentTeam();
     }
 
-    public ImmutableGameState(@Nonnull ImmutableMap<ITeam, Integer> teamPointsMap, BoardPeek board, ITeam supposedCurrentTeam) {
+    public ImmutableGameState(@Nonnull Integer[] teamPointsMap, BoardPeek board, ITeam supposedCurrentTeam) {
         this.teamPointsMap = teamPointsMap;
         this.board = board;
         this.supposedCurrentTeam = supposedCurrentTeam;
@@ -41,9 +42,7 @@ public final class ImmutableGameState {
     }
 
     public int getPointsForTeam(ITeam team) {
-        var result = teamPointsMap.get(team);
-        assert result != null;
-        return result;
+        return teamPointsMap[((Team)team).ordinal()];
     }
 
     public boolean isOver() {
@@ -54,31 +53,26 @@ public final class ImmutableGameState {
         return !isOver();
     }
 
-    @Nonnull
-    public ImmutableMap<ITeam, Integer> getTeamPointsMap() {
-        return teamPointsMap;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (ImmutableGameState) obj;
         return Objects.equals(this.getCurrentTeam(), that.getCurrentTeam()) &&
-                Objects.equals(this.teamPointsMap, that.teamPointsMap) &&
+                Arrays.equals(this.teamPointsMap, that.teamPointsMap) &&
                 Objects.equals(this.board, that.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCurrentTeam(), teamPointsMap, board);
+        return Objects.hash(getCurrentTeam(), Arrays.hashCode(teamPointsMap), board);
     }
 
     @Override
     public String toString() {
         return "ImmutableGameState[" +
                 "team=" + getCurrentTeam() + ", " +
-                "teamPointsMap=" + teamPointsMap + ", " +
+                "teamPointsMap=" + Arrays.toString(teamPointsMap) + ", " +
                 "board=" + board + ']';
     }
 
