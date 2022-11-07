@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Selection {
+
     @Nonnull
     private final ImmutableMCTSTreeNode parentNode;
 
@@ -16,18 +17,15 @@ public class Selection {
         int parentNodeVisits = node.getStatistics().visits();
         List<ImmutableMCTSTreeNode> children = node.getChildren();
 
-        double bestValue = Double.NEGATIVE_INFINITY;
-        int bestIndex = -1;
-
-        // No children to select
-        if (children.size() == 0) {
-            return -1;
-        }
+        assert children.size() > 0;
 
         // Only one child to select
         if (children.size() == 1) {
             return 0;
         }
+
+        double bestValue = Double.NEGATIVE_INFINITY;
+        int bestIndex = -1;
 
         for (int i = 0; i < children.size(); ++i) {
             ImmutableMCTSTreeNode child = children.get(i);
@@ -39,9 +37,9 @@ public class Selection {
             }
         }
 
-        // UCT always yielded NaN -> return a random index
+        // UCT always yielded NaN
         if (bestIndex == -1) {
-            return (int)Math.round(Math.random() * children.size());
+            throw new IllegalArgumentException("No valid node index found");
         }
 
         return bestIndex;
@@ -54,7 +52,6 @@ public class Selection {
 
         while (currentNode.hasChildren()) {
             int childIndex = pickChildNode(currentNode);
-            assert childIndex != -1;
             indices.add(childIndex);
             List<ImmutableMCTSTreeNode> currentChildren = currentNode.getChildren();
             currentNode = currentChildren.get(childIndex);

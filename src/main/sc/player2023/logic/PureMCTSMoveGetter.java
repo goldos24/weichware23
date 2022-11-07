@@ -2,10 +2,7 @@ package sc.player2023.logic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sc.player2023.logic.mcts.Expansion;
-import sc.player2023.logic.mcts.ImmutableMCTSTree;
-import sc.player2023.logic.mcts.ImmutableMCTSTreeNode;
-import sc.player2023.logic.mcts.Selection;
+import sc.player2023.logic.mcts.*;
 import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 
@@ -13,9 +10,10 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class PureMCTSMoveGetter implements MoveGetter {
+
     private static final Logger log = LoggerFactory.getLogger(PureMCTSMoveGetter.class);
 
-    private final TimeMeasurer timer = new TimeMeasurer(1000);
+    private final TimeMeasurer timer = new TimeMeasurer(100);
 
     // TODO: find a more suitable exploration weight for this game
     public static final double EXPLORATION_WEIGHT = Math.sqrt(2);
@@ -34,7 +32,9 @@ public class PureMCTSMoveGetter implements MoveGetter {
 
         while (!timer.ranOutOfTime()) {
             Selection selection = tree.select();
+
             List<Integer> selectedPath = selection.complete();
+            log.info("Selection -> path = {}", selectedPath);
 
             totalSelectionPathLength += selectedPath.size();
             selections++;
@@ -46,7 +46,6 @@ public class PureMCTSMoveGetter implements MoveGetter {
                 continue;
             }
 
-            // The selected node had a terminal game state -> do nothing
             ImmutableMCTSTreeNode expandedNode = expansion.expandAndSimulate(EXPANSION_AMOUNT);
 
             // If the selected path is empty, the expanded node becomes the new root node
@@ -62,8 +61,12 @@ public class PureMCTSMoveGetter implements MoveGetter {
         }
 
         ImmutableMCTSTreeNode treeRootNode = tree.getRootNode();
-        log.info("Root node visits: {}", treeRootNode.getStatistics().visits());
-        log.info("Root node wins: {}", treeRootNode.getStatistics().wins());
+        Statistics treeRootNodeStatistics = treeRootNode.getStatistics();
+        List<ImmutableMCTSTreeNode> rootNodeChildren = treeRootNode.getChildren();
+
+        log.info("Root node visits: {}", treeRootNodeStatistics.visits());
+        log.info("Root node wins: {}", treeRootNodeStatistics.wins());
+        log.info("Root node children: {}", rootNodeChildren.size());
         log.info("Average selection path length: {}", (double)totalSelectionPathLength / selections);
 
         Move move = tree.bestMove();

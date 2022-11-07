@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Expansion {
+
     @Nonnull
     private final ImmutableMCTSTreeNode selectedNode;
 
@@ -44,16 +45,11 @@ public class Expansion {
         }
 
         List<ImmutableMCTSTreeNode> children = new ArrayList<>();
-        Statistics totalStatistics = this.selectedNode.getStatistics();
-        for (int i = 0; i < expansionAmount; ++i ) {
+        for (int i = 0; i < expansionAmount; ++i) {
             ImmutableMCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState);
-            Statistics opponentStatistics = simulatedNode.getStatistics();
-            totalStatistics = totalStatistics.add(opponentStatistics);
             children.add(simulatedNode);
         }
 
-        // Statistics need to be inverted for the parent node
-        Statistics invertedTotalStatistics = totalStatistics.inverted();
-        return this.selectedNode.withStatistics(invertedTotalStatistics).withChildren(children);
+        return this.selectedNode.withChildren(children);
     }
 }

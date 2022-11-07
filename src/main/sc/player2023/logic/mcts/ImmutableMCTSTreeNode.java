@@ -97,8 +97,24 @@ public class ImmutableMCTSTreeNode {
     public double uct(int parentNodeVisits, double explorationWeight) {
         double nodeWins = this.statistics.wins();
         double nodeVisits = this.statistics.visits();
-        double exploitation = nodeWins / nodeVisits;
-        double exploration = Math.log(parentNodeVisits) / nodeVisits;
+
+        // Minimal derivation from the exploitation and exploration part of the
+        // original formula to avoid NaN values.
+        //
+        // This change has some effect on the result:
+
+        // - For low values  -> the exploitation value is lower
+        // - For high values -> the exploitation value is only slightly lower
+        double exploitation = nodeWins / (nodeVisits + 1);
+
+        // - For low values                           -> the exploration value is lower
+        // - For high values                          -> the exploration value is only slightly lower
+
+        // - high parent node visits, low node visits -> the exploration value is significantly lower
+        // I suppose that this is actually better because it leads to the selection of
+        // nodes with more promising statistics (high node visits).
+        // But I might be wrong because it messes with the exploration of new paths.
+        double exploration = Math.log(parentNodeVisits + 1) / (nodeVisits + 1);
         return exploitation + explorationWeight * exploration;
     }
 
@@ -134,7 +150,8 @@ public class ImmutableMCTSTreeNode {
     public ImmutableMCTSTreeNode withBackpropagatedChildAfterSteps(@Nonnull List<Integer> steps, @Nonnull ImmutableMCTSTreeNode childNode) {
         // No steps -> Child is added to the current node
         if (steps.isEmpty()) {
-            Statistics newStatistics = this.statistics.add(childNode.statistics);
+            Statistics invertedChildNodeStatistics = childNode.statistics.inverted();
+            Statistics newStatistics = this.statistics.add(invertedChildNodeStatistics);
             return this.withStatistics(newStatistics).withChild(childNode);
         }
 
@@ -147,8 +164,7 @@ public class ImmutableMCTSTreeNode {
 
         // Replace node at nodeIndex with the new child
         List<ImmutableMCTSTreeNode> children = new ArrayList<>();
-        Statistics totalStatistics = this.statistics;
-
+        Statistics totalStatistics = Statistics.zeroed();
         for (int i = 0; i < currentChildren.size(); ++i) {
             ImmutableMCTSTreeNode child;
             if (i == nodeIndex) {
@@ -156,11 +172,13 @@ public class ImmutableMCTSTreeNode {
             } else {
                 child = currentChildren.get(i);
             }
+
+            Statistics childStatistics = child.getStatistics();
+            totalStatistics = totalStatistics.add(childStatistics);
             children.add(child);
-            totalStatistics = totalStatistics.add(child.getStatistics());
         }
 
-        // Statistics need to be inverted for the parent node
+        // Sum of child Statistics needs to be inverted for the parent node
         Statistics invertedTotalStatistics = totalStatistics.inverted();
         return this.withStatistics(invertedTotalStatistics).withChildren(children);
     }
