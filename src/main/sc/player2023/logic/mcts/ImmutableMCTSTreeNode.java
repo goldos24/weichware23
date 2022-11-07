@@ -1,7 +1,6 @@
 package sc.player2023.logic.mcts;
 
 import sc.api.plugins.ITeam;
-import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.PureMCTSMoveGetter;
 import sc.plugin2023.Move;
@@ -40,13 +39,6 @@ public class ImmutableMCTSTreeNode {
         this.move = move;
         this.gameState = gameState;
         this.children = children;
-    }
-
-    public ImmutableMCTSTreeNode(@Nullable Move move, @Nonnull ImmutableGameState gameState) {
-        this.statistics = Statistics.zeroed();
-        this.move = move;
-        this.gameState = gameState;
-        this.children = List.of();
     }
 
     @Nonnull
@@ -127,12 +119,6 @@ public class ImmutableMCTSTreeNode {
         ITeam currentTeam = this.gameState.getCurrentTeam();
         Statistics newStatistics = this.statistics.addPlayoutResult(result, currentTeam);
         return this.withStatistics(newStatistics);
-    }
-
-    @Nonnull
-    public ImmutableMCTSTreeNode withMove(@Nonnull Move move) {
-        ImmutableGameState gameStateWithMove = GameRuleLogic.withMovePerformed(this.gameState, move);
-        return new ImmutableMCTSTreeNode(move, gameStateWithMove);
     }
 
     @Nonnull
