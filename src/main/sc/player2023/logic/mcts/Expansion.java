@@ -50,6 +50,6 @@ public class Expansion {
             children.add(simulatedNode);
         }
 
-        return this.selectedNode.withChildren(children);
+        return this.selectedNode.withAdditionalChildren(children);
     }
 }

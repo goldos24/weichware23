@@ -43,11 +43,15 @@ public class ImmutableMCTSTreeNodeTest {
         // Always yields the following PlayoutResult:
         // PlayoutResult { points = { TWO=7, ONE=4 }, affectedTeam=TWO, kind=WIN }
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        assertEquals(gameState.getCurrentTeam(), Team.ONE);
+        assertEquals(Team.ONE, gameState.getCurrentTeam());
 
-        ImmutableGameState playedOutGameState = GameStateFixture.createPlayedOutTestGameState(this::firstMovePicker);
+        ImmutableGameState playedOutGameState = GameStateFixture.createPlayedOutTestGameState(gameState, this::firstMovePicker);
         ITeam currentTeam = playedOutGameState.getCurrentTeam();
+        assertEquals(Team.TWO, currentTeam);
+
         PlayoutResult playoutResult = PlayoutResult.of(playedOutGameState, currentTeam);
+        assertEquals(PlayoutResult.Kind.WIN, playoutResult.getKind());
+        assertEquals(Team.TWO, playoutResult.getAffectedTeam());
 
         // The playout result is a win for team two but the current team is team one.
         Statistics statistics = Statistics.zeroed().addLossOrDraw();
@@ -56,5 +60,34 @@ public class ImmutableMCTSTreeNodeTest {
         ImmutableMCTSTreeNode actual = this.node.withPlayoutResult(playoutResult);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void withBackpropagatedChildTest() {
+        // Always yields the following PlayoutResult:
+        // PlayoutResult { points = { TWO=7, ONE=4 }, affectedTeam=TWO, kind=WIN }
+        ImmutableGameState gameState = GameStateFixture.createTestGameStateWithFirstMovePerformed();
+        assertEquals(Team.TWO, gameState.getCurrentTeam());
+
+        ImmutableGameState playedOutGameState = GameStateFixture.createPlayedOutTestGameState(gameState, this::firstMovePicker);
+        ITeam currentTeam = playedOutGameState.getCurrentTeam();
+        assertEquals(Team.TWO, currentTeam);
+
+        PlayoutResult playoutResult = PlayoutResult.of(playedOutGameState, currentTeam);
+        assertEquals(PlayoutResult.Kind.WIN, playoutResult.getKind());
+        assertEquals(Team.TWO, playoutResult.getAffectedTeam());
+
+        ImmutableMCTSTreeNode expandedNode = new ImmutableMCTSTreeNode(playedOutGameState).withPlayoutResult(playoutResult);
+
+        ImmutableGameState testGameState = GameStateFixture.createTestGameState();
+        ImmutableMCTSTreeNode node = new ImmutableMCTSTreeNode(testGameState).withAdditionalChildren(List.of(expandedNode));
+        ImmutableMCTSTreeNode backpropagatedNode = node.withBackpropagatedChildAfterSteps(List.of(0), expandedNode);
+
+        int children = backpropagatedNode.getChildren().size();
+
+        assertEquals(1, children);
+
+        Statistics expectedStatistics = new Statistics(1, 0);
+        assertEquals(backpropagatedNode.getStatistics(), expectedStatistics);
     }
 }

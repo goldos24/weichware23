@@ -34,7 +34,6 @@ public class PureMCTSMoveGetter implements MoveGetter {
             Selection selection = tree.select();
 
             List<Integer> selectedPath = selection.complete();
-            log.info("Selection -> path = {}", selectedPath);
 
             totalSelectionPathLength += selectedPath.size();
             selections++;
@@ -47,17 +46,18 @@ public class PureMCTSMoveGetter implements MoveGetter {
             }
 
             ImmutableMCTSTreeNode expandedNode = expansion.expandAndSimulate(EXPANSION_AMOUNT);
-
-            // If the selected path is empty, the expanded node becomes the new root node
-            if (selectedPath.isEmpty()) {
-                tree = new ImmutableMCTSTree(expandedNode);
-                continue;
-            }
+            log.info("Expanded node children: {}", expandedNode.getChildren().size());
 
             // If the selected path is not empty, it must be inserted into the root node
             ImmutableMCTSTreeNode rootNode = tree.getRootNode();
+            log.info("Root stats: {}", rootNode.getStatistics());
+            log.info("Expanded node stats: {}", expandedNode.getStatistics());
+            log.info("Selected path: {}", selectedPath);
             ImmutableMCTSTreeNode rootNodeWithExpandedNode = rootNode.withBackpropagatedChildAfterSteps(selectedPath, expandedNode);
+            log.info("Root stats with expanded node: {}", rootNodeWithExpandedNode.getStatistics());
             tree = new ImmutableMCTSTree(rootNodeWithExpandedNode);
+
+            System.out.println();
         }
 
         ImmutableMCTSTreeNode treeRootNode = tree.getRootNode();
