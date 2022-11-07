@@ -3,11 +3,8 @@ package sc.player2023.logic;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 
-<<<<<<< HEAD
 import java.util.Map;
 import java.util.Optional;
-=======
->>>>>>> 860c79441bd57f0773daae013601a689d4901eb5
 import java.util.function.Function;
 
 /**
