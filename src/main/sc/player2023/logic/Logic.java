@@ -45,7 +45,7 @@ public class Logic implements IGameHandler {
 
     MoveGetter moveGetter = new PVSMoveGetter();
     StupidRater stupidRater = new StupidRater();
-    ReachableFishRater reachableFishRater = new ReachableFishRater();
+    WeightedRater reachableFishRater = new WeightedRater(-1, new ReachableFishRater());
     WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(20, new PenguinCutOffRater());
     Rater[] raters = {weightedStupidRater, new PotentialFishRater(), reachableFishRater, weightedUselessPenguinRater, new EdgePenguinPenalty()};
