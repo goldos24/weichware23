@@ -79,7 +79,7 @@ public class ReachableFishRater implements Rater {
     public Rating rate(@Nonnull ImmutableGameState gameState) {
         BoardPeek board = gameState.getBoard();
         ITeam ownTeam = gameState.getCurrentTeam();
-        ITeam otherTeam = gameState.getCurrentTeam();
+        ITeam otherTeam = ownTeam.opponent();
         Map<ITeam, boolean[]> reachableCoords = Map.of(Team.ONE, new boolean[ARRAY_SIZE], Team.TWO, new boolean[ARRAY_SIZE]);
         for(var penguin : board.getPenguins()) {
             Coordinates penguinPosition = penguin.getFirst();

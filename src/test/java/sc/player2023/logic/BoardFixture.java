@@ -2,11 +2,13 @@ package sc.player2023.logic;
 
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Board;
 import sc.plugin2023.Field;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Till Fransson
@@ -58,5 +60,20 @@ public class BoardFixture {
             resultingFields.get(PENGUIN_START_Y + 1).set(PENGUIN_START_X + i, new Field(0, Team.TWO));
         }
         return new Board(resultingFields);
+    }
+
+    public static BoardPeek createImmutableReachableFishRaterTestBoard() {
+        Map<Coordinates, Field> fieldMap = Map.of(
+                new Coordinates(0, 0), new Field(DEFAULT_FISH_COUNT, null),
+                new Coordinates(2, 0), new Field(0, Team.ONE),
+                new Coordinates(4, 0), new Field(0, Team.TWO),
+                new Coordinates(6, 0), new Field(DEFAULT_MORE_FISH_COUNT, null));
+                return BoardPeek.fromStreams(
+                GameRuleLogic.createBoardCoordinateStream().map(
+                        coordinates -> {
+                            var field = fieldMap.get(coordinates);
+                            return field == null ? new Field(0, null) : field;
+                        }
+                ));
     }
 }

@@ -60,4 +60,13 @@ class ReachableFishRaterTest {
         Rating got = rater.rate(gameState);
         assertEquals(expected, got);
     }
+
+    @Test
+    void rateInSensibleCase() {
+        ImmutableGameState gameState = GameStateFixture.createReachableFishTestGameState();
+        Rater rater = new ReachableFishRater();
+        Rating expected = new Rating(-2);
+        Rating got = rater.rate(gameState);
+        assertEquals(expected, got);
+    }
 }

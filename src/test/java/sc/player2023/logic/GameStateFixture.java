@@ -1,5 +1,6 @@
 package sc.player2023.logic;
 
+import sc.api.plugins.Team;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
 
@@ -43,6 +44,11 @@ public class GameStateFixture {
             currentGameState = GameRuleLogic.withMovePerformed(currentGameState, move);
         }
         return currentGameState;
+    }
+
+    public static ImmutableGameState createReachableFishTestGameState() {
+        return new ImmutableGameState(new Integer[] {0,0}, BoardFixture.createImmutableReachableFishRaterTestBoard(),
+                Team.ONE);
     }
 
 }
