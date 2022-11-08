@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 
-class MoveFinder implements MoveGetter {
+public class MoveFinder implements MoveGetter {
     @Nonnull
     static Rating rateGameState(@Nonnull ImmutableGameState gameState, @Nonnull Rater gameStateRater, int depth, @Nonnull TimeMeasurer timer) {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);

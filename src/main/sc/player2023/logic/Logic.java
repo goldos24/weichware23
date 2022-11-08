@@ -31,6 +31,13 @@ public class Logic implements IGameHandler {
     result.reset();
     return result;
   }
+  public static Rater createCombinedRater() {
+    StupidRater stupidRater = new StupidRater();
+    WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
+    Rater weightedUselessPenguinRater = new WeightedRater(20, new PenguinCutOffRater());
+    Rater[] raters = {weightedStupidRater, new PotentialFishRater(), weightedUselessPenguinRater, new EdgePenguinPenalty()};
+    return new CompositeRater(raters);
+  }
 
   public void onGameOver(@Nonnull GameResult data) {
     log.info("Das Spiel ist beendet, Ergebnis: {}", data);
@@ -44,15 +51,10 @@ public class Logic implements IGameHandler {
     log.info("Anzahl möglicher Züge: {}", gameState.getPossibleMoves().size());
 
     MoveGetter moveGetter = new PVSMoveGetter();
-    StupidRater stupidRater = new StupidRater();
-    WeightedRater reachableFishRater = new WeightedRater(-1, new ReachableFishRater());
-    WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
-    Rater weightedUselessPenguinRater = new WeightedRater(20, new PenguinCutOffRater());
-    Rater[] raters = {weightedStupidRater, new PotentialFishRater(), reachableFishRater, weightedUselessPenguinRater, new EdgePenguinPenalty()};
-    Rater rater = new CompositeRater(raters);
+
     ImmutableGameState immutableGameState = ImmutableGameStateFactory.createFromGameState(gameState);
     TimeMeasurer timeMeasurer = createDefaultRunningTimeMeasurer();
-    Move move = moveGetter.getBestMove(immutableGameState, rater, timeMeasurer);
+    Move move = moveGetter.getBestMove(immutableGameState, createCombinedRater(), timeMeasurer);
     log.info("Sende {} nach {}ms.", move, System.currentTimeMillis() - startTime);
     return move;
   }
