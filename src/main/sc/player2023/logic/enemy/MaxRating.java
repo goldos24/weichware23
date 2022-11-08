@@ -1,4 +1,4 @@
-package sc.player2023.logic.rating;
+package sc.player2023.logic.enemy;
 
 import org.jetbrains.annotations.NotNull;
 import sc.api.plugins.Coordinates;
@@ -6,13 +6,15 @@ import sc.api.plugins.ITeam;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.PossibleMoveStreamFactory;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 
-public class MaxRating implements Rater{
+public class MaxRating implements Rater {
 
     @Nonnull
     public Rating rateGameStateForTeam(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team) {
