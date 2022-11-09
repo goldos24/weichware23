@@ -8,9 +8,8 @@ public class Selection {
 
     private Selection() {}
 
-    private static int pickChildNode(MCTSTreeNode node) {
-        int parentNodeVisits = node.getStatistics().visits();
-        List<MCTSTreeNode> children = node.getChildren();
+    private static int pickChildNode(MCTSTreeNode parentNode, NodeEvaluator evaluator) {
+        List<MCTSTreeNode> children = parentNode.getChildren();
 
         assert children.size() > 0;
 
@@ -23,8 +22,8 @@ public class Selection {
         int bestIndex = -1;
 
         for (int i = 0; i < children.size(); ++i) {
-            MCTSTreeNode child = children.get(i);
-            double value = child.uct(parentNodeVisits);
+            MCTSTreeNode childNode = children.get(i);
+            double value = evaluator.evaluateNode(parentNode, childNode);
 
             if (value > bestValue) {
                 bestValue = value;
@@ -41,12 +40,12 @@ public class Selection {
     }
 
     @Nonnull
-    public static List<Integer> complete(MCTSTreeNode rootNode) {
+    public static List<Integer> complete(MCTSTreeNode rootNode, NodeEvaluator evaluator) {
         MCTSTreeNode currentNode = rootNode;
         List<Integer> indices = new ArrayList<>();
 
         while (currentNode.hasChildren()) {
-            int childIndex = pickChildNode(currentNode);
+            int childIndex = pickChildNode(currentNode, evaluator);
             indices.add(childIndex);
             List<MCTSTreeNode> currentChildren = currentNode.getChildren();
 

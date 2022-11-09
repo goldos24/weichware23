@@ -13,15 +13,19 @@ public class MCTSTree {
     @Nonnull
     private final MCTSTreeNode rootNode;
 
-    public MCTSTree(@Nonnull ImmutableGameState initialGameState) {
-        this.rootNode = new MCTSTreeNode(initialGameState);
+    @Nonnull
+    private final NodeEvaluator selector;
+
+    public MCTSTree(@Nonnull ImmutableGameState initialGameState, @Nonnull NodeEvaluator selector) {
+        this(new MCTSTreeNode(initialGameState), selector);
     }
 
-    public MCTSTree(@Nonnull MCTSTreeNode rootNode) {
+    public MCTSTree(@Nonnull MCTSTreeNode rootNode, @Nonnull NodeEvaluator selector) {
         this.rootNode = rootNode;
+        this.selector = selector;
     }
 
-    public static MCTSTree ofGameStateWithChildren(@Nonnull ImmutableGameState initialGameState) {
+    public static MCTSTree ofGameStateWithChildren(@Nonnull ImmutableGameState initialGameState, @Nonnull NodeEvaluator selector) {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(initialGameState);
         List<MCTSTreeNode> children = new ArrayList<>();
         for (Move move : possibleMoves) {
@@ -33,7 +37,7 @@ public class MCTSTree {
         MCTSTreeNode rootNode = new MCTSTreeNode(initialGameState);
         rootNode.addChildren(children);
 
-        return new MCTSTree(rootNode);
+        return new MCTSTree(rootNode, selector);
     }
 
     @Nonnull
@@ -61,7 +65,7 @@ public class MCTSTree {
 
     @Nonnull
     public List<Integer> select() {
-        return Selection.complete(this.rootNode);
+        return Selection.complete(this.rootNode, this.selector);
     }
 
     @Nonnull

@@ -3,6 +3,7 @@ package sc.player2023.logic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sc.player2023.logic.mcts.*;
+import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
 import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 
@@ -19,11 +20,18 @@ public class PureMCTSMoveGetter implements MoveGetter {
     public static final double EXPLORATION_WEIGHT = Math.sqrt(2);
     public static final int EXPANSION_AMOUNT = 2;
 
+    @Nonnull
+    private final NodeEvaluator evaluator;
+
+    public PureMCTSMoveGetter() {
+        this.evaluator = new PureUCTEvaluator();
+    }
+
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
 
-        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState);
+        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState, this.evaluator);
 
         log.info("MCTS begins");
 
@@ -60,7 +68,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
         log.info("Root node visits: {}", treeRootNodeStatistics.visits());
         log.info("Root node wins: {}", treeRootNodeStatistics.wins());
         log.info("Root node children: {}", rootNodeChildren.size());
-        log.info("Average selection path length: {}", (double)totalSelectionPathLength / selections);
+        log.info("Average selection path length: {} with {} selections", (double)totalSelectionPathLength / selections, selections);
 
         Move move = tree.bestMove();
         log.info("Selected move: {}", move);

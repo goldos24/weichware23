@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class ExpansionTest {
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        this.tree = new MCTSTree(this.gameState);
+        this.tree = new MCTSTree(this.gameState, new PureUCTEvaluator());
     }
 
     @Test
