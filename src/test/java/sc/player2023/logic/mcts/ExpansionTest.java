@@ -12,34 +12,34 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ExpansionTest {
 
     public static final int EXPANSION_AMOUNT = 2;
-    Selection selection;
 
     ImmutableGameState gameState;
 
-    ImmutableMCTSTree tree;
+    MCTSTree tree;
 
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        this.selection = SelectionFixture.createTestSelection(() -> this.gameState);
-        this.tree = new ImmutableMCTSTree(this.gameState);
+        this.tree = new MCTSTree(this.gameState);
     }
 
     @Test
     void expansionMakesNewNodeTest() {
-        List<Integer> selectedNodeTrace = this.selection.complete();
-        Expansion expansion = tree.expand(selectedNodeTrace);
+        List<Integer> selectedNodeTrace = this.tree.select();
+        Expansion expansion = this.tree.createExpansion(selectedNodeTrace);
 
         assertTrue(expansion.isPossible());
 
-        ImmutableMCTSTreeNode expandedNode = expansion.expandAndSimulate(EXPANSION_AMOUNT);
+        List<MCTSTreeNode> expandedNodes = expansion.expandAndSimulate(EXPANSION_AMOUNT);
+        assertEquals(EXPANSION_AMOUNT, expandedNodes.size());
 
-        List<ImmutableMCTSTreeNode> children = expandedNode.getChildren();
-        assertEquals(EXPANSION_AMOUNT, children.size());
+        for (MCTSTreeNode expandedNode : expandedNodes) {
+            List<MCTSTreeNode> children = expandedNode.getChildren();
 
-        for (ImmutableMCTSTreeNode child : children) {
-            int visits = child.getStatistics().visits();
-            assertEquals(1, visits);
+            for (MCTSTreeNode child : children) {
+                int visits = child.getStatistics().visits();
+                assertEquals(1, visits);
+            }
         }
     }
 }

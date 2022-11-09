@@ -13,13 +13,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ImmutableMCTSTreeNodeTest {
+public class MCTSTreeNodeTest {
 
     private MCTSTreeNode node;
 
     @BeforeEach
     void setUp() {
-        this.node = ImmutableMCTSTreeNodeFixture.createTestNode();
+        this.node = MCTSTreeNodeFixture.createTestNode();
     }
 
     @Test
@@ -83,13 +83,13 @@ public class ImmutableMCTSTreeNodeTest {
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         MCTSTreeNode node = new MCTSTreeNode(testGameState);
         node.addChildren(List.of(expandedNode));
-        MCTSTreeNode backpropagatedNode = node.addBackpropagatedChildAfterSteps(List.of(0), expandedNode);
+        MCTSTreeNode backpropagatedNode = node.addBackpropagatedChildrenAfterSteps(List.of(0), List.of(expandedNode));
 
         int children = backpropagatedNode.getChildren().size();
 
         assertEquals(1, children);
 
         Statistics expectedStatistics = new Statistics(1, 0);
-        assertEquals(backpropagatedNode.getStatistics(), expectedStatistics);
+        assertEquals(expectedStatistics, backpropagatedNode.getStatistics());
     }
 }

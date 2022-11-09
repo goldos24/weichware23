@@ -11,26 +11,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectionTest {
 
-    private Selection selection;
     private ImmutableGameState gameState;
 
-    private ImmutableMCTSTree tree;
+    private MCTSTree tree;
 
     @BeforeEach
     void setUp() {
-        ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        ImmutableMCTSTreeNode rootNode = new ImmutableMCTSTreeNode(gameState);
-        this.gameState = gameState;
-        this.selection = new Selection(rootNode);
-        this.tree = new ImmutableMCTSTree(this.gameState);
+        this.gameState = GameStateFixture.createTestGameState();
+        this.tree = new MCTSTree(this.gameState);
     }
 
     @Test
     void selectionYieldsRootNodeTest() {
-        List<Integer> selectedNodeTrace = this.selection.complete();
+        List<Integer> selectedNodeTrace = this.tree.select();
         assertEquals(0, selectedNodeTrace.size());
 
-        ImmutableMCTSTreeNode selectedNode = this.tree.trace(selectedNodeTrace);
+        MCTSTreeNode rootNode = this.tree.getRootNode();
+        MCTSTreeNode selectedNode = rootNode.trace(selectedNodeTrace);
         assertNotNull(selectedNode);
 
         ImmutableGameState completedGameState = selectedNode.getGameState();
