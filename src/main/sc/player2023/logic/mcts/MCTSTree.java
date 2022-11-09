@@ -48,14 +48,14 @@ public class MCTSTree {
     @Nullable
     public Move bestMove() {
         Move bestMove = null;
-        int bestWins = Integer.MIN_VALUE;
+        long bestWins = Long.MIN_VALUE;
 
         for (MCTSTreeNode node : this.rootNode.getChildren()) {
             // The node statistics need to be inverted because the children of the root node
             // contain game states and results from the perspective of the opponent team.
             Statistics nodeStatistics = node.getStatistics().inverted();
 
-            int wins = nodeStatistics.wins();
+            long wins = nodeStatistics.wins();
             if (wins > bestWins) {
                 bestMove = node.getMove();
                 bestWins = wins;

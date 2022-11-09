@@ -40,7 +40,7 @@ public class ExpansionTest {
             List<MCTSTreeNode> children = expandedNode.getChildren();
 
             for (MCTSTreeNode child : children) {
-                int visits = child.getStatistics().visits();
+                long visits = child.getStatistics().visits();
                 assertEquals(1, visits);
             }
         }

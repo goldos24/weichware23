@@ -2,7 +2,7 @@ package sc.player2023.logic.mcts;
 
 import sc.api.plugins.ITeam;
 
-public record Statistics(int visits, int wins) {
+public record Statistics(long visits, long wins) {
     public static Statistics zeroed() {
         return new Statistics(0, 0);
     }

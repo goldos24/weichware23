@@ -14,7 +14,7 @@ public class PureMCTSMoveGetter implements MoveGetter {
 
     private static final Logger log = LoggerFactory.getLogger(PureMCTSMoveGetter.class);
 
-    private final TimeMeasurer timer = new TimeMeasurer(1700);
+    private final TimeMeasurer timer = new TimeMeasurer(1900);
 
     // TODO: find a more suitable exploration weight for this game
     public static final double EXPLORATION_WEIGHT = Math.sqrt(2);

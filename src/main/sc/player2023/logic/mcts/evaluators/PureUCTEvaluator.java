@@ -18,7 +18,7 @@ public class PureUCTEvaluator implements NodeEvaluator {
      */
     @Override
     public double evaluateNode(MCTSTreeNode parentNode, MCTSTreeNode childNode) {
-        int parentNodeVisits = parentNode.getStatistics().visits();
+        long parentNodeVisits = parentNode.getStatistics().visits();
 
         Statistics statistics = childNode.getStatistics();
         double nodeWins = statistics.wins();
