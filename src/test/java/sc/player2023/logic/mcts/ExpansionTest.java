@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpansionTest {
 
-    public static final int EXPANSION_AMOUNT = 2;
+    private static final int EXPANSION_AMOUNT = 2;
+    private static final double EXPLORATION_WEIGHT = Math.sqrt(2);
 
     ImmutableGameState gameState;
 
@@ -21,7 +22,8 @@ public class ExpansionTest {
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        this.tree = new MCTSTree(this.gameState, new PureUCTEvaluator());
+        NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        this.tree = new MCTSTree(this.gameState, evaluator);
     }
 
     @Test

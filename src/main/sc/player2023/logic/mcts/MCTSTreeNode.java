@@ -2,17 +2,14 @@ package sc.player2023.logic.mcts;
 
 import sc.api.plugins.ITeam;
 import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.PureMCTSMoveGetter;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class MCTSTreeNode {
 
@@ -114,26 +111,6 @@ public class MCTSTreeNode {
         }
     }
 
-    /**
-     * Implementation of the UCT formula, as stated on the MCTS Wikipedia page:
-     * https://en.wikipedia.org/wiki/Monte_Carlo_tree_search#Exploration_and_exploitation
-     */
-    public double uct(int parentNodeVisits, double explorationWeight) {
-        double nodeWins = this.statistics.wins();
-        double nodeVisits = this.statistics.visits();
-
-        double exploitation = nodeWins / nodeVisits;
-        double exploration  = Math.log(parentNodeVisits) / nodeVisits;
-        return exploitation + explorationWeight * exploration;
-    }
-
-    /*
-     * Wrapper for the UCT formula with a default exploration weight of sqrt(2).
-     */
-    public double uct(int parentNodeVisits) {
-        return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT);
-    }
-
     public void setStatistics(@Nonnull Statistics newStatistics) {
         this.statistics = newStatistics;
     }
@@ -164,12 +141,6 @@ public class MCTSTreeNode {
         this.onTracedNodes(steps, MCTSTreeNode::updateStatistics);
 
         return this;
-    }
-
-    public void addChildren(@Nonnull MCTSTreeNode... childNodes) {
-        Stream<MCTSTreeNode> childNodesStream = Arrays.stream(childNodes);
-        List<MCTSTreeNode> childNodesList = childNodesStream.toList();
-        this.children.addAll(childNodesList);
     }
 
     public void addChildren(@Nonnull List<MCTSTreeNode> childNodes) {

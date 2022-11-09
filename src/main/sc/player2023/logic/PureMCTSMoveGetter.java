@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sc.player2023.logic.mcts.*;
 import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
-import sc.player2023.logic.rating.Rater;
+import sc.player2023.logic.rating.*;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -21,17 +21,17 @@ public class PureMCTSMoveGetter implements MoveGetter {
     public static final int EXPANSION_AMOUNT = 2;
 
     @Nonnull
-    private final NodeEvaluator evaluator;
+    private final NodeEvaluator selectionEvaluator;
 
     public PureMCTSMoveGetter() {
-        this.evaluator = new PureUCTEvaluator();
+        this.selectionEvaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
     }
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
 
-        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState, this.evaluator);
+        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState, this.selectionEvaluator);
 
         log.info("MCTS begins");
 

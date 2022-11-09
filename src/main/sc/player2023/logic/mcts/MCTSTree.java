@@ -14,18 +14,18 @@ public class MCTSTree {
     private final MCTSTreeNode rootNode;
 
     @Nonnull
-    private final NodeEvaluator selector;
+    private final NodeEvaluator selectionEvaluator;
 
-    public MCTSTree(@Nonnull ImmutableGameState initialGameState, @Nonnull NodeEvaluator selector) {
-        this(new MCTSTreeNode(initialGameState), selector);
+    public MCTSTree(@Nonnull ImmutableGameState initialGameState, @Nonnull NodeEvaluator selectionEvaluator) {
+        this(new MCTSTreeNode(initialGameState), selectionEvaluator);
     }
 
-    public MCTSTree(@Nonnull MCTSTreeNode rootNode, @Nonnull NodeEvaluator selector) {
+    public MCTSTree(@Nonnull MCTSTreeNode rootNode, @Nonnull NodeEvaluator selectionEvaluator) {
         this.rootNode = rootNode;
-        this.selector = selector;
+        this.selectionEvaluator = selectionEvaluator;
     }
 
-    public static MCTSTree ofGameStateWithChildren(@Nonnull ImmutableGameState initialGameState, @Nonnull NodeEvaluator selector) {
+    public static MCTSTree ofGameStateWithChildren(@Nonnull ImmutableGameState initialGameState, @Nonnull NodeEvaluator selectionEvaluator) {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(initialGameState);
         List<MCTSTreeNode> children = new ArrayList<>();
         for (Move move : possibleMoves) {
@@ -37,7 +37,7 @@ public class MCTSTree {
         MCTSTreeNode rootNode = new MCTSTreeNode(initialGameState);
         rootNode.addChildren(children);
 
-        return new MCTSTree(rootNode, selector);
+        return new MCTSTree(rootNode, selectionEvaluator);
     }
 
     @Nonnull
@@ -51,7 +51,9 @@ public class MCTSTree {
         int bestWins = Integer.MIN_VALUE;
 
         for (MCTSTreeNode node : this.rootNode.getChildren()) {
-            Statistics nodeStatistics = node.getStatistics();
+            // The node statistics need to be inverted because the children of the root node
+            // contain game states and results from the perspective of the opponent team.
+            Statistics nodeStatistics = node.getStatistics().inverted();
 
             int wins = nodeStatistics.wins();
             if (wins > bestWins) {
@@ -65,7 +67,7 @@ public class MCTSTree {
 
     @Nonnull
     public List<Integer> select() {
-        return Selection.complete(this.rootNode, this.selector);
+        return Selection.complete(this.rootNode, this.selectionEvaluator);
     }
 
     @Nonnull
