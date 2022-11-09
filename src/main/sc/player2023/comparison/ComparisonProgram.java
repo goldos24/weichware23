@@ -8,7 +8,7 @@ public class ComparisonProgram {
     public static void main(String[] args) {
         Fighter mctsFighter = new Fighter(new PVSMoveGetter(), Logic.createCombinedRater());
         Fighter pvsFighter = new Fighter(new MoveFinder(), new MaxRating());
-        BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(5));
+        BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(1));
         System.out.println(result);
     }
 }

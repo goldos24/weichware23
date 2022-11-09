@@ -130,19 +130,10 @@ public class BoardPeek {
         newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam = bitSet8x8WithSingleBitChanged(
                 fromX, fromY,
                 newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam, false); // nothing there = 0
-        List<Pair<Coordinates, Team>> penguinCoordinateTeamMapBuilder = new ArrayList<>();
-        for (var penguinCoordTeam : penguinCoordinateTeamMap) {
-            Coordinates coord = penguinCoordTeam.getFirst();
-            if(coord.equals(move.getFrom())) {
-                penguinCoordinateTeamMapBuilder.add(new Pair<>(coord, penguinCoordTeam.getSecond()));
-                continue;
-            }
-            penguinCoordinateTeamMapBuilder.add(new Pair<>(coord, penguinCoordTeam.getSecond()));
-        }
         return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                 newIfFishFieldThenFishModulo2OtherwisePenguinCount,
                 newNonZeroFishCountBitSet,
-                PenguinCollection.fromOtherPenguinCollection(penguinCoordinateTeamMapBuilder));
+                penguinCoordinateTeamMap.withPenguinMoved(new Pair<>(move.getFrom(), (Team)team), move.getTo()));
     }
 
     public Collection<Pair<Coordinates, Team>> getPenguins() {
@@ -181,12 +172,26 @@ public class BoardPeek {
         return Objects.hash(ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam, ifFishFieldThenFishModulo2OtherwisePenguinCount, nonZeroFishCount);
     }
 
+    Map<String, String> toStringEncodingMap = Map.of("0" ," ",
+            "R", "\u001B[32mR\u001B[0m",
+            "B", "\u001B[35mB\u001B[0m",
+            "1", "-",
+            "2", "=");
+
     @Override
     public String toString() {
-        return "BoardPeek{" +
-                "ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam=" + Long.toBinaryString(ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam) +
-                ", ifFishFieldThenFishModulo2OtherwisePenguinCount=" + Long.toBinaryString(ifFishFieldThenFishModulo2OtherwisePenguinCount) +
-                ", nonZeroFishCount=" + Long.toBinaryString(nonZeroFishCount) +
-                '}';
+        StringBuilder result = new StringBuilder("BoardPeek{\n");
+        for (int j = 0; j < GameRuleLogic.BOARD_HEIGHT; ++j) {
+            if(j%2==1)
+                result.append(" ");
+            for(int i = 0; i < GameRuleLogic.BOARD_WIDTH; ++i) {
+                Field field = get(new Coordinates(i * 2 + j % 2, j));
+                result.append(toStringEncodingMap.get(field.toString()) != null ? toStringEncodingMap.get(field.toString()) : field);
+                result.append(" ");
+            }
+            result.append("\n");
+        }
+        result.append("}");
+        return result.toString();
     }
 }

@@ -12,11 +12,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
-    int teamOnePenguins, teamTwoPenguins;
+    final int teamOnePenguins, teamTwoPenguins;
 
     @Override
     public int size() {
-        return 0;
+        return getPenguinCountInBitSet(teamOnePenguins) + getPenguinCountInBitSet(teamTwoPenguins);
     }
 
     @Override
@@ -70,6 +70,28 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         );
     }
 
+    static int bitsetWithPenguinMoved(Coordinates from, Coordinates to, int bitset) {
+        int penguinCount = getPenguinCountInBitSet(bitset);
+        int i;
+        for(i = 0; i < penguinCount+1; ++i) {
+            if(getCoordsAtBitSetIndex(bitset, i).equals(from)) {
+                break;
+            }
+        }
+        if(i==penguinCount)
+            throw new IllegalStateException("404: penguin not found");
+        return getBitSetWithPenguinAtPos(to, bitset, i);
+    }
+
+    public PenguinCollection withPenguinMoved(Pair<Coordinates, Team> penguin, Coordinates target) {
+        var team = penguin.getSecond();
+        var from = penguin.getFirst();
+        return new PenguinCollection(
+                team == Team.ONE ? bitsetWithPenguinMoved(from, target, teamOnePenguins) : teamOnePenguins,
+                team == Team.TWO ? bitsetWithPenguinMoved(from, target, teamTwoPenguins) : teamTwoPenguins
+        );
+    }
+
 
     static int getPenguinCountInBitSet(int bitset) {
         return bitset & penguinCountBitMask;
@@ -103,6 +125,15 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     @Override
     public Iterator<Pair<Coordinates, Team>> iterator() {
         return stream().iterator();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("PenguinCollection{ ");
+        for(Pair<Coordinates, Team> penguin : this) {
+            stringBuilder.append(penguin);
+        }
+        return stringBuilder.append(" }").toString();
     }
 
     @Nonnull

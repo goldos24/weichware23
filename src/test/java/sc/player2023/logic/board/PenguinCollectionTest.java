@@ -4,7 +4,6 @@ import kotlin.Pair;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
-import sc.player2023.logic.board.PenguinCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +67,24 @@ class PenguinCollectionTest {
         for (var penguin : testCollection) {
             got.add(penguin);
         }
+        assertEquals(expected, got);
+    }
+
+    @Test
+    void withPenguinMoved() {
+        Coordinates from = new Coordinates(3, 1);
+        Coordinates to = new Coordinates(3, 3);
+        Coordinates evilPenguin = new Coordinates(3, 5);
+        Pair<Coordinates, Team> ownInitialPenguin = new Pair<>(from, Team.ONE);
+        List<Pair<Coordinates, Team>> initial = List.of(
+                ownInitialPenguin,
+                new Pair<>(evilPenguin, Team.TWO));
+        List<Pair<Coordinates, Team>> expected = List.of(
+                new Pair<>(to, Team.ONE),
+                new Pair<>(evilPenguin, Team.TWO));
+        PenguinCollection testCollection = PenguinCollection.fromOtherPenguinCollection(initial);
+        testCollection = testCollection.withPenguinMoved(ownInitialPenguin, to);
+        List<Pair<Coordinates, Team>> got = testCollection.stream().toList();
         assertEquals(expected, got);
     }
 }
