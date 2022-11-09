@@ -117,42 +117,13 @@ public class MCTSTreeNode {
     /**
      * Implementation of the UCT formula, as stated on the MCTS Wikipedia page:
      * https://en.wikipedia.org/wiki/Monte_Carlo_tree_search#Exploration_and_exploitation
-     * <br>
-     * Includes some personal changes for NaN avoidance, but I'm not sure if that does
-     * change anything.
      */
-    public double uct(int parentNodeVisits, double explorationWeight, boolean avoidNaN) {
+    public double uct(int parentNodeVisits, double explorationWeight) {
         double nodeWins = this.statistics.wins();
         double nodeVisits = this.statistics.visits();
 
-        double exploitation;
-        if (avoidNaN) {
-            // Minimal derivation from the exploitation and exploration part of the
-            // original formula to avoid NaN values.
-            //
-            // This change has some effect on the result:
-
-            // - For low values  -> the exploitation value is lower
-            // - For high values -> the exploitation value is only slightly lower
-            exploitation = nodeWins / (nodeVisits + 1);
-        } else {
-            exploitation = nodeWins / nodeVisits;
-        }
-
-        double exploration;
-        if (avoidNaN) {
-            // - For low values                           -> the exploration value is lower
-            // - For high values                          -> the exploration value is only slightly lower
-
-            // - high parent node visits, low node visits -> the exploration value is significantly lower
-            // I suppose that this is actually better because it leads to the selection of
-            // nodes with more promising statistics (high node visits).
-            // But I might be wrong because it slightly messes with the exploration of new paths.
-            exploration = Math.log(parentNodeVisits + 1) / (nodeVisits + 1);
-        } else {
-            exploration = Math.log(parentNodeVisits) / nodeVisits;
-        }
-
+        double exploitation = nodeWins / nodeVisits;
+        double exploration  = Math.log(parentNodeVisits) / nodeVisits;
         return exploitation + explorationWeight * exploration;
     }
 
@@ -160,7 +131,7 @@ public class MCTSTreeNode {
      * Wrapper for the UCT formula with a default exploration weight of sqrt(2).
      */
     public double uct(int parentNodeVisits) {
-        return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT, false);
+        return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT);
     }
 
     public void setStatistics(@Nonnull Statistics newStatistics) {
