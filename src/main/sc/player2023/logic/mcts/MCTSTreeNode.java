@@ -157,10 +157,10 @@ public class MCTSTreeNode {
     }
 
     /*
-     * Wrapper for the UCT formula with a default exploration weight of sqrt(2) and the NaN avoidance changes.
+     * Wrapper for the UCT formula with a default exploration weight of sqrt(2).
      */
     public double uct(int parentNodeVisits) {
-        return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT, true);
+        return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT, false);
     }
 
     public void setStatistics(@Nonnull Statistics newStatistics) {

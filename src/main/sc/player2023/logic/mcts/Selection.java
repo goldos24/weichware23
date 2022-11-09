@@ -34,7 +34,8 @@ public class Selection {
 
         // UCT always yielded NaN
         if (bestIndex == -1) {
-            throw new IllegalArgumentException("No valid node index found");
+            // throw new IllegalArgumentException("No valid node index found");
+            return (int)Math.round(Math.random() * (children.size() - 1));
         }
 
         return bestIndex;
