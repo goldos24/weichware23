@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ImmutableMCTSTreeNodeTest {
 
-    private ImmutableMCTSTreeNode node;
+    private MCTSTreeNode node;
 
     @BeforeEach
     void setUp() {
@@ -26,11 +26,11 @@ public class ImmutableMCTSTreeNodeTest {
     void withStatisticsTest() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
         Statistics statistics = StatisticsFixture.createTestStatistics();
-        ImmutableMCTSTreeNode expected = new ImmutableMCTSTreeNode(statistics, null, gameState, List.of());
+        MCTSTreeNode expected = new MCTSTreeNode(statistics, null, gameState, List.of());
 
-        ImmutableMCTSTreeNode actual = this.node.withStatistics(statistics);
+        this.node.setStatistics(statistics);
 
-        assertEquals(expected, actual);
+        assertEquals(expected, this.node);
     }
 
     Move firstMovePicker(ImmutableGameState gameState) {
@@ -55,11 +55,11 @@ public class ImmutableMCTSTreeNodeTest {
 
         // The playout result is a win for team two but the current team is team one.
         Statistics statistics = Statistics.zeroed().addLossOrDraw();
-        ImmutableMCTSTreeNode expected = new ImmutableMCTSTreeNode(statistics, null, gameState, List.of());
+        MCTSTreeNode expected = new MCTSTreeNode(statistics, null, gameState, List.of());
 
-        ImmutableMCTSTreeNode actual = this.node.withPlayoutResult(playoutResult);
+        this.node.addPlayoutResult(playoutResult);
 
-        assertEquals(expected, actual);
+        assertEquals(expected, this.node);
     }
 
     @Test
@@ -77,11 +77,13 @@ public class ImmutableMCTSTreeNodeTest {
         assertEquals(PlayoutResult.Kind.WIN, playoutResult.getKind());
         assertEquals(Team.TWO, playoutResult.getAffectedTeam());
 
-        ImmutableMCTSTreeNode expandedNode = new ImmutableMCTSTreeNode(playedOutGameState).withPlayoutResult(playoutResult);
+        MCTSTreeNode expandedNode = new MCTSTreeNode(playedOutGameState);
+        expandedNode.addPlayoutResult(playoutResult);
 
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
-        ImmutableMCTSTreeNode node = new ImmutableMCTSTreeNode(testGameState).withAdditionalChildren(List.of(expandedNode));
-        ImmutableMCTSTreeNode backpropagatedNode = node.withBackpropagatedChildAfterSteps(List.of(0), expandedNode);
+        MCTSTreeNode node = new MCTSTreeNode(testGameState);
+        node.addChildren(List.of(expandedNode));
+        MCTSTreeNode backpropagatedNode = node.addBackpropagatedChildAfterSteps(List.of(0), expandedNode);
 
         int children = backpropagatedNode.getChildren().size();
 

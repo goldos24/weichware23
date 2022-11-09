@@ -8,14 +8,16 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class ImmutableMCTSTreeNode {
+public class MCTSTreeNode {
 
     @Nonnull
-    private final Statistics statistics;
+    private Statistics statistics;
 
     /* The move that lead to the current game state */
     @Nullable
@@ -25,20 +27,27 @@ public class ImmutableMCTSTreeNode {
     private final ImmutableGameState gameState;
 
     @Nonnull
-    private final List<ImmutableMCTSTreeNode> children;
+    private final List<MCTSTreeNode> children;
 
-    public ImmutableMCTSTreeNode(@Nonnull ImmutableGameState gameState) {
+    public MCTSTreeNode(@Nonnull ImmutableGameState gameState) {
         this.statistics = Statistics.zeroed();
         this.move = null;
         this.gameState = gameState;
-        this.children = List.of();
+        this.children = new ArrayList<>();
     }
 
-    public ImmutableMCTSTreeNode(@Nonnull Statistics statistics, @Nullable Move move, @Nonnull ImmutableGameState gameState, @Nonnull List<ImmutableMCTSTreeNode> children) {
+    public MCTSTreeNode(@Nonnull Move move, @Nonnull ImmutableGameState gameState) {
+        this.statistics = Statistics.zeroed();
+        this.move = move;
+        this.gameState = gameState;
+        this.children = new ArrayList<>();
+    }
+
+    public MCTSTreeNode(@Nonnull Statistics statistics, @Nullable Move move, @Nonnull ImmutableGameState gameState, @Nonnull List<MCTSTreeNode> children) {
         this.statistics = statistics;
         this.move = move;
         this.gameState = gameState;
-        this.children = children;
+        this.children = new ArrayList<>(children);
     }
 
     @Nonnull
@@ -58,7 +67,7 @@ public class ImmutableMCTSTreeNode {
 
 
     @Nonnull
-    public List<ImmutableMCTSTreeNode> getChildren() {
+    public List<MCTSTreeNode> getChildren() {
         return this.children;
     }
 
@@ -76,10 +85,10 @@ public class ImmutableMCTSTreeNode {
      * @return The node, at depth = length of stepsToNode
      */
     @Nullable
-    public ImmutableMCTSTreeNode trace(List<Integer> stepsToNode) {
-        ImmutableMCTSTreeNode currentNode = this;
-        for (Integer index : stepsToNode) {
-            List<ImmutableMCTSTreeNode> children = currentNode.getChildren();
+    public MCTSTreeNode trace(List<Integer> stepsToNode) {
+        MCTSTreeNode currentNode = this;
+        for (int index : stepsToNode) {
+            List<MCTSTreeNode> children = currentNode.getChildren();
 
             if (index > children.size()) {
                 return null;
@@ -90,10 +99,25 @@ public class ImmutableMCTSTreeNode {
         return currentNode;
     }
 
+    public void onTracedNodes(List<Integer> steps, Consumer<MCTSTreeNode> action) {
+        MCTSTreeNode currentNode = this;
+
+        for (int index : steps) {
+            action.accept(currentNode);
+            List<MCTSTreeNode> children = currentNode.getChildren();
+
+            if (index > children.size()) {
+                return;
+            }
+
+            currentNode = children.get(index);
+        }
+    }
+
     /**
      * Implementation of the UCT formula, as stated on the MCTS Wikipedia page:
      * https://en.wikipedia.org/wiki/Monte_Carlo_tree_search#Exploration_and_exploitation
-     *
+     * <br>
      * Includes some personal changes for NaN avoidance, but I'm not sure if that does
      * change anything.
      */
@@ -139,63 +163,46 @@ public class ImmutableMCTSTreeNode {
         return this.uct(parentNodeVisits, PureMCTSMoveGetter.EXPLORATION_WEIGHT, true);
     }
 
-    @Nonnull
-    public ImmutableMCTSTreeNode withStatistics(@Nonnull Statistics newStatistics) {
-        return new ImmutableMCTSTreeNode(newStatistics, this.move, this.gameState, this.children);
+    public void setStatistics(@Nonnull Statistics newStatistics) {
+        this.statistics = newStatistics;
     }
 
-    @Nonnull
-    public ImmutableMCTSTreeNode withPlayoutResult(@Nonnull PlayoutResult result) {
-        ITeam currentTeam = this.gameState.getCurrentTeam();
-        Statistics newStatistics = this.statistics.addPlayoutResult(result, currentTeam);
-        return this.withStatistics(newStatistics);
-    }
-
-    @Nonnull
-    public ImmutableMCTSTreeNode withBackpropagatedChildAfterSteps(@Nonnull List<Integer> steps, @Nonnull ImmutableMCTSTreeNode childNode) {
-        // No steps -> The current node is replaced by the child node
-        if (steps.isEmpty()) {
-            return childNode;
-        }
-
-        int nodeIndex = steps.get(0);
-        List<Integer> restNodeIndices = steps.subList(1, steps.size());
-
-        ImmutableMCTSTreeNode targetedChild = this.children.get(nodeIndex);
-        ImmutableMCTSTreeNode newChild = targetedChild.withBackpropagatedChildAfterSteps(restNodeIndices, childNode);
-
-        int prevSize = this.children.size();
-
-        // Replace node at nodeIndex with the new child
-        List<ImmutableMCTSTreeNode> children = new ArrayList<>();
+    public void updateStatistics() {
         Statistics totalStatistics = Statistics.zeroed();
-        for (int i = 0; i < this.children.size(); ++i) {
-            ImmutableMCTSTreeNode child;
-            if (i == nodeIndex) {
-                child = newChild;
-            } else {
-                child = this.children.get(i);
-            }
-
-            Statistics childStatistics = child.getStatistics();
-            totalStatistics = totalStatistics.add(childStatistics);
-            children.add(child);
+        for (MCTSTreeNode child : this.children) {
+            totalStatistics = totalStatistics.add(child.getStatistics());
         }
 
-        assert children.size() == prevSize;
+        this.statistics = totalStatistics.inverted();
+    }
 
-        // Sum of child Statistics needs to be inverted for the parent node
-        Statistics invertedTotalStatistics = totalStatistics.inverted();
-        return new ImmutableMCTSTreeNode(invertedTotalStatistics, this.move, this.gameState, children);
+    public void addPlayoutResult(@Nonnull PlayoutResult result) {
+        ITeam currentTeam = this.gameState.getCurrentTeam();
+        this.statistics = this.statistics.addPlayoutResult(result, currentTeam);
     }
 
     @Nonnull
-    public ImmutableMCTSTreeNode withAdditionalChildren(@Nonnull List<ImmutableMCTSTreeNode> childNodes) {
-        Stream<ImmutableMCTSTreeNode> childrenStream = this.children.stream();
-        Stream<ImmutableMCTSTreeNode> childrenStreamWithNewNodes = Stream.concat(childrenStream, childNodes.stream());
-        List<ImmutableMCTSTreeNode> newChildren = childrenStreamWithNewNodes.toList();
+    public MCTSTreeNode addBackpropagatedChildrenAfterSteps(@Nonnull List<Integer> steps, @Nonnull List<MCTSTreeNode> childNodes) {
+        // Example:     -> return this
+        // Example: 0   -> return this.getChildren(0)
+        // Example: 0 1 -> return this.getChildren(0).getChildren(1)
+        MCTSTreeNode targetNode = this.trace(steps);
+        assert targetNode != null;
 
-        return new ImmutableMCTSTreeNode(this.statistics, this.move, this.gameState, newChildren);
+        targetNode.addChildren(childNodes);
+        this.onTracedNodes(steps, MCTSTreeNode::updateStatistics);
+
+        return this;
+    }
+
+    public void addChildren(@Nonnull MCTSTreeNode... childNodes) {
+        Stream<MCTSTreeNode> childNodesStream = Arrays.stream(childNodes);
+        List<MCTSTreeNode> childNodesList = childNodesStream.toList();
+        this.children.addAll(childNodesList);
+    }
+
+    public void addChildren(@Nonnull List<MCTSTreeNode> childNodes) {
+        this.children.addAll(childNodes);
     }
 
     @Override
@@ -203,7 +210,7 @@ public class ImmutableMCTSTreeNode {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ImmutableMCTSTreeNode that = (ImmutableMCTSTreeNode) o;
+        MCTSTreeNode that = (MCTSTreeNode) o;
 
         if (!statistics.equals(that.statistics)) return false;
         if (!Objects.equals(move, that.move)) return false;
@@ -213,7 +220,7 @@ public class ImmutableMCTSTreeNode {
 
     @Override
     public String toString() {
-        return "ImmutableMCTSTreeNode{" +
+        return "MCTSTreeNode{" +
             "statistics=" + statistics +
             ", move=" + move +
             ", gameState=" + gameState +

@@ -6,16 +6,11 @@ import java.util.List;
 
 public class Selection {
 
-    @Nonnull
-    private final ImmutableMCTSTreeNode parentNode;
+    private Selection() {}
 
-    public Selection(@Nonnull ImmutableMCTSTreeNode parentNode) {
-        this.parentNode = parentNode;
-    }
-
-    private static int pickChildNode(ImmutableMCTSTreeNode node) {
+    private static int pickChildNode(MCTSTreeNode node) {
         int parentNodeVisits = node.getStatistics().visits();
-        List<ImmutableMCTSTreeNode> children = node.getChildren();
+        List<MCTSTreeNode> children = node.getChildren();
 
         assert children.size() > 0;
 
@@ -28,7 +23,7 @@ public class Selection {
         int bestIndex = -1;
 
         for (int i = 0; i < children.size(); ++i) {
-            ImmutableMCTSTreeNode child = children.get(i);
+            MCTSTreeNode child = children.get(i);
             double value = child.uct(parentNodeVisits);
 
             if (value > bestValue) {
@@ -46,14 +41,15 @@ public class Selection {
     }
 
     @Nonnull
-    public List<Integer> complete() {
-        ImmutableMCTSTreeNode currentNode = this.parentNode;
+    public static List<Integer> complete(MCTSTreeNode rootNode) {
+        MCTSTreeNode currentNode = rootNode;
         List<Integer> indices = new ArrayList<>();
 
         while (currentNode.hasChildren()) {
             int childIndex = pickChildNode(currentNode);
             indices.add(childIndex);
-            List<ImmutableMCTSTreeNode> currentChildren = currentNode.getChildren();
+            List<MCTSTreeNode> currentChildren = currentNode.getChildren();
+
             currentNode = currentChildren.get(childIndex);
         }
 

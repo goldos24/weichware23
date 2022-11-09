@@ -5,8 +5,8 @@ import sc.player2023.logic.ImmutableGameState;
 
 public class ImmutableMCTSTreeNodeFixture {
 
-    public static ImmutableMCTSTreeNode createTestNode() {
+    public static MCTSTreeNode createTestNode() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        return new ImmutableMCTSTreeNode(gameState);
+        return new MCTSTreeNode(gameState);
     }
 }

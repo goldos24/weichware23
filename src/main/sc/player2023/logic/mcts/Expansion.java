@@ -12,9 +12,9 @@ import java.util.List;
 public class Expansion {
 
     @Nonnull
-    private final ImmutableMCTSTreeNode selectedNode;
+    private final MCTSTreeNode selectedNode;
 
-    public Expansion(@Nonnull ImmutableMCTSTreeNode selectedNode) {
+    public Expansion(@Nonnull MCTSTreeNode selectedNode) {
         this.selectedNode = selectedNode;
     }
 
@@ -22,7 +22,7 @@ public class Expansion {
         return !this.selectedNode.getGameState().isOver();
     }
 
-    private ImmutableMCTSTreeNode createSimulatedNode(ImmutableGameState parentGameState) {
+    private MCTSTreeNode createSimulatedNode(ImmutableGameState parentGameState) {
         List<Move> moves = GameRuleLogic.getPossibleMoves(parentGameState);
         int randomMoveIndex = GameRuleLogic.getRandomMoveIndex(moves);
         Move randomMove = moves.get(randomMoveIndex);
@@ -34,22 +34,23 @@ public class Expansion {
         PlayoutResult result = PlayoutResult.of(playedOutGameState, currentTeam);
 
         Statistics statistics = Statistics.ofPlayoutResult(result, currentTeam);
-        return new ImmutableMCTSTreeNode(statistics, randomMove, gameStateWithRandomMove, List.of());
+        return new MCTSTreeNode(statistics, randomMove, gameStateWithRandomMove, List.of());
     }
 
     @Nonnull
-    public ImmutableMCTSTreeNode expandAndSimulate(int expansionAmount) {
+    public List<MCTSTreeNode> expandAndSimulate(int expansionAmount) {
         ImmutableGameState selectedGameState = this.selectedNode.getGameState();
         if (selectedGameState.isOver()) {
-            throw new UnsupportedOperationException("Can't expand game state that was already over");
+            return List.of();
         }
 
-        List<ImmutableMCTSTreeNode> children = new ArrayList<>();
+        List<MCTSTreeNode> children = new ArrayList<>();
         for (int i = 0; i < expansionAmount; ++i) {
-            ImmutableMCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState);
+            MCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState);
             children.add(simulatedNode);
         }
 
-        return this.selectedNode.withAdditionalChildren(children);
+        this.selectedNode.addChildren(children);
+        return this.selectedNode.getChildren();
     }
 }
