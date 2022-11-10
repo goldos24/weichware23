@@ -2,6 +2,7 @@ package sc.player2023.logic.mcts;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sc.api.plugins.ITeam;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
@@ -21,19 +22,22 @@ public class SelectionTest {
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
         NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
-        this.tree = new MCTSTree(this.gameState, evaluator);
+        this.tree = MCTSTree.ofGameStateWithChildren(gameState, evaluator);
     }
 
     @Test
     void selectionYieldsRootNodeTest() {
         List<Integer> selectedNodeTrace = this.tree.select();
-        assertEquals(0, selectedNodeTrace.size());
+        assertEquals(1, selectedNodeTrace.size());
 
         MCTSTreeNode rootNode = this.tree.getRootNode();
+        assertEquals(rootNode.getChildren().size(), 8);
+
         MCTSTreeNode selectedNode = rootNode.trace(selectedNodeTrace);
         assertNotNull(selectedNode);
 
         ImmutableGameState completedGameState = selectedNode.getGameState();
-        assertEquals(gameState, completedGameState);
+        ITeam currentTeam = completedGameState.getCurrentTeam();
+        assertEquals(currentTeam.opponent(), gameState.getCurrentTeam());
     }
 }

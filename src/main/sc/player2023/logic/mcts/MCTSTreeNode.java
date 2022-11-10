@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public class MCTSTreeNode {
 
@@ -97,7 +96,7 @@ public class MCTSTreeNode {
         return currentNode;
     }
 
-    @Nonnull
+    @Nullable
     public List<MCTSTreeNode> traceAll(List<Integer> stepsToNode) {
         MCTSTreeNode currentNode = this;
 
@@ -107,7 +106,7 @@ public class MCTSTreeNode {
             List<MCTSTreeNode> children = currentNode.getChildren();
 
             if (index > children.size()) {
-                return List.of();
+                return null;
             }
 
             currentNode = children.get(index);
@@ -115,15 +114,6 @@ public class MCTSTreeNode {
         }
 
         return selectedNodes;
-    }
-
-    public void onReversedTracedNodes(List<Integer> steps, Consumer<MCTSTreeNode> action) {
-        List<MCTSTreeNode> tracedNodes = this.traceAll(steps);
-        Collections.reverse(tracedNodes);
-
-        for (MCTSTreeNode tracedNode : tracedNodes) {
-            action.accept(tracedNode);
-        }
     }
 
     public void setStatistics(@Nonnull Statistics newStatistics) {
@@ -144,21 +134,21 @@ public class MCTSTreeNode {
         this.statistics = this.statistics.addPlayoutResult(result, currentTeam);
     }
 
-    @Nonnull
-    public MCTSTreeNode addBackpropagatedChildrenAfterSteps(@Nonnull List<Integer> steps, @Nonnull List<MCTSTreeNode> childNodes) {
+    public void addBackpropagatedChildrenAfterSteps(@Nonnull List<Integer> steps, @Nonnull List<MCTSTreeNode> childNodes) {
         // Example:     -> return this
         // Example: 0   -> return this.getChildren(0)
         // Example: 0 1 -> return this.getChildren(0).getChildren(1)
         List<MCTSTreeNode> targetNodes = this.traceAll(steps);
+        assert targetNodes != null;
         assert !targetNodes.isEmpty();
 
-        Collections.reverse(targetNodes);
-        MCTSTreeNode lastNode = targetNodes.get(0);
+        MCTSTreeNode lastNode = targetNodes.get(targetNodes.size() - 1);
         lastNode.addChildren(childNodes);
 
-        this.onReversedTracedNodes(steps, MCTSTreeNode::updateStatistics);
-
-        return this;
+        Collections.reverse(targetNodes);
+        for (MCTSTreeNode node : targetNodes) {
+            node.updateStatistics();
+        }
     }
 
     public void addChildren(@Nonnull List<MCTSTreeNode> childNodes) {

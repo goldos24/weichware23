@@ -23,7 +23,7 @@ public class ExpansionTest {
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
         NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
-        this.tree = new MCTSTree(this.gameState, evaluator);
+        this.tree = MCTSTree.ofGameStateWithChildren(gameState, evaluator);
     }
 
     @Test

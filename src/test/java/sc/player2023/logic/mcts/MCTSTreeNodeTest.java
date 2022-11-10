@@ -83,13 +83,13 @@ public class MCTSTreeNodeTest {
 
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         MCTSTreeNode node = new MCTSTreeNode(testGameState);
-        MCTSTreeNode backpropagatedNode = node.addBackpropagatedChildrenAfterSteps(List.of(), List.of(expandedNode));
+        node.addBackpropagatedChildrenAfterSteps(List.of(), List.of(expandedNode));
 
-        int children = backpropagatedNode.getChildren().size();
+        int children = node.getChildren().size();
         assertEquals(1, children);
 
         // The playout result is a loss for team two, and thus a win for team one
         Statistics statistics = Statistics.zeroed().addWin();
-        assertEquals(statistics, backpropagatedNode.getStatistics());
+        assertEquals(statistics, node.getStatistics());
     }
 }
