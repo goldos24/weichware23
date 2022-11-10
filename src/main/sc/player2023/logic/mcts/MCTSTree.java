@@ -58,11 +58,6 @@ public class MCTSTree {
     }
 
     @Nonnull
-    public List<Integer> select(@Nonnull NodeEvaluator nodeEvaluator) {
-        return Selection.complete(this.rootNode, nodeEvaluator);
-    }
-
-    @Nonnull
     public Expansion createExpansion(List<Integer> stepsToSelectedNode) {
         MCTSTreeNode tracedNode = this.rootNode.trace(stepsToSelectedNode);
         assert tracedNode != null;
