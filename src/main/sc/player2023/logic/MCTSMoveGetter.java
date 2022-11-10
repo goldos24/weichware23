@@ -9,22 +9,22 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class PureMCTSMoveGetter implements MoveGetter {
+public class MCTSMoveGetter implements MoveGetter {
 
     // TODO: find a more suitable exploration weight for this game
     public static final double THEORETICAL_EXPLORATION_WEIGHT = Math.sqrt(2);
 
-    public static final int EXPANSION_AMOUNT = 2;
+    public static final int EXPANSION_AMOUNT = 3;
 
-    private static final Logger log = LoggerFactory.getLogger(PureMCTSMoveGetter.class);
+    private static final Logger log = LoggerFactory.getLogger(MCTSMoveGetter.class);
 
     private final TimeMeasurer timer = new TimeMeasurer(1900);
 
     @Nonnull
-    private final NodeEvaluator selectionEvaluator;
+    private final NodeSelector selector;
 
-    public PureMCTSMoveGetter(@Nonnull NodeEvaluator selectionEvaluator) {
-        this.selectionEvaluator = selectionEvaluator;
+    public MCTSMoveGetter(@Nonnull NodeSelector selector) {
+        this.selector = selector;
     }
 
     @Override
@@ -37,7 +37,8 @@ public class PureMCTSMoveGetter implements MoveGetter {
         long iterations = 0;
 
         while (!timer.ranOutOfTime()) {
-            List<Integer> selectedPath = tree.select(this.selectionEvaluator);
+            MCTSTreeNode rootNode = tree.getRootNode();
+            List<Integer> selectedPath = this.selector.select(rootNode);
             Expansion expansion = tree.createExpansion(selectedPath);
 
             if (!expansion.isPossible()) {
@@ -49,7 +50,6 @@ public class PureMCTSMoveGetter implements MoveGetter {
 
             List<MCTSTreeNode> newNodes = expansion.expandAndSimulate(EXPANSION_AMOUNT);
 
-            MCTSTreeNode rootNode = tree.getRootNode();
             rootNode.addBackpropagatedChildrenAfterSteps(selectedPath, newNodes);
         }
 
