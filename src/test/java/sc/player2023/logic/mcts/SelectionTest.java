@@ -6,6 +6,7 @@ import sc.api.plugins.ITeam;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
+import sc.player2023.logic.mcts.selectors.BasicEvaluatorSelector;
 
 import java.util.List;
 
@@ -19,21 +20,22 @@ public class SelectionTest {
 
     MCTSTree tree;
 
-    NodeEvaluator evaluator;
+    NodeSelector selector;
 
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        this.evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        this.selector = new BasicEvaluatorSelector(evaluator);
         this.tree = MCTSTree.ofGameStateWithChildren(gameState);
     }
 
     @Test
     void selectionYieldsRootNodeTest() {
-        List<Integer> selectedNodeTrace = this.tree.select(evaluator);
+        MCTSTreeNode rootNode = this.tree.getRootNode();
+        List<Integer> selectedNodeTrace = this.selector.select(rootNode);
         assertEquals(1, selectedNodeTrace.size());
 
-        MCTSTreeNode rootNode = this.tree.getRootNode();
         assertEquals(rootNode.getChildren().size(), 8);
 
         MCTSTreeNode selectedNode = rootNode.trace(selectedNodeTrace);

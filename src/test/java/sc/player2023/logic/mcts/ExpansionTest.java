@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
+import sc.player2023.logic.mcts.selectors.BasicEvaluatorSelector;
 
 import java.util.List;
 
@@ -20,18 +21,20 @@ public class ExpansionTest {
 
     MCTSTree tree;
 
-    NodeEvaluator evaluator;
+    NodeSelector selector;
 
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        this.evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        this.selector = new BasicEvaluatorSelector(evaluator);
         this.tree = MCTSTree.ofGameStateWithChildren(gameState);
     }
 
     @Test
     void expansionMakesNewNodeTest() {
-        List<Integer> selectedNodeTrace = this.tree.select(this.evaluator);
+        MCTSTreeNode rootNode = this.tree.getRootNode();
+        List<Integer> selectedNodeTrace = this.selector.select(rootNode);
         Expansion expansion = this.tree.createExpansion(selectedNodeTrace);
 
         assertTrue(expansion.isPossible());
