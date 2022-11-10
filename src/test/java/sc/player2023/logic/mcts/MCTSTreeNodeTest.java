@@ -41,7 +41,7 @@ public class MCTSTreeNodeTest {
     @Test
     void withPlayoutResultTest() {
         // Always yields the following PlayoutResult:
-        // PlayoutResult { points = { TWO=7, ONE=4 }, affectedTeam=TWO, kind=WIN }
+        // PlayoutResult { points = { TWO=25, ONE=27 }, affectedTeam=TWO, kind=LOSS }
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
         assertEquals(Team.ONE, gameState.getCurrentTeam());
 
@@ -50,11 +50,11 @@ public class MCTSTreeNodeTest {
         assertEquals(Team.TWO, currentTeam);
 
         PlayoutResult playoutResult = PlayoutResult.of(playedOutGameState, currentTeam);
-        assertEquals(PlayoutResult.Kind.WIN, playoutResult.getKind());
+        assertEquals(PlayoutResult.Kind.LOSS, playoutResult.getKind());
         assertEquals(Team.TWO, playoutResult.getAffectedTeam());
 
-        // The playout result is a win for team two but the current team is team one.
-        Statistics statistics = Statistics.zeroed().addLossOrDraw();
+        // The playout result is a loss for team two, and thus a win for team one
+        Statistics statistics = Statistics.zeroed().addWin();
         MCTSTreeNode expected = new MCTSTreeNode(statistics, null, gameState, List.of());
 
         this.node.addPlayoutResult(playoutResult);
@@ -65,7 +65,7 @@ public class MCTSTreeNodeTest {
     @Test
     void withBackpropagatedChildTest() {
         // Always yields the following PlayoutResult:
-        // PlayoutResult { points = { TWO=7, ONE=4 }, affectedTeam=TWO, kind=WIN }
+        // PlayoutResult { points = { TWO=25, ONE=27 }, affectedTeam=TWO, kind=LOSS }
         ImmutableGameState gameState = GameStateFixture.createTestGameStateWithFirstMovePerformed();
         assertEquals(Team.TWO, gameState.getCurrentTeam());
 
@@ -74,7 +74,8 @@ public class MCTSTreeNodeTest {
         assertEquals(Team.TWO, currentTeam);
 
         PlayoutResult playoutResult = PlayoutResult.of(playedOutGameState, currentTeam);
-        assertEquals(PlayoutResult.Kind.WIN, playoutResult.getKind());
+        System.out.println(playoutResult);
+        assertEquals(PlayoutResult.Kind.LOSS, playoutResult.getKind());
         assertEquals(Team.TWO, playoutResult.getAffectedTeam());
 
         MCTSTreeNode expandedNode = new MCTSTreeNode(playedOutGameState);
@@ -82,14 +83,13 @@ public class MCTSTreeNodeTest {
 
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         MCTSTreeNode node = new MCTSTreeNode(testGameState);
-        node.addChildren(List.of(expandedNode));
-        MCTSTreeNode backpropagatedNode = node.addBackpropagatedChildrenAfterSteps(List.of(0), List.of(expandedNode));
+        MCTSTreeNode backpropagatedNode = node.addBackpropagatedChildrenAfterSteps(List.of(), List.of(expandedNode));
 
         int children = backpropagatedNode.getChildren().size();
-
         assertEquals(1, children);
 
-        Statistics expectedStatistics = new Statistics(1, 0);
-        assertEquals(expectedStatistics, backpropagatedNode.getStatistics());
+        // The playout result is a loss for team two, and thus a win for team one
+        Statistics statistics = Statistics.zeroed().addWin();
+        assertEquals(statistics, backpropagatedNode.getStatistics());
     }
 }

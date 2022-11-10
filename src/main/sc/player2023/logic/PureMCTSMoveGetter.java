@@ -65,6 +65,10 @@ public class PureMCTSMoveGetter implements MoveGetter {
         Statistics treeRootNodeStatistics = treeRootNode.getStatistics();
         List<MCTSTreeNode> rootNodeChildren = treeRootNode.getChildren();
 
+        for (MCTSTreeNode node : rootNodeChildren) {
+            log.info("Move = {}, Statistics = {}", node.getMove(), node.getStatistics());
+        }
+
         log.info("Root node visits: {}", treeRootNodeStatistics.visits());
         log.info("Root node wins: {}", treeRootNodeStatistics.wins());
         log.info("Root node children: {}", rootNodeChildren.size());

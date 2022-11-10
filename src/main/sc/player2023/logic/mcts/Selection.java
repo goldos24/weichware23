@@ -41,9 +41,17 @@ public class Selection {
 
     @Nonnull
     public static List<Integer> complete(MCTSTreeNode rootNode, NodeEvaluator evaluator) {
-        MCTSTreeNode currentNode = rootNode;
-        List<Integer> indices = new ArrayList<>();
+        assert rootNode.hasChildren();
 
+        // Select a random child node of the root
+        List<MCTSTreeNode> children = rootNode.getChildren();
+        int randomIndex = (int)Math.round(Math.random() * (children.size() - 1));
+        MCTSTreeNode currentNode = children.get(randomIndex);
+
+        List<Integer> indices = new ArrayList<>();
+        indices.add(randomIndex);
+
+        // Pick child node from the randomly selected node
         while (currentNode.hasChildren()) {
             int childIndex = pickChildNode(currentNode, evaluator);
             indices.add(childIndex);
