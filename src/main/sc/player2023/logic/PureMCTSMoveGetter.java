@@ -28,6 +28,10 @@ public class PureMCTSMoveGetter implements MoveGetter {
         this.selectionEvaluator = new PureUCTEvaluator(explorationWeight);
     }
 
+    public PureMCTSMoveGetter(@Nonnull NodeEvaluator selectionEvaluator) {
+        this.selectionEvaluator = selectionEvaluator;
+    }
+
     public PureMCTSMoveGetter() {
         this(THEORETICAL_EXPLORATION_WEIGHT);
     }
