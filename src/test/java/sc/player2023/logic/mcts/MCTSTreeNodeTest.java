@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MCTSTreeNodeTest {
 
-    private MCTSTreeNode node;
+    MCTSTreeNode node;
 
     @BeforeEach
     void setUp() {

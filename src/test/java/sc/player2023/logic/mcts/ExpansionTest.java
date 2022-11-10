@@ -13,22 +13,25 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ExpansionTest {
 
     private static final int EXPANSION_AMOUNT = 2;
+
     private static final double EXPLORATION_WEIGHT = Math.sqrt(2);
 
     ImmutableGameState gameState;
 
     MCTSTree tree;
 
+    NodeEvaluator evaluator;
+
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
-        this.tree = MCTSTree.ofGameStateWithChildren(gameState, evaluator);
+        this.evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        this.tree = MCTSTree.ofGameStateWithChildren(gameState);
     }
 
     @Test
     void expansionMakesNewNodeTest() {
-        List<Integer> selectedNodeTrace = this.tree.select();
+        List<Integer> selectedNodeTrace = this.tree.select(this.evaluator);
         Expansion expansion = this.tree.createExpansion(selectedNodeTrace);
 
         assertTrue(expansion.isPossible());

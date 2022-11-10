@@ -3,7 +3,6 @@ package sc.player2023.logic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sc.player2023.logic.mcts.*;
-import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
 import sc.player2023.logic.rating.*;
 import sc.plugin2023.Move;
 
@@ -24,29 +23,21 @@ public class PureMCTSMoveGetter implements MoveGetter {
     @Nonnull
     private final NodeEvaluator selectionEvaluator;
 
-    public PureMCTSMoveGetter(double explorationWeight) {
-        this.selectionEvaluator = new PureUCTEvaluator(explorationWeight);
-    }
-
     public PureMCTSMoveGetter(@Nonnull NodeEvaluator selectionEvaluator) {
         this.selectionEvaluator = selectionEvaluator;
-    }
-
-    public PureMCTSMoveGetter() {
-        this(THEORETICAL_EXPLORATION_WEIGHT);
     }
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
 
-        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState, this.selectionEvaluator);
+        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState);
 
         long totalSelectionPathLength = 0;
         long iterations = 0;
 
         while (!timer.ranOutOfTime()) {
-            List<Integer> selectedPath = tree.select();
+            List<Integer> selectedPath = tree.select(this.selectionEvaluator);
             Expansion expansion = tree.createExpansion(selectedPath);
 
             if (!expansion.isPossible()) {

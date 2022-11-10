@@ -13,21 +13,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectionTest {
 
-    private ImmutableGameState gameState;
     private static final double EXPLORATION_WEIGHT = Math.sqrt(2);
 
-    private MCTSTree tree;
+    ImmutableGameState gameState;
+
+    MCTSTree tree;
+
+    NodeEvaluator evaluator;
 
     @BeforeEach
     void setUp() {
         this.gameState = GameStateFixture.createTestGameState();
-        NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
-        this.tree = MCTSTree.ofGameStateWithChildren(gameState, evaluator);
+        this.evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
+        this.tree = MCTSTree.ofGameStateWithChildren(gameState);
     }
 
     @Test
     void selectionYieldsRootNodeTest() {
-        List<Integer> selectedNodeTrace = this.tree.select();
+        List<Integer> selectedNodeTrace = this.tree.select(evaluator);
         assertEquals(1, selectedNodeTrace.size());
 
         MCTSTreeNode rootNode = this.tree.getRootNode();
