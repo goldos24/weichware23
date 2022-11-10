@@ -25,7 +25,7 @@ public class BoardFixture {
 
     @SuppressWarnings("all")
     private static Coordinates coordsFromXY(int x, int y) {
-        return new Coordinates(x*2+y%2, y);
+        return new Coordinates(x * 2 + y % 2, y);
     }
 
     public static final Coordinates firstPenguinCoords = coordsFromXY(PENGUIN_START_X, PENGUIN_START_Y);
@@ -39,6 +39,27 @@ public class BoardFixture {
             resultingFields.add(createSingleBoardFieldLine());
         }
         return new Board(resultingFields);
+    }
+
+    public static Board createTestBoardOneFishPerFieldAndAllPenguinsOnBoard() {
+        Board board = createTestBoardOneFishPerField();
+        Coordinates teamOneFirstPenguinCoordinates = new Coordinates(1, 1);
+        Coordinates teamOneSecondPenguinCoordinates = new Coordinates(3, 5);
+        Coordinates teamOneThirdPenguinCoordinates = new Coordinates(6, 4);
+        Coordinates teamOneFourthPenguinCoordinates = new Coordinates(5, 7);
+        Coordinates teamTwoFirstPenguinCoordinates = new Coordinates(6, 6);
+        Coordinates teamTwoSecondPenguinCoordinates = new Coordinates(2, 4);
+        Coordinates teamTwoThirdPenguinCoordinates = new Coordinates(5, 3);
+        Coordinates teamTwoFourthPenguinCoordinates = new Coordinates(3, 1);
+        board.set(teamOneFirstPenguinCoordinates, Team.ONE);
+        board.set(teamOneSecondPenguinCoordinates, Team.ONE);
+        board.set(teamOneThirdPenguinCoordinates, Team.ONE);
+        board.set(teamOneFourthPenguinCoordinates, Team.ONE);
+        board.set(teamTwoFirstPenguinCoordinates, Team.TWO);
+        board.set(teamTwoSecondPenguinCoordinates, Team.TWO);
+        board.set(teamTwoThirdPenguinCoordinates, Team.TWO);
+        board.set(teamTwoFourthPenguinCoordinates, Team.TWO);
+        return board;
     }
 
     private static List<Field> createSingleBoardFieldLine() {
@@ -68,7 +89,7 @@ public class BoardFixture {
                 new Coordinates(2, 0), new Field(0, Team.ONE),
                 new Coordinates(4, 0), new Field(0, Team.TWO),
                 new Coordinates(6, 0), new Field(DEFAULT_MORE_FISH_COUNT, null));
-                return BoardPeek.fromStreams(
+        return BoardPeek.fromStreams(
                 GameRuleLogic.createBoardCoordinateStream().map(
                         coordinates -> {
                             var field = fieldMap.get(coordinates);
