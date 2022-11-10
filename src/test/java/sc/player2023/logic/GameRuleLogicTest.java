@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.player2023.logic.board.BoardPeek;
+import sc.plugin2023.Field;
 import sc.plugin2023.Move;
 
 import java.util.List;
@@ -58,5 +59,16 @@ class GameRuleLogicTest {
     @Test
     void createBoardCoordinateStream() {
         assertEquals(GameRuleLogic.createBoardCoordinateStream().filter(GameRuleLogic::coordsValid).count(), 64);
+    }
+
+    @Test
+    void withMovePerformed() {
+        ImmutableGameState gameState = GameStateFixture.createTestGameState();
+        Move move = new Move(BoardFixture.firstPenguinCoords, new Coordinates(3, 1));
+        gameState = GameRuleLogic.withMovePerformed(gameState, move);
+        Field expected = new Field(0, null);
+        Field got = gameState.getBoard().get(BoardFixture.firstPenguinCoords);
+        assertEquals(expected, got);
+        System.out.println(gameState.getBoard());
     }
 }
