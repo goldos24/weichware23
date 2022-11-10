@@ -12,7 +12,7 @@ public class MCTSComparisonProgram {
     public static void main(String[] args) {
         Rater rater = Logic.createCombinedRater();
         NodeEvaluator pureEvaluator = new PureUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
-        NodeEvaluator scoreDiffWeightedEvaluator = new ScoreWeightedUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
+        NodeEvaluator scoreDiffWeightedEvaluator = new ScoreDiffWeightedUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
 
         NodeSelector basicSelector = new BasicEvaluatorSelector(pureEvaluator);
         Fighter mctsFighter = new Fighter(new MCTSMoveGetter(basicSelector), rater);
@@ -20,7 +20,7 @@ public class MCTSComparisonProgram {
         NodeSelector otherBasicSelector = new BasicEvaluatorSelector(scoreDiffWeightedEvaluator);
         Fighter otherMctsFighter = new Fighter(new MCTSMoveGetter(otherBasicSelector), rater);
 
-        BattleResult result = Battle.run(mctsFighter, otherMctsFighter, new BattleData(4));
+        BattleResult result = Battle.run(mctsFighter, otherMctsFighter, new BattleData(2));
         System.out.println(result);
     }
 }
