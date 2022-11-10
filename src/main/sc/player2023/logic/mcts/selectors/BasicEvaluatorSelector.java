@@ -1,14 +1,23 @@
-package sc.player2023.logic.mcts;
+package sc.player2023.logic.mcts.selectors;
+
+import sc.player2023.logic.mcts.MCTSTreeNode;
+import sc.player2023.logic.mcts.NodeEvaluator;
+import sc.player2023.logic.mcts.NodeSelector;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Selection {
+public class BasicEvaluatorSelector implements NodeSelector {
 
-    private Selection() {}
+    @Nonnull
+    private final NodeEvaluator evaluator;
 
-    private static int pickChildNode(MCTSTreeNode parentNode, NodeEvaluator evaluator) {
+    public BasicEvaluatorSelector(@Nonnull NodeEvaluator evaluator) {
+        this.evaluator = evaluator;
+    }
+
+    private int pickChildNode(MCTSTreeNode parentNode) {
         List<MCTSTreeNode> children = parentNode.getChildren();
 
         assert children.size() > 0;
@@ -23,7 +32,7 @@ public class Selection {
 
         for (int i = 0; i < children.size(); ++i) {
             MCTSTreeNode childNode = children.get(i);
-            double value = evaluator.evaluateNode(parentNode, childNode);
+            double value = this.evaluator.evaluateNode(parentNode, childNode);
 
             if (value > bestValue) {
                 bestValue = value;
@@ -31,7 +40,7 @@ public class Selection {
             }
         }
 
-        // UCT always yielded NaN
+        // Evaluator always yielded NaN
         if (bestIndex == -1) {
             return (int)Math.round(Math.random() * (children.size() - 1));
         }
@@ -40,7 +49,8 @@ public class Selection {
     }
 
     @Nonnull
-    public static List<Integer> complete(MCTSTreeNode rootNode, NodeEvaluator evaluator) {
+    @Override
+    public List<Integer> select(MCTSTreeNode rootNode) {
         assert rootNode.hasChildren();
 
         // Select a random child node of the root
@@ -51,9 +61,9 @@ public class Selection {
         List<Integer> indices = new ArrayList<>();
         indices.add(randomIndex);
 
-        // Pick child node from the randomly selected node
+        // Pick successive children nodes from the randomly selected node
         while (currentNode.hasChildren()) {
-            int childIndex = pickChildNode(currentNode, evaluator);
+            int childIndex = this.pickChildNode(currentNode);
             indices.add(childIndex);
             List<MCTSTreeNode> currentChildren = currentNode.getChildren();
 
