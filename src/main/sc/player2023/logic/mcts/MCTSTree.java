@@ -1,55 +1,24 @@
 package sc.player2023.logic.mcts;
 
-import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.rating.Rater;
-import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Stream;
 
 public record MCTSTree(@Nonnull MCTSTreeNode rootNode) {
 
-    public static MCTSTree ofGameStateWithAllChildren(@Nonnull ImmutableGameState initialGameState) {
-        Stream<Move> possibleMoveStream = GameRuleLogic.getPossibleMoveStream(initialGameState);
-        Stream<MCTSTreeNode> childrenStream = possibleMoveStream.map(move -> {
-            ImmutableGameState gameState = GameRuleLogic.withMovePerformed(initialGameState, move);
-            return new MCTSTreeNode(move, gameState);
-        });
-
-        List<MCTSTreeNode> children = childrenStream.toList();
+    public static MCTSTree withChildren(@Nonnull ImmutableGameState initialGameState, @Nonnull List<MCTSTreeNode> children) {
         MCTSTreeNode rootNode = new MCTSTreeNode(initialGameState);
         rootNode.addChildren(children);
 
         return new MCTSTree(rootNode);
     }
 
-    public static MCTSTree ofGameStateWithChildren(@Nonnull ImmutableGameState initialGameState, @Nonnull Rater childRater, int maxChildNodes) {
-        Stream<Move> possibleMoveStream = GameRuleLogic.getPossibleMoveStream(initialGameState);
-        Stream<Move> sortedMoveStream = possibleMoveStream.sorted((moveA, moveB) -> {
-            ImmutableGameState withMoveA = GameRuleLogic.withMovePerformed(initialGameState, moveA);
-            ImmutableGameState withMoveB = GameRuleLogic.withMovePerformed(initialGameState, moveB);
-
-            Rating ratingA = childRater.rate(withMoveA);
-            Rating ratingB = childRater.rate(withMoveB);
-
-            return ratingA.compareTo(ratingB);
-        });
-
-        Stream<Move> limitedMoveStream = sortedMoveStream.limit(maxChildNodes);
-        Stream<MCTSTreeNode> childrenStream = limitedMoveStream.map(move -> {
-            ImmutableGameState gameState = GameRuleLogic.withMovePerformed(initialGameState, move);
-            return new MCTSTreeNode(move, gameState);
-        });
-
-        List<MCTSTreeNode> children = childrenStream.toList();
-        MCTSTreeNode rootNode = new MCTSTreeNode(initialGameState);
-        rootNode.addChildren(children);
-
-        return new MCTSTree(rootNode);
+    public static MCTSTree fromInitialiser(@Nonnull ImmutableGameState initialGameState, @Nonnull RootChildrenInitialiser childrenInitialiser) {
+        List<MCTSTreeNode> children = childrenInitialiser.getChildren(initialGameState);
+        return withChildren(initialGameState, children);
     }
 
     @Nullable

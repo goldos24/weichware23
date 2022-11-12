@@ -18,21 +18,15 @@ public class MCTSMoveGetter implements MoveGetter {
 
     private final TimeMeasurer timer = new TimeMeasurer(1900);
 
-    @Nonnull
-    private final NodeSelector selector;
-    
-    private final int maxInitialChildNodes;
+    @Nonnull private final NodeSelector selector;
+
+    @Nonnull private final RootChildrenInitialiser rootChildrenInitialiser;
+
     private final int maxExpansionAmount;
 
-    public MCTSMoveGetter(@Nonnull NodeSelector selector) {
+    public MCTSMoveGetter(@Nonnull NodeSelector selector, @Nonnull RootChildrenInitialiser rootChildrenInitialiser, int maxExpansionAmount) {
         this.selector = selector;
-        this.maxInitialChildNodes = 10;
-        this.maxExpansionAmount = 8;
-    }
-
-    public MCTSMoveGetter(@Nonnull NodeSelector selector, int maxInitialChildNodes, int maxExpansionAmount) {
-        this.selector = selector;
-        this.maxInitialChildNodes = maxInitialChildNodes;
+        this.rootChildrenInitialiser = rootChildrenInitialiser;
         this.maxExpansionAmount = maxExpansionAmount;
     }
 
@@ -40,7 +34,8 @@ public class MCTSMoveGetter implements MoveGetter {
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
 
-        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState, rater, this.maxInitialChildNodes);
+        List<MCTSTreeNode> children = this.rootChildrenInitialiser.getChildren(gameState);
+        MCTSTree tree = MCTSTree.withChildren(gameState, children);
 
         long totalSelectionPathLength = 0;
         long iterations = 0;
