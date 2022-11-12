@@ -27,12 +27,12 @@ public class SelectionTest {
         this.gameState = GameStateFixture.createTestGameState();
         NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
         this.selector = new BasicEvaluatorSelector(evaluator);
-        this.tree = MCTSTree.ofGameStateWithChildren(gameState);
+        this.tree = MCTSTree.ofGameStateWithAllChildren(gameState);
     }
 
     @Test
     void selectionYieldsRootNodeTest() {
-        MCTSTreeNode rootNode = this.tree.getRootNode();
+        MCTSTreeNode rootNode = this.tree.rootNode();
         List<Integer> selectedNodeTrace = this.selector.select(rootNode);
         assertEquals(1, selectedNodeTrace.size());
 

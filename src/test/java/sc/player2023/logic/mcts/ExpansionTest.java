@@ -28,12 +28,12 @@ public class ExpansionTest {
         this.gameState = GameStateFixture.createTestGameState();
         NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
         this.selector = new BasicEvaluatorSelector(evaluator);
-        this.tree = MCTSTree.ofGameStateWithChildren(gameState);
+        this.tree = MCTSTree.ofGameStateWithAllChildren(gameState);
     }
 
     @Test
     void expansionMakesNewNodeTest() {
-        MCTSTreeNode rootNode = this.tree.getRootNode();
+        MCTSTreeNode rootNode = this.tree.rootNode();
         List<Integer> selectedNodeTrace = this.selector.select(rootNode);
         Expansion expansion = this.tree.createExpansion(selectedNodeTrace);
 

@@ -14,30 +14,39 @@ public class MCTSMoveGetter implements MoveGetter {
     // TODO: find a more suitable exploration weight for this game
     public static final double THEORETICAL_EXPLORATION_WEIGHT = Math.sqrt(2);
 
-    public static final int EXPANSION_AMOUNT = 3;
-
     private static final Logger log = LoggerFactory.getLogger(MCTSMoveGetter.class);
 
     private final TimeMeasurer timer = new TimeMeasurer(1900);
 
     @Nonnull
     private final NodeSelector selector;
+    
+    private final int maxInitialChildNodes;
+    private final int maxExpansionAmount;
 
     public MCTSMoveGetter(@Nonnull NodeSelector selector) {
         this.selector = selector;
+        this.maxInitialChildNodes = 10;
+        this.maxExpansionAmount = 8;
+    }
+
+    public MCTSMoveGetter(@Nonnull NodeSelector selector, int maxInitialChildNodes, int maxExpansionAmount) {
+        this.selector = selector;
+        this.maxInitialChildNodes = maxInitialChildNodes;
+        this.maxExpansionAmount = maxExpansionAmount;
     }
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
 
-        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState);
+        MCTSTree tree = MCTSTree.ofGameStateWithChildren(gameState, rater, this.maxInitialChildNodes);
 
         long totalSelectionPathLength = 0;
         long iterations = 0;
 
         while (!timer.ranOutOfTime()) {
-            MCTSTreeNode rootNode = tree.getRootNode();
+            MCTSTreeNode rootNode = tree.rootNode();
             List<Integer> selectedPath = this.selector.select(rootNode);
             Expansion expansion = tree.createExpansion(selectedPath);
 
@@ -48,12 +57,12 @@ public class MCTSMoveGetter implements MoveGetter {
             totalSelectionPathLength += selectedPath.size();
             iterations++;
 
-            List<MCTSTreeNode> newNodes = expansion.expandAndSimulate(EXPANSION_AMOUNT);
+            List<MCTSTreeNode> newNodes = expansion.expandAndSimulate(this.maxExpansionAmount);
 
             rootNode.addBackpropagatedChildrenAfterSteps(selectedPath, newNodes);
         }
 
-        MCTSTreeNode treeRootNode = tree.getRootNode();
+        MCTSTreeNode treeRootNode = tree.rootNode();
         Statistics treeRootNodeStatistics = treeRootNode.getStatistics();
         List<MCTSTreeNode> rootNodeChildren = treeRootNode.getChildren();
 

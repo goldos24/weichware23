@@ -22,10 +22,7 @@ public class Expansion {
         return !this.selectedNode.getGameState().isOver();
     }
 
-    private MCTSTreeNode createSimulatedNode(ImmutableGameState parentGameState) {
-        List<Move> moves = GameRuleLogic.getPossibleMoves(parentGameState);
-        int randomMoveIndex = GameRuleLogic.getRandomMoveIndex(moves);
-        Move randomMove = moves.get(randomMoveIndex);
+    private MCTSTreeNode createSimulatedNode(ImmutableGameState parentGameState, Move randomMove) {
         ImmutableGameState gameStateWithRandomMove = GameRuleLogic.withMovePerformed(parentGameState, randomMove);
 
         Playout playout = new Playout(gameStateWithRandomMove);
@@ -38,15 +35,22 @@ public class Expansion {
     }
 
     @Nonnull
-    public List<MCTSTreeNode> expandAndSimulate(int expansionAmount) {
+    public List<MCTSTreeNode> expandAndSimulate(int maxExpansionAmount) {
         ImmutableGameState selectedGameState = this.selectedNode.getGameState();
         if (selectedGameState.isOver()) {
             return List.of();
         }
 
+        // Limit expansion amount to the number of possible moves
+        List<Move> moves = GameRuleLogic.getPossibleMoves(selectedGameState);
+        int expansionAmount = Math.min(maxExpansionAmount, moves.size());
+
         List<MCTSTreeNode> children = new ArrayList<>();
         for (int i = 0; i < expansionAmount; ++i) {
-            MCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState);
+            int randomMoveIndex = GameRuleLogic.getRandomMoveIndex(moves);
+            Move randomMove = moves.get(randomMoveIndex);
+
+            MCTSTreeNode simulatedNode = this.createSimulatedNode(selectedGameState, randomMove);
             children.add(simulatedNode);
         }
 
