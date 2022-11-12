@@ -2,8 +2,6 @@ package sc.player2023.logic.mcts;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sc.player2023.logic.GameStateFixture;
-import sc.player2023.logic.ImmutableGameState;
 import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
 import sc.player2023.logic.mcts.selectors.BasicEvaluatorSelector;
 
@@ -17,18 +15,15 @@ public class ExpansionTest {
 
     private static final double EXPLORATION_WEIGHT = Math.sqrt(2);
 
-    ImmutableGameState gameState;
-
     MCTSTree tree;
 
     NodeSelector selector;
 
     @BeforeEach
     void setUp() {
-        this.gameState = GameStateFixture.createTestGameState();
         NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
         this.selector = new BasicEvaluatorSelector(evaluator);
-        this.tree = MCTSTree.ofGameStateWithAllChildren(gameState);
+        this.tree = MCTSTreeFixture.createTestTree();
     }
 
     @Test
