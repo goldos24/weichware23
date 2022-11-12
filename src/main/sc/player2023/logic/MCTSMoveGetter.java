@@ -62,7 +62,10 @@ public class MCTSMoveGetter implements MoveGetter {
         List<MCTSTreeNode> rootNodeChildren = treeRootNode.getChildren();
 
         log.info("Root node visits: {}", treeRootNodeStatistics.visits());
-        log.info("Root node wins: {}", treeRootNodeStatistics.wins());
+
+        long rootWins = treeRootNodeStatistics.wins();
+        long ownWins = treeRootNodeStatistics.inverted().wins();
+        log.info("Root node wins: {} -> Own wins: {}", rootWins, ownWins);
         log.info("Root node children: {}", rootNodeChildren.size());
         log.info("Average selection path length: {} with {} full iterations", (double)totalSelectionPathLength / iterations, iterations);
 
