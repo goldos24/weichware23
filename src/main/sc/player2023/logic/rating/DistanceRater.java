@@ -3,10 +3,8 @@ package sc.player2023.logic.rating;
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.board.BoardPeek;
-import sc.player2023.logic.rating.Rater;
-import sc.player2023.logic.rating.Rating;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

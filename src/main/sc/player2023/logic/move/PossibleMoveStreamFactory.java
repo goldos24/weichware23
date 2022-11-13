@@ -1,10 +1,11 @@
-package sc.player2023.logic;
+package sc.player2023.logic.move;
 
 import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.api.plugins.Vector;
+import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Move;
 
@@ -26,7 +27,7 @@ public class PossibleMoveStreamFactory{
     }
 
     @Nonnull
-    static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
+    public static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
                                                            @Nonnull Coordinates startCoordinate) {
         @Nonnull Stream<Vector> directions = createCurrentDirectionStream();
         Stream<Stream<Coordinates>> targetStreamStream =

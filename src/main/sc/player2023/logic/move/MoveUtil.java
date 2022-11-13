@@ -1,6 +1,7 @@
-package sc.player2023.logic;
+package sc.player2023.logic.move;
 
 import com.google.common.collect.ImmutableList;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.RatedMove;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;

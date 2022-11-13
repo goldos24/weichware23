@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.player2023.logic.GameRuleLogic;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.board.BoardPeek;
 
 import java.util.Map;

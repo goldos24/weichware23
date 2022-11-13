@@ -1,8 +1,8 @@
 package sc.player2023.logic.rating;
 
 import org.junit.jupiter.api.Test;
-import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.ImmutableGameStateFactory;
+import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameStateFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static sc.player2023.logic.rating.Rating.FIVE;

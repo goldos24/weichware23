@@ -2,6 +2,7 @@ package sc.player2023.logic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.mcts.*;
 import sc.player2023.logic.rating.*;
 import sc.plugin2023.Move;

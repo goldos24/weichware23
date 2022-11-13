@@ -1,5 +1,6 @@
-package sc.player2023.logic;
+package sc.player2023.logic.move;
 
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;

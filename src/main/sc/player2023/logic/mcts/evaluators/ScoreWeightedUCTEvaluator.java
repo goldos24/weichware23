@@ -1,7 +1,7 @@
 package sc.player2023.logic.mcts.evaluators;
 
 import sc.api.plugins.ITeam;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.mcts.MCTSTreeNode;
 import sc.player2023.logic.mcts.NodeEvaluator;
 import sc.player2023.logic.mcts.Statistics;

@@ -1,6 +1,6 @@
 package sc.player2023.comparison;
 
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 
 import javax.annotation.Nullable;
 import java.util.Objects;

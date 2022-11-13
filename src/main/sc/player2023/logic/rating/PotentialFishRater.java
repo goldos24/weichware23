@@ -3,7 +3,7 @@ package sc.player2023.logic.rating;
 import org.jetbrains.annotations.NotNull;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;
@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static sc.player2023.logic.PossibleMoveStreamFactory.getPossibleMovesInNormalCase;
+import static sc.player2023.logic.move.PossibleMoveStreamFactory.getPossibleMovesInNormalCase;
 
 public class PotentialFishRater implements Rater {
 /*
@@ -40,7 +40,6 @@ public class PotentialFishRater implements Rater {
 
     @Override
     public Rating rate(@NotNull ImmutableGameState gameState) {
-        BoardPeek board = gameState.getBoard();
         ITeam team = gameState.getCurrentTeam();
         return getPotentialFishForTeam(gameState, team).subtract(getPotentialFishForTeam(gameState, team.opponent()));
     }

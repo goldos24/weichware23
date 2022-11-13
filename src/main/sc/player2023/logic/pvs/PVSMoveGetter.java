@@ -1,9 +1,13 @@
-package sc.player2023.logic;
+package sc.player2023.logic.pvs;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import sc.player2023.logic.GameRuleLogic;
+import sc.player2023.logic.MoveGetter;
+import sc.player2023.logic.TimeMeasurer;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
@@ -78,8 +82,8 @@ public class PVSMoveGetter implements MoveGetter {
     }
 
     @Nullable
-    static Move getBestMoveForDepth(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer, int depth) {
-        double alpha = Double.NEGATIVE_INFINITY, score = Double.NEGATIVE_INFINITY, beta = Double.POSITIVE_INFINITY;
+    public static Move getBestMoveForDepth(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer, int depth) {
+        double alpha = Double.NEGATIVE_INFINITY, score, beta = Double.POSITIVE_INFINITY;
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         boolean firstChild = true;

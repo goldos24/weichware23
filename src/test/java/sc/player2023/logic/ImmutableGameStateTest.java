@@ -3,6 +3,7 @@ package sc.player2023.logic;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Team;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.plugin2023.Board;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -6,7 +6,7 @@ import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.GameStateFixture;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.plugin2023.Move;
 
 import java.util.List;

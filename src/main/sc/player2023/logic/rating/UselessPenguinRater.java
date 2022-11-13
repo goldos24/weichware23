@@ -3,7 +3,7 @@ package sc.player2023.logic.rating;
 import org.jetbrains.annotations.NotNull;
 import sc.api.plugins.Coordinates;
 import sc.player2023.logic.GameRuleLogic;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 
 import java.util.stream.Stream;
 

@@ -1,8 +1,6 @@
 package sc.player2023.logic.rating;
 
-import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.rating.Rater;
-import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.gameState.ImmutableGameState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;

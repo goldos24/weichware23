@@ -3,6 +3,7 @@ package sc.player2023.comparison;
 import sc.player2023.logic.*;
 import sc.player2023.logic.enemy.MaxRating;
 import sc.player2023.logic.enemy.MoveFinder;
+import sc.player2023.logic.pvs.PVSMoveGetter;
 
 public class ComparisonProgram {
     public static void main(String[] args) {

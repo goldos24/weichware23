@@ -3,8 +3,8 @@ package sc.player2023.comparison;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import sc.player2023.logic.ImmutableGameState;
-import sc.player2023.logic.ImmutableGameStateFactory;
+import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameStateFactory;
 import sc.player2023.logic.Logic;
 import sc.player2023.logic.StupidMoveGetter;
 import sc.player2023.logic.rating.Rating;

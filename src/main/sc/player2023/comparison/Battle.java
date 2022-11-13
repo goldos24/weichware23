@@ -3,6 +3,8 @@ package sc.player2023.comparison;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.player2023.logic.*;
+import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameStateFactory;
 import sc.player2023.logic.rating.Rater;
 import sc.plugin2023.Move;
 
@@ -19,7 +21,8 @@ public class Battle {
 
     @Nonnull
     private static BattleResult monoDirectionalFight(@Nonnull Fighter ownFighter, @Nonnull Fighter opponentFighter, @Nonnull ITeam ownFighterTeam, @Nonnull BattleData battleData) {
-        @Nonnull ImmutableGameState gameState = battleData.testBoard() == null ? ImmutableGameStateFactory.createAny() : battleData.testBoard();
+        @Nonnull ImmutableGameState
+                gameState = battleData.testBoard() == null ? ImmutableGameStateFactory.createAny() : battleData.testBoard();
         ITeam opponentTeam = ownFighterTeam.opponent();
         Fighter fighter1 = ownFighterTeam == Team.ONE ? ownFighter : opponentFighter;
         Fighter fighter2 = ownFighterTeam == Team.TWO ? ownFighter : opponentFighter;

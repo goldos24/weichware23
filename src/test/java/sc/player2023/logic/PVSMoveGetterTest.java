@@ -2,6 +2,8 @@ package sc.player2023.logic;
 
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
+import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.pvs.PVSMoveGetter;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.StupidRater;
 import sc.plugin2023.Move;

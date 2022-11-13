@@ -1,7 +1,7 @@
 package sc.player2023.logic.mcts.initialisers;
 
 import sc.player2023.logic.GameRuleLogic;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.mcts.MCTSTreeNode;
 import sc.player2023.logic.mcts.RootChildrenInitialiser;
 import sc.player2023.logic.rating.Rater;

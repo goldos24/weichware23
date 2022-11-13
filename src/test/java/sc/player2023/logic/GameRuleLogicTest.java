@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.move.PossibleMoveStreamFactory;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;
 
@@ -24,7 +26,8 @@ class GameRuleLogicTest {
     @Test
     void getPossibleMoveStream() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        Set<Move> expected = PossibleMoveStreamFactory.getPossibleMoves(gameState.getBoard(), Team.ONE).collect(Collectors.toSet());
+        Set<Move> expected = PossibleMoveStreamFactory
+                .getPossibleMoves(gameState.getBoard(), Team.ONE).collect(Collectors.toSet());
         Set<Move> got = GameRuleLogic.getPossibleMoveStream(gameState).collect(Collectors.toSet());
         assertEquals(expected,got);
     }

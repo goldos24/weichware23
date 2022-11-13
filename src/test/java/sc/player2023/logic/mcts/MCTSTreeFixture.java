@@ -1,7 +1,7 @@
 package sc.player2023.logic.mcts;
 
 import sc.player2023.logic.GameStateFixture;
-import sc.player2023.logic.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.mcts.initialisers.AllMovesInitialiser;
 
 import javax.annotation.Nonnull;
