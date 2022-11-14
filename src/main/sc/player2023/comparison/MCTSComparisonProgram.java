@@ -14,12 +14,15 @@ public class MCTSComparisonProgram {
     public static void main(String[] args) {
         Rater rater = Logic.createCombinedRater();
         NodeEvaluator scoreDiffWeightedEvaluator = new ScoreDiffWeightedUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
+        NodeEvaluator ratingWeightedEvaluator = new RatingWeightedUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT, rater);
+
         NodeSelector selector = new BasicEvaluatorSelector(scoreDiffWeightedEvaluator);
-        RootChildrenInitialiser initialiser = new AllMovesInitialiser();
-        RootChildrenInitialiser otherInitialiser = new BestRatedMovesInitialiser(rater, 8);
+        NodeSelector otherSelector = new BasicEvaluatorSelector(ratingWeightedEvaluator);
+
+        RootChildrenInitialiser initialiser = new BestRatedMovesInitialiser(rater, 8);
 
         Fighter mctsFighter = new Fighter(new MCTSMoveGetter(selector, initialiser, 3), rater);
-        Fighter otherMctsFighter = new Fighter(new MCTSMoveGetter(selector, otherInitialiser, 8), rater);
+        Fighter otherMctsFighter = new Fighter(new MCTSMoveGetter(otherSelector, initialiser, 3), rater);
 
         BattleResult result = Battle.run(mctsFighter, otherMctsFighter, new BattleData(3));
         System.out.println(result);
