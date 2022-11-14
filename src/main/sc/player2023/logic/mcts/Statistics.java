@@ -11,11 +11,11 @@ public record Statistics(long visits, long wins) {
         return Statistics.zeroed().addPlayoutResult(result, currentTeam);
     }
 
-    public Statistics addWin() {
+    public Statistics addVisitAndWin() {
         return new Statistics(this.visits + 1, this.wins + 1);
     }
 
-    public Statistics addLossOrDraw() {
+    public Statistics addVisit() {
         return new Statistics(this.visits + 1, this.wins);
     }
 
@@ -38,8 +38,8 @@ public record Statistics(long visits, long wins) {
         PlayoutResult.Kind kind = result.getKind();
 
         return switch (kind) {
-            case WIN -> this.addWin();
-            case LOSS, DRAW -> this.addLossOrDraw();
+            case WIN -> this.addVisitAndWin();  // Own win is good for the current team
+            case LOSS, DRAW -> this.addVisit(); // Own loss/draw is bad for the current team
             case NONE -> this;
         };
     }
@@ -48,8 +48,8 @@ public record Statistics(long visits, long wins) {
         PlayoutResult.Kind kind = result.getKind();
 
         return switch (kind) {
-            case WIN -> this.addLossOrDraw();
-            case LOSS, DRAW -> this.addWin();
+            case WIN -> this.addVisit();              // Opponent win is bad for the current team
+            case LOSS, DRAW -> this.addVisitAndWin(); // Opponent loss/draw is good for the current team
             case NONE -> this;
         };
     }
