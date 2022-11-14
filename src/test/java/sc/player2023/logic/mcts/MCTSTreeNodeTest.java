@@ -54,7 +54,7 @@ public class MCTSTreeNodeTest {
         assertEquals(Team.TWO, playoutResult.getAffectedTeam());
 
         // The playout result is a loss for team two, and thus a win for team one
-        Statistics statistics = Statistics.zeroed().addWin();
+        Statistics statistics = Statistics.zeroed().addVisitAndWin();
         MCTSTreeNode expected = new MCTSTreeNode(statistics, null, gameState, List.of());
 
         this.node.addPlayoutResult(playoutResult);
@@ -89,7 +89,7 @@ public class MCTSTreeNodeTest {
         assertEquals(1, children);
 
         // The playout result is a loss for team two, and thus a win for team one
-        Statistics statistics = Statistics.zeroed().addWin();
+        Statistics statistics = Statistics.zeroed().addVisitAndWin();
         assertEquals(statistics, node.getStatistics());
     }
 }
