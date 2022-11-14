@@ -29,7 +29,7 @@ class GameRuleLogicTest {
         Set<Move> expected = PossibleMoveStreamFactory
                 .getPossibleMoves(gameState.getBoard(), Team.ONE).collect(Collectors.toSet());
         Set<Move> got = GameRuleLogic.getPossibleMoveStream(gameState).collect(Collectors.toSet());
-        assertEquals(expected,got);
+        assertEquals(expected, got);
     }
 
     @Test
@@ -53,10 +53,16 @@ class GameRuleLogicTest {
             assertTrue(GameRuleLogic.coordsValid(validCoord));
         }
     }
+
+    @Test
+    void coordsValidFalse() {
+        assertFalse(GameRuleLogic.coordsValid(null));
+    }
+
     @Test
     void nextCoord() {
-        assertEquals(new Coordinates(2, 0), GameRuleLogic.nextCoord(new Coordinates(0,0)));
-        assertEquals(new Coordinates(1, 1), GameRuleLogic.nextCoord(new Coordinates(14,0)));
+        assertEquals(new Coordinates(2, 0), GameRuleLogic.nextCoord(new Coordinates(0, 0)));
+        assertEquals(new Coordinates(1, 1), GameRuleLogic.nextCoord(new Coordinates(14, 0)));
     }
 
     @Test
