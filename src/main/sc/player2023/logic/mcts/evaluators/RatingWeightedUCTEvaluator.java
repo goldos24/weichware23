@@ -34,7 +34,7 @@ public class RatingWeightedUCTEvaluator implements NodeEvaluator {
 
         double exploitation = nodeWins / nodeVisits;
         double exploration  = Math.log(parentNodeVisits) / nodeVisits;
-        return exploitation + this.explorationWeight * exploration;
+        return exploitation + this.explorationWeight * Math.sqrt(exploration);
     }
 
     @Override
