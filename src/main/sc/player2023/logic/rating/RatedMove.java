@@ -28,7 +28,7 @@ public record RatedMove(@Nonnull Rating rating, @Nonnull Move move) implements C
     }
 
     @Override
-    public int compareTo(@NotNull RatedMove o) {
+    public int compareTo(@Nonnull RatedMove o) {
         return rating.compareTo(o.rating);
     }
 }

@@ -17,8 +17,8 @@ class ReachableFishRaterTest {
     @Test
     void indexToCoordsToIndex() {
         List<Coordinates> expected = GameRuleLogic.createBoardCoordinateStream().toList();
-        List<Coordinates> got = expected.stream().map(ReachableFishRater::coordsToIndex).
-                map(ReachableFishRater::indexToCoords).toList();
+        List<Coordinates> got = expected.stream().map(GameRuleLogic::coordsToIndex).
+                                        map(GameRuleLogic::indexToCoords).toList();
         assertEquals(expected, got);
     }
 

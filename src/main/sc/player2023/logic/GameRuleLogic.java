@@ -106,4 +106,14 @@ public class GameRuleLogic {
     public static boolean canMoveTo(@Nonnull BoardPeek board, @Nonnull Coordinates target) {
         return coordsValid(target) && board.get(target).getFish() != 0;
     }
+
+    public static Coordinates indexToCoords(int index) {
+        int y = index / BOARD_WIDTH;
+        int x = (index% BOARD_WIDTH)*2+y%2;
+        return new Coordinates(x, y);
+    }
+
+    public static int coordsToIndex(Coordinates coordinates) {
+        return coordinates.getY()* BOARD_WIDTH +coordinates.getX()/2;
+    }
 }

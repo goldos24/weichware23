@@ -14,15 +14,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class ReachableFishRater implements Rater {
-    static Coordinates indexToCoords(int index) {
-        int y = index / GameRuleLogic.BOARD_WIDTH;
-        int x = (index%GameRuleLogic.BOARD_WIDTH)*2+y%2;
-        return new Coordinates(x, y);
-    }
-
-    static int coordsToIndex(Coordinates coordinates) {
-        return coordinates.getY()*GameRuleLogic.BOARD_WIDTH+coordinates.getX()/2;
-    }
 
     static Set<Coordinates> getReachableCoordsFromCoordinate(Coordinates startCoords, BoardPeek board) {
         Set<Coordinates> result = new HashSet<>();
@@ -30,14 +21,14 @@ public class ReachableFishRater implements Rater {
         addReachableCoordsToSet(array, startCoords, board);
         for(int i = 0; i < array.length; ++i) {
             if(array[i]) {
-                result.add(indexToCoords(i));
+                result.add(GameRuleLogic.indexToCoords(i));
             }
         }
         return result;
     }
 
     static void addReachableCoordsToSet(boolean[] set, Coordinates startCoords, BoardPeek board) {
-        int index = coordsToIndex(startCoords);
+        int index = GameRuleLogic.coordsToIndex(startCoords);
         if(set[index]) {
             return;
         }
@@ -58,7 +49,7 @@ public class ReachableFishRater implements Rater {
         Set<Coordinates> coords = getReachableCoordsFromCoordinate(startCoords, board);
         boolean[] array = new boolean[ARRAY_SIZE];
         for(Coordinates coordinates : coords) {
-            array[coordsToIndex(coordinates)] = true;
+            array[GameRuleLogic.coordsToIndex(coordinates)] = true;
         }
         return getReachableFishFromCoordSet(board, array);
     }
@@ -67,7 +58,7 @@ public class ReachableFishRater implements Rater {
         int result = 0;
         for(int i = 0; i < coords.length; ++i) {
             if(coords[i]) {
-                result += board.get(indexToCoords(i)).getFish();
+                result += board.get(GameRuleLogic.indexToCoords(i)).getFish();
             }
         }
         return result;

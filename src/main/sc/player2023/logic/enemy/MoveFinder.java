@@ -65,7 +65,7 @@ public class MoveFinder implements MoveGetter {
     }
 
     @Override
-    public Move getBestMove(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer) {
+    public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         return findBestMove(gameState, rater,3, timeMeasurer);
     }
 }

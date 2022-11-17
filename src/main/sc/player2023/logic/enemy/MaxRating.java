@@ -49,7 +49,7 @@ public class MaxRating implements Rater {
     }
 
     @Override
-    public Rating rate(@NotNull ImmutableGameState gameState) {
+    public Rating rate(@Nonnull ImmutableGameState gameState) {
         return rateGameStateForTeam(gameState, gameState.getCurrentTeam());
     }
 }

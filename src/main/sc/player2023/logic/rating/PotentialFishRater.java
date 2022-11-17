@@ -39,7 +39,7 @@ public class PotentialFishRater implements Rater {
     }
 
     @Override
-    public Rating rate(@NotNull ImmutableGameState gameState) {
+    public Rating rate(@Nonnull ImmutableGameState gameState) {
         ITeam team = gameState.getCurrentTeam();
         return getPotentialFishForTeam(gameState, team).subtract(getPotentialFishForTeam(gameState, team.opponent()));
     }
