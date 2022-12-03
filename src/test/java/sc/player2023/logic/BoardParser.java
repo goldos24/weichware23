@@ -29,8 +29,4 @@ public class BoardParser {
         return BoardPeek.fromStreams(GameRuleLogic.createBoardCoordinateStream().
                 map(coordinates -> CHARACTER_FIELD_MAP.get(getCharAtCoordinateFromBoardString(coordinates, boardString))));
     }
-
-    public static void main(String[] args) {
-        System.out.println(new BoardPeek(BoardFixture.createTestBoard()));
-    }
 }
