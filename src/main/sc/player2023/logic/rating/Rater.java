@@ -6,4 +6,7 @@ import javax.annotation.Nonnull;
 
 public interface Rater {
     Rating rate(@Nonnull ImmutableGameState gameState);
+    default String getAnalytics(@Nonnull ImmutableGameState gameState) {
+        return this.getClass().getSimpleName() + "{" + rate(gameState).rating() + "}";
+    }
 }
