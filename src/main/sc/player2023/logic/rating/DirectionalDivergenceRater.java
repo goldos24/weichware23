@@ -14,7 +14,7 @@ public class DirectionalDivergenceRater implements Rater {
         double[] angles = penguins.mapToDouble(penguin -> {
             Coordinates penguinCoords = penguin.getFirst();
             Coordinates centerDifference = penguinCoords.minus(GameRuleLogic.nonReachableBoardCenter).unaryPlus();
-            return Math.atan2(centerDifference.getY(), centerDifference.getX());
+            return Math.atan2(centerDifference.getY(), centerDifference.getX()/2.0);
         }).toArray();
         if(angles.length == 0) {
             return Rating.ZERO;
