@@ -1,6 +1,5 @@
 package sc.player2023.logic.pvs;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -20,6 +19,13 @@ import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 
 public class PVSMoveGetter implements MoveGetter {
 
+    private static double getRatingFactorForNextMove(@Nonnull ImmutableGameState gameState) {
+        if(GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam().opponent())) {
+            return -1;
+        }
+        return 1;
+    }
+
     private static final Logger log = LoggerFactory.getLogger(PVSMoveGetter.class);
 
     private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
@@ -32,22 +38,29 @@ public class PVSMoveGetter implements MoveGetter {
         double score;
         double alpha = alphaBeta.alpha();
         double beta = alphaBeta.beta();
+        double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
                 AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).negate();
+                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
+                        postMoveRatingFactor
+                );
                 score = negated.rating();
             }
             else {
                 AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).negate();
+                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
+                        postMoveRatingFactor
+                );
                 score = negated.rating(); /* * search with a null window */
                 if (alphaBeta.canBeCutScore(score)) {
                     AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
                     Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
-                                              timeMeasurer).negate();
+                                              timeMeasurer).multiply(
+                            postMoveRatingFactor
+                    );
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
                 }
             }
@@ -99,23 +112,30 @@ public class PVSMoveGetter implements MoveGetter {
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         boolean firstChild = true;
+        double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
                 AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
                 Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater,
-                                     timeMeasurer).negate();
+                                     timeMeasurer).multiply(
+                        postMoveRatingFactor
+                );
                 score = negated.rating();
             }
             else {
                 AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
                 Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater,
-                                     timeMeasurer).negate();
+                                     timeMeasurer).multiply(
+                        postMoveRatingFactor
+                );
                 score = negated.rating(); /* * search with a null window */
                 if (alphaBeta.canBeCutScore(score)) {
                     AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
-                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater, timeMeasurer).negate();
+                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater, timeMeasurer).multiply(
+                            postMoveRatingFactor
+                    );
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
                 }
             }
