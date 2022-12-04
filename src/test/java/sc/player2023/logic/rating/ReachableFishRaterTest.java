@@ -2,7 +2,7 @@ package sc.player2023.logic.rating;
 
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
-import sc.player2023.logic.BoardFixture;
+import sc.player2023.logic.board.BoardFixture;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.GameStateFixture;
 import sc.player2023.logic.gameState.ImmutableGameState;

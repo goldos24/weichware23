@@ -2,6 +2,7 @@ package sc.player2023.logic;
 
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Team;
+import sc.player2023.logic.board.BoardFixture;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.PotentialFishRater;
 import sc.player2023.logic.rating.Rater;

@@ -3,7 +3,7 @@ package sc.player2023.logic.movetests;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
-import sc.player2023.logic.BoardParser;
+import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.Logic;
 import sc.player2023.logic.TimeMeasurerFixture;
 import sc.player2023.logic.board.BoardPeek;
@@ -28,14 +28,14 @@ public class NoSelfCutOffTest {
     @Test
     void endgameCheckForNoStupidMoves() {
         String situation = """
-            B       B   = -\s
-                 B       - -\s
-            =     R       =\s
-               -     =   - -\s
-            R     =       R\s
-             =   = R -     =\s
-            - -           -\s
-             - =   =   B   4\s
+            P - - - P - 2 1\s
+             - - P - - - 1 1\s
+            2 - - G - - - 2\s
+             - 1 - - 2 - 1 1\s
+            G - - 2 - - - G\s
+             2 - 2 G 1 - - 2\s
+            1 1 - - - - - 1\s
+             1 2 - 2 - P - 4\s
             """;
         Move[] unexpectedMoves = new Move[] {
                 new Move(new Coordinates(14, 4), new Coordinates(15, 5)),

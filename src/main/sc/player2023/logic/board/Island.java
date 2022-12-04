@@ -4,6 +4,7 @@ import sc.player2023.logic.Penguin;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+import java.util.List;
 
 /**
  * @author Till Fransson
@@ -13,6 +14,6 @@ import javax.annotation.concurrent.Immutable;
  * 
  */
 @Immutable
-public record Island(int fish, @Nonnull Penguin penguin) {
+public record Island(int fish, @Nonnull List<Penguin> penguins) {
     
 }
