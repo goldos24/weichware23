@@ -192,9 +192,9 @@ public class BoardPeek {
                             ifFishFieldThenFishModulo2OtherwisePenguinCount, nonZeroFishCount);
     }
 
-    Map<String, String> toStringEncodingMap = Map.of("0", " ",
-                                                     "R", "\u001B[32mR\u001B[0m",
-                                                     "B", "\u001B[35mB\u001B[0m",
+    Map<String, String> toStringEncodingMap = Map.of("0", "\u001b[46m ",
+                                                     "R", "\u001B[32mG",
+                                                     "B", "\u001B[35mP",
                                                      "1", "-",
                                                      "2", "=");
 
@@ -202,15 +202,16 @@ public class BoardPeek {
     public String toString() {
         StringBuilder result = new StringBuilder("BoardPeek{\n");
         for (int j = 0; j < GameRuleLogic.BOARD_HEIGHT; ++j) {
+            String noFieldToString = "\u001B[0m ";
             if (j % 2 == 1) {
-                result.append(" ");
+                result.append(noFieldToString);
             }
             for (int i = 0; i < GameRuleLogic.BOARD_WIDTH; ++i) {
                 Field field = get(new Coordinates(i * 2 + j % 2, j));
                 result.append(
                         toStringEncodingMap.get(field.toString()) != null ? toStringEncodingMap.get(field.toString())
                                 : field);
-                result.append(" ");
+                result.append(noFieldToString);
             }
             result.append("\n");
         }

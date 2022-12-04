@@ -16,11 +16,11 @@ public class BoardParser {
     }
 
     private static final Map<Character, Field> CHARACTER_FIELD_MAP = Map.of(
-            '-', new Field(0, null),
+            ' ', new Field(0, null),
             'G', new Field(0, Team.ONE),
             'P', new Field(0, Team.TWO),
-            '1', new Field(1, null),
-            '2', new Field(2, null),
+            '-', new Field(1, null),
+            '=', new Field(2, null),
             '3', new Field(3, null),
             '4', new Field(4, null)
     );
