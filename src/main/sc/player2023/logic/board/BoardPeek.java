@@ -146,7 +146,7 @@ public class BoardPeek {
                                                                        move.getTo()));
     }
 
-    public Collection<Pair<Coordinates, Team>> getPenguins() {
+    public PenguinCollection getPenguins() {
         return penguinCoordinateTeamMap;
     }
 

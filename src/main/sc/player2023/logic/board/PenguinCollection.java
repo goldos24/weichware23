@@ -121,6 +121,10 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         return indices.mapToObj(index -> new Pair<>(getCoordsAtBitSetIndex(bitset, index), team));
     }
 
+    public Stream<Pair<Coordinates, Team>> streamForTeam(Team team) {
+        return getPenguinStreamForTeam(team == Team.ONE? teamOnePenguins : teamTwoPenguins, team);
+    }
+
     @Nonnull
     @Override
     public Iterator<Pair<Coordinates, Team>> iterator() {
