@@ -1,20 +1,21 @@
 package sc.player2023.logic.gameState;
 
 import sc.api.plugins.ITeam;
-import sc.api.plugins.Team;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.score.GameScore;
+import sc.player2023.logic.score.PlayerScore;
+import sc.player2023.logic.score.Score;
 import sc.plugin2023.GameState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Immutable
 public final class ImmutableGameState {
     @Nonnull
-    private final Integer[] teamPointsMap;
+    private final GameScore gameScore;
 
     public BoardPeek getBoard() {
         return board;
@@ -22,14 +23,14 @@ public final class ImmutableGameState {
 
     private final BoardPeek board;
 
-    public ImmutableGameState(@Nonnull GameState gameState, @Nonnull Integer[] teamPointsMap) {
-        this.teamPointsMap = teamPointsMap;
+    public ImmutableGameState(@Nonnull GameState gameState, @Nonnull GameScore gameScore) {
+        this.gameScore = gameScore;
         this.board = new BoardPeek(gameState.getBoard());
         this.supposedCurrentTeam = gameState.getCurrentTeam();
     }
 
-    public ImmutableGameState(@Nonnull Integer[] teamPointsMap, BoardPeek board, ITeam supposedCurrentTeam) {
-        this.teamPointsMap = teamPointsMap;
+    public ImmutableGameState(@Nonnull GameScore gameScore, BoardPeek board, ITeam supposedCurrentTeam) {
+        this.gameScore = gameScore;
         this.board = board;
         this.supposedCurrentTeam = supposedCurrentTeam;
     }
@@ -37,13 +38,18 @@ public final class ImmutableGameState {
     private final ITeam supposedCurrentTeam;
 
     public ITeam getCurrentTeam() {
-        if(GameRuleLogic.anyPossibleMovesForPlayer(board, supposedCurrentTeam))
+        if (GameRuleLogic.anyPossibleMovesForPlayer(board, supposedCurrentTeam)) {
             return supposedCurrentTeam;
+        }
         return supposedCurrentTeam.opponent();
     }
 
-    public int getPointsForTeam(ITeam team) {
-        return teamPointsMap[((Team)team).ordinal()];
+    public Score getScoreForTeam(ITeam team) {
+        return gameScore.getScoreFromTeam(team);
+    }
+
+    public PlayerScore getPlayerScoreForTeam(ITeam team) {
+        return gameScore.getPlayerScoreFromTeam(team);
     }
 
     public boolean isOver() {
@@ -55,26 +61,29 @@ public final class ImmutableGameState {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (ImmutableGameState) obj;
-        return Objects.equals(this.getCurrentTeam(), that.getCurrentTeam()) &&
-                Arrays.equals(this.teamPointsMap, that.teamPointsMap) &&
-                Objects.equals(this.board, that.board);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ImmutableGameState that)) {
+            return false;
+        }
+        return gameScore.equals(that.gameScore) && Objects.equals(board, that.board) && Objects.equals(
+                supposedCurrentTeam, that.supposedCurrentTeam);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCurrentTeam(), Arrays.hashCode(teamPointsMap), board);
+        return Objects.hash(gameScore, board, supposedCurrentTeam);
     }
 
     @Override
     public String toString() {
-        return "ImmutableGameState[" +
-                "team=" + getCurrentTeam() + ", " +
-                "teamPointsMap=" + Arrays.toString(teamPointsMap) + ", " +
-                "board=" + board + ']';
+        return "ImmutableGameState {" +
+                " gameScore = " + gameScore +
+                ", board = " + board +
+                ", supposedCurrentTeam = " + supposedCurrentTeam +
+                "\n}";
     }
 
 }

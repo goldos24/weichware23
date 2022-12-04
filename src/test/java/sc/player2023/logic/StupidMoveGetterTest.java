@@ -8,6 +8,7 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.StupidRater;
+import sc.player2023.logic.score.Score;
 import sc.plugin2023.Move;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ class StupidMoveGetterTest {
 
     @Test
     void stupidMoveGetterTest() {
-        assertEquals(BoardFixture.DEFAULT_MORE_FISH_COUNT, testGameState.getPointsForTeam(Team.ONE));
+        assertEquals(new Score(BoardFixture.DEFAULT_MORE_FISH_COUNT), testGameState.getScoreForTeam(Team.ONE));
     }
 
     @Test

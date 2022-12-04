@@ -35,8 +35,8 @@ public class ScoreDiffWeightedUCTEvaluator implements NodeEvaluator {
         ImmutableGameState gameState = childNode.getGameState();
         ITeam gameStateCurrentTeam = gameState.getCurrentTeam();
         ITeam gameStateOpponentTeam = gameStateCurrentTeam.opponent();
-        int pointsForRootsCurrentTeam  = gameState.getPointsForTeam(gameStateOpponentTeam);
-        int pointsForRootsOpponentTeam = gameState.getPointsForTeam(gameStateCurrentTeam);
+        int pointsForRootsCurrentTeam  = gameState.getScoreForTeam(gameStateOpponentTeam).score();
+        int pointsForRootsOpponentTeam = gameState.getScoreForTeam(gameStateCurrentTeam).score();
 
         // The pure UCT value is multiplied by the difference between the points of the
         // parent nodes teams in the game state of the child node. Therefore, paths with

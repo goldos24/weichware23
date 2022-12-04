@@ -1,11 +1,10 @@
 package sc.player2023.logic.enemy;
 
-import org.jetbrains.annotations.NotNull;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
+import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
-import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
@@ -19,7 +18,8 @@ public class MaxRating implements Rater {
     @Nonnull
     public Rating rateGameStateForTeam(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team) {
         Rating rating = Rating.ZERO;
-        Rating fish = new Rating(gameState.getPointsForTeam(team) - gameState.getPointsForTeam(team.opponent()));
+        Rating fish = new Rating(
+                gameState.getScoreForTeam(team).subtract(gameState.getScoreForTeam(team.opponent())).score());
         Rating potentialFish = this.ratePotentialFishForTeam(gameState, team);
         return rating.add(fish).add(potentialFish);
     }
@@ -27,9 +27,13 @@ public class MaxRating implements Rater {
     @Nonnull
     private Rating ratePotentialFishForTeam(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team) {
         Rating rating = Rating.ZERO;
-        List<Move> ourPotentialMoves = PossibleMoveStreamFactory.getPossibleMovesInNormalCase(gameState.getBoard(), team).toList();
+        List<Move> ourPotentialMoves = PossibleMoveStreamFactory
+                .getPossibleMovesInNormalCase(gameState.getBoard(), team)
+                .toList();
         int ourFish = this.getFishFromMoves(gameState, ourPotentialMoves);
-        List<Move> theirPotentialMoves = PossibleMoveStreamFactory.getPossibleMovesInNormalCase(gameState.getBoard(), team.opponent()).toList();
+        List<Move> theirPotentialMoves = PossibleMoveStreamFactory
+                .getPossibleMovesInNormalCase(gameState.getBoard(), team.opponent())
+                .toList();
         int theirFish = this.getFishFromMoves(gameState, theirPotentialMoves);
         rating = rating.add(new Rating(ourFish - theirFish));
         return rating.multiply(.1);
@@ -40,7 +44,7 @@ public class MaxRating implements Rater {
         BoardPeek board = gameState.getBoard();
 
         Coordinates coordinates;
-        for(Iterator<Move> var5 = moves.iterator(); var5.hasNext(); fish += board.get(coordinates).getFish()) {
+        for (Iterator<Move> var5 = moves.iterator(); var5.hasNext(); fish += board.get(coordinates).getFish()) {
             Move move = var5.next();
             coordinates = move.getTo();
         }

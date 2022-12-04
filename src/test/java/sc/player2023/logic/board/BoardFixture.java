@@ -6,6 +6,7 @@ import sc.player2023.logic.GameRuleLogic;
 import sc.plugin2023.Board;
 import sc.plugin2023.Field;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,16 +24,19 @@ public class BoardFixture {
     private static final int DEFAULT_MORE_FISH_X = 1;
     private static final int DEFAULT_MORE_FISH_Y = 0;
 
-    @SuppressWarnings("all")
-    private static Coordinates coordsFromXY(int x, int y) {
+    @Nonnull
+    public static final Coordinates FIRST_PENGUIN_COORDINATES = coordinatesFromXY(PENGUIN_START_X, PENGUIN_START_Y);
+
+    @SuppressWarnings("SameParameterValue")
+    @Nonnull
+    private static Coordinates coordinatesFromXY(int x, int y) {
         return new Coordinates(x * 2 + y % 2, y);
     }
-
-    public static final Coordinates firstPenguinCoords = coordsFromXY(PENGUIN_START_X, PENGUIN_START_Y);
 
     private BoardFixture() {
     }
 
+    @Nonnull
     public static Board createTestBoardOneFishPerField() {
         List<List<Field>> resultingFields = new ArrayList<>();
         for (int i = 0; i < GameRuleLogic.BOARD_HEIGHT; ++i) {

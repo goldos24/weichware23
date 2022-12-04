@@ -34,7 +34,7 @@ public class ScoreWeightedUCTEvaluator implements NodeEvaluator {
     public double evaluateNode(MCTSTreeNode parentNode, MCTSTreeNode childNode) {
         ImmutableGameState gameState = childNode.getGameState();
         ITeam currentTeam = gameState.getCurrentTeam().opponent();
-        int pointsForCurrentTeam = gameState.getPointsForTeam(currentTeam);
+        int pointsForCurrentTeam = gameState.getScoreForTeam(currentTeam).score();
 
         // The pure UCT value is multiplied by the points of the parent nodes team
         // in the game state of the child node. Therefore, paths with more points

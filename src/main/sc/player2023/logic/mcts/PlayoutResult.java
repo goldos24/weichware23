@@ -3,6 +3,7 @@ package sc.player2023.logic.mcts;
 import com.google.common.collect.ImmutableMap;
 import sc.api.plugins.ITeam;
 import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.score.Score;
 
 import javax.annotation.Nonnull;
 
@@ -15,19 +16,19 @@ public class PlayoutResult {
     }
 
     @Nonnull
-    private final ImmutableMap<ITeam, Integer> points;
+    private final ImmutableMap<ITeam, Score> scores;
     private final ITeam affectedTeam;
     private final Kind kind;
 
-    private PlayoutResult(Kind kind, ITeam affectedTeam, @Nonnull ImmutableMap<ITeam, Integer> points) {
+    private PlayoutResult(Kind kind, ITeam affectedTeam, @Nonnull ImmutableMap<ITeam, Score> scores) {
         this.kind = kind;
         this.affectedTeam = affectedTeam;
-        this.points = points;
+        this.scores = scores;
     }
 
     @Nonnull
-    public ImmutableMap<ITeam, Integer> getPoints() {
-        return points;
+    public ImmutableMap<ITeam, Score> getScores() {
+        return scores;
     }
 
     public ITeam getAffectedTeam() {
@@ -39,31 +40,31 @@ public class PlayoutResult {
     }
 
     @Nonnull
-    private static ImmutableMap<ITeam, Integer> makePointsMap(ITeam team, int teamPoints, int opponentPoints) {
-        ImmutableMap.Builder<ITeam, Integer> pointsBuilder = ImmutableMap.builder();
-        pointsBuilder.put(team, teamPoints);
+    private static ImmutableMap<ITeam, Score> makeScoreMap(ITeam team, Score teamScore, Score opponentScore) {
+        ImmutableMap.Builder<ITeam, Score> pointsBuilder = ImmutableMap.builder();
+        pointsBuilder.put(team, teamScore);
         ITeam opponent = team.opponent();
-        pointsBuilder.put(opponent, opponentPoints);
+        pointsBuilder.put(opponent, opponentScore);
 
         return pointsBuilder.build();
     }
 
     @Nonnull
     public static PlayoutResult of(ImmutableGameState gameState, ITeam team) {
-        int teamPoints = gameState.getPointsForTeam(team);
+        Score teamPoints = gameState.getScoreForTeam(team);
         ITeam opponent = team.opponent();
-        int opponentPoints = gameState.getPointsForTeam(opponent);
+        Score opponentScore = gameState.getScoreForTeam(opponent);
 
-        ImmutableMap<ITeam, Integer> points = makePointsMap(team, teamPoints, opponentPoints);
+        ImmutableMap<ITeam, Score> points = makeScoreMap(team, teamPoints, opponentScore);
 
         if (!gameState.isOver()) {
             return new PlayoutResult(Kind.NONE, team, points);
         }
 
-        if (teamPoints > opponentPoints) {
+        if (teamPoints.isGreaterThan(opponentScore)) {
             return new PlayoutResult(Kind.WIN, team, points);
         }
-        if (teamPoints < opponentPoints) {
+        if (teamPoints.isLessThan(opponentScore)) {
             return new PlayoutResult(Kind.LOSS, team, points);
         }
         return new PlayoutResult(Kind.DRAW, team, points);
@@ -82,9 +83,9 @@ public class PlayoutResult {
     @Override
     public String toString() {
         return "PlayoutResult{" +
-            "points=" + points +
-            ", affectedTeam=" + affectedTeam +
-            ", kind=" + kind +
-            '}';
+                "scores=" + scores +
+                ", affectedTeam=" + affectedTeam +
+                ", kind=" + kind +
+                '}';
     }
 }

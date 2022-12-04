@@ -25,7 +25,7 @@ class PVSMoveGetterTest {
         assertNotNull(move);
     }
 
-    private static final Move bestMove = new Move(BoardFixture.firstPenguinCoords, new Coordinates(2, 0));
+    private static final Move bestMove = new Move(BoardFixture.FIRST_PENGUIN_COORDINATES, new Coordinates(2, 0));
 
     @Test
     void findsBestMoveWithStupidDepth() {

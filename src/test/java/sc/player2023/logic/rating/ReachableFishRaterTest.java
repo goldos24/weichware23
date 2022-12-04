@@ -47,7 +47,7 @@ class ReachableFishRaterTest {
     @Test
     void getReachableFishFromCoordinate() {
         BoardPeek testBoard = new BoardPeek(BoardFixture.createTestBoard());
-        var startCoord = BoardFixture.firstPenguinCoords;
+        var startCoord = BoardFixture.FIRST_PENGUIN_COORDINATES;
         int got = ReachableFishRater.getReachableFishFromCoordinate(startCoord, testBoard);
         assertEquals(REACHABLE_FISH_ON_DEFAULT_BOARD, got);
     }

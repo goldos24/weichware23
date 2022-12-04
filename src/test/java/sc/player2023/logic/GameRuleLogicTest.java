@@ -21,7 +21,7 @@ class GameRuleLogicTest {
     void canMoveTo() {
         BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
         assertTrue(GameRuleLogic.canMoveTo(board, new Coordinates(0, 0)));
-        assertFalse(GameRuleLogic.canMoveTo(board, BoardFixture.firstPenguinCoords));
+        assertFalse(GameRuleLogic.canMoveTo(board, BoardFixture.FIRST_PENGUIN_COORDINATES));
     }
 
     @Test
@@ -74,10 +74,10 @@ class GameRuleLogicTest {
     @Test
     void withMovePerformed() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        Move move = new Move(BoardFixture.firstPenguinCoords, new Coordinates(3, 1));
+        Move move = new Move(BoardFixture.FIRST_PENGUIN_COORDINATES, new Coordinates(3, 1));
         gameState = GameRuleLogic.withMovePerformed(gameState, move);
         Field expected = new Field(0, null);
-        Field got = gameState.getBoard().get(BoardFixture.firstPenguinCoords);
+        Field got = gameState.getBoard().get(BoardFixture.FIRST_PENGUIN_COORDINATES);
         assertEquals(expected, got);
         System.out.println(gameState.getBoard());
     }

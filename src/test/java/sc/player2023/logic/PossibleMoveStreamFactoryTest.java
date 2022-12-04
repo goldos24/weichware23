@@ -24,7 +24,7 @@ class PossibleMoveStreamFactoryTest {
     void getPossibleMovesForPenguin() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
         GameState mutableGameState = new GameState(BoardFixture.createTestBoard());
-        Coordinates penguinPos = BoardFixture.firstPenguinCoords;
+        Coordinates penguinPos = BoardFixture.FIRST_PENGUIN_COORDINATES;
         Stream<Move> expectedMoveStream =
                 mutableGameState.getPossibleMoves().stream().filter(move -> Objects.equals(move.getFrom(), penguinPos));
         Set<Move> expected = expectedMoveStream.collect(Collectors.toSet());
@@ -39,7 +39,7 @@ class PossibleMoveStreamFactoryTest {
         BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
         Stream<Coordinates> coordStream = PossibleMoveStreamFactory.getPossibleTargetCoordsForPenguinInDirection(
                 board,
-                BoardFixture.firstPenguinCoords,
+                BoardFixture.FIRST_PENGUIN_COORDINATES,
                 new Vector(-2, 0)
         );
         List<Coordinates> got = coordStream.toList();
