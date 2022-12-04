@@ -12,4 +12,8 @@ public record WeightedRater(int weight, Rater originalRater) implements Rater {
         return rating.multiply(weight);
     }
 
+    public String getAnalytics(@Nonnull ImmutableGameState gameState) {
+        return "(" + rate(gameState).rating() + "=" + weight + "*" + originalRater.getAnalytics(gameState) + ")";
+    }
+
 }
