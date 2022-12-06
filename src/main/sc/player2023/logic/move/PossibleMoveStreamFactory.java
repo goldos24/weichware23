@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 import static sc.player2023.logic.GameRuleLogic.createCurrentDirectionStream;
 
-@SuppressWarnings("unused")
 public class PossibleMoveStreamFactory{
 
     @Nonnull
@@ -30,6 +29,11 @@ public class PossibleMoveStreamFactory{
     public static Stream<Move> getPossibleMovesForPenguin(@Nonnull BoardPeek board,
                                                            @Nonnull Coordinates startCoordinate) {
         @Nonnull Stream<Vector> directions = createCurrentDirectionStream();
+        return getMoveStreamForPenguinFromDirections(board, startCoordinate, directions);
+    }
+
+    @Nonnull
+    private static Stream<Move> getMoveStreamForPenguinFromDirections(@Nonnull BoardPeek board, @Nonnull Coordinates startCoordinate, @Nonnull Stream<Vector> directions) {
         Stream<Stream<Coordinates>> targetStreamStream =
                 directions.map(direction -> getPossibleTargetCoordsForPenguinInDirection(board, startCoordinate, direction));
         Stream<Coordinates> targetStream = targetStreamStream.flatMap(target -> target);
@@ -39,6 +43,11 @@ public class PossibleMoveStreamFactory{
     @Nonnull
     public static Stream<Move> getPossibleMovesInNormalCase(BoardPeek board, ITeam team) {
         Stream<Pair<Coordinates, Team>> penguinStream = board.getPenguins().stream();
+        return getPossibleMovesInNormalCaseFromPenguins(board, team, penguinStream);
+    }
+
+    @Nonnull
+    private static Stream<Move> getPossibleMovesInNormalCaseFromPenguins(BoardPeek board, ITeam team, Stream<Pair<Coordinates, Team>> penguinStream) {
         Stream<Pair<Coordinates, Team>> ownPenguinStream = penguinStream.filter(
                 coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);
         Stream<Stream<Move>> moveStreamStream =
