@@ -73,8 +73,8 @@ public class ReachableFishRater implements Rater {
         ITeam otherTeam = ownTeam.opponent();
         Map<ITeam, boolean[]> reachableCoords = Map.of(Team.ONE, new boolean[ARRAY_SIZE], Team.TWO, new boolean[ARRAY_SIZE]);
         for(var penguin : board.getPenguins()) {
-            Coordinates penguinPosition = penguin.getFirst();
-            boolean[] ownSet = reachableCoords.get(penguin.getSecond());
+            Coordinates penguinPosition = penguin.coordinates();
+            boolean[] ownSet = reachableCoords.get(penguin.team());
             addReachableCoordsToSet(ownSet, penguinPosition, board);
         }
         Rating ownRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(ownTeam)));

@@ -1,11 +1,10 @@
 package sc.player2023.logic.move;
 
-import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
-import sc.api.plugins.Team;
 import sc.api.plugins.Vector;
 import sc.player2023.logic.GameRuleLogic;
+import sc.player2023.logic.Penguin;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Move;
 
@@ -42,16 +41,16 @@ public class PossibleMoveStreamFactory{
 
     @Nonnull
     public static Stream<Move> getPossibleMovesInNormalCase(BoardPeek board, ITeam team) {
-        Stream<Pair<Coordinates, Team>> penguinStream = board.getPenguins().stream();
+        Stream<Penguin> penguinStream = board.getPenguins().stream();
         return getPossibleMovesInNormalCaseFromPenguins(board, team, penguinStream);
     }
 
     @Nonnull
-    private static Stream<Move> getPossibleMovesInNormalCaseFromPenguins(BoardPeek board, ITeam team, Stream<Pair<Coordinates, Team>> penguinStream) {
-        Stream<Pair<Coordinates, Team>> ownPenguinStream = penguinStream.filter(
-                coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);
+    private static Stream<Move> getPossibleMovesInNormalCaseFromPenguins(BoardPeek board, ITeam team, Stream<Penguin> penguinStream) {
+        Stream<Penguin> ownPenguinStream = penguinStream.filter(
+                coordinatesTeamPair -> coordinatesTeamPair.team() == team);
         Stream<Stream<Move>> moveStreamStream =
-                ownPenguinStream.map(coordTeamPair -> getPossibleMovesForPenguin(board, coordTeamPair.getFirst()));
+                ownPenguinStream.map(coordTeamPair -> getPossibleMovesForPenguin(board, coordTeamPair.coordinates()));
         return moveStreamStream.flatMap(move -> move);
     }
 

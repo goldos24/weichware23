@@ -1,6 +1,5 @@
 package sc.player2023.logic;
 
-import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
@@ -87,8 +86,8 @@ public class GameRuleLogic {
     private static final int MAX_PENGUIN_COUNT_FOR_SINGLE_TEAM = 4;
 
     public static boolean allPenguinsPlaced(@Nonnull BoardPeek board, @Nonnull ITeam team) {
-        Stream<Pair<Coordinates, Team>> ownPenguins =
-                board.getPenguins().stream().filter(coordinatesTeamPair -> coordinatesTeamPair.getSecond() == team);
+        Stream<Penguin> ownPenguins =
+                board.getPenguins().stream().filter(coordinatesTeamPair -> coordinatesTeamPair.team() == team);
         return ownPenguins.count() >= MAX_PENGUIN_COUNT_FOR_SINGLE_TEAM;
     }
 

@@ -1,10 +1,10 @@
 package sc.player2023.logic.board;
 
-import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.player2023.logic.GameRuleLogic;
+import sc.player2023.logic.Penguin;
 import sc.plugin2023.Board;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;
@@ -86,7 +86,7 @@ public class BoardPeek {
         long ifFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam = 0;
         long ifFishFieldThenFishModulo2OtherwisePenguinCount = 0;
         long nonZeroFishCount = 0;
-        List<Pair<Coordinates, Team>> penguinTeamMapBuilder = new ArrayList<>();
+        List<Penguin> penguinTeamMapBuilder = new ArrayList<>();
         Iterator<Field> fieldIterator = fields.iterator();
         for (int y = 0; y < GameRuleLogic.BOARD_HEIGHT; ++y) {
             for (int x = 0; x < GameRuleLogic.BOARD_WIDTH; ++x) {
@@ -103,7 +103,7 @@ public class BoardPeek {
                                                                  field.getFish() != 0);
                 Team penguinTeam = field.getPenguin();
                 if (penguinTeam != null) {
-                    penguinTeamMapBuilder.add(new Pair<>(new Coordinates(x * 2 + y % 2, y), penguinTeam));
+                    penguinTeamMapBuilder.add(new Penguin(new Coordinates(x * 2 + y % 2, y), penguinTeam));
                 }
             }
         }
@@ -130,7 +130,7 @@ public class BoardPeek {
             return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                                  newIfFishFieldThenFishModulo2OtherwisePenguinCount,
                                  newNonZeroFishCountBitSet,
-                                 penguinCoordinateTeamMap.withExtraPenguin(new Pair<>(move.getTo(), (Team) team)));
+                                 penguinCoordinateTeamMap.withExtraPenguin(new Penguin(move.getTo(), (Team) team)));
         }
         int fromX = move.getFrom().getX() / 2, fromY = move.getFrom().getY();
         newIfFishFieldThenFishModulo2OtherwisePenguinCount = bitSet8x8WithSingleBitChanged(fromX, fromY,
@@ -142,7 +142,7 @@ public class BoardPeek {
         return new BoardPeek(newIfFishFieldThenFishCountHigherThanTwoOtherwisePenguinTeam,
                              newIfFishFieldThenFishModulo2OtherwisePenguinCount,
                              newNonZeroFishCountBitSet,
-                             penguinCoordinateTeamMap.withPenguinMoved(new Pair<>(move.getFrom(), (Team) team),
+                             penguinCoordinateTeamMap.withPenguinMoved(new Penguin(move.getFrom(), (Team) team),
                                                                        move.getTo()));
     }
 

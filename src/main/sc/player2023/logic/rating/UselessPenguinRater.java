@@ -14,12 +14,12 @@ public class UselessPenguinRater implements Rater {
         var board = gameState.getBoard();
         var team = gameState.getCurrentTeam();
         for(var penguin : board.getPenguins()) {
-            var coords = penguin.getFirst();
+            var coords = penguin.coordinates();
             Stream<Coordinates> possibleTargets = GameRuleLogic
                     .createCurrentDirectionStream().
                     map(coords::plus).filter(coordinates -> GameRuleLogic.canMoveTo(board, coordinates));
             if(possibleTargets.findAny().isEmpty()) {
-                result = result.add(penguin.getSecond() == team ? -1.0 : 1.0);
+                result = result.add(penguin.team() == team ? -1.0 : 1.0);
             }
         }
         return result;

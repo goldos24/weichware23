@@ -21,12 +21,12 @@ public class EdgePenguinPenalty implements Rater {
         var board = gameState.getBoard();
         var penguins = board.getPenguins();
         var ownTeam = gameState.getCurrentTeam();
-        Rating own = penguins.stream().filter(coordinatesTeamPair -> coordinatesTeamPair.getSecond() == ownTeam)
-                .map(coordinatesTeamPair -> ratePenguin(coordinatesTeamPair.getFirst()))
+        Rating own = penguins.stream().filter(coordinatesTeamPair -> coordinatesTeamPair.team() == ownTeam)
+                .map(coordinatesTeamPair -> ratePenguin(coordinatesTeamPair.coordinates()))
                 .reduce(Rating::add).orElse(Rating.ZERO);
         var otherTeam = ownTeam.opponent();
-        Rating other = penguins.stream().filter(coordinatesTeamPair -> coordinatesTeamPair.getSecond() == otherTeam)
-                .map(coordinatesTeamPair -> ratePenguin(coordinatesTeamPair.getFirst()))
+        Rating other = penguins.stream().filter(coordinatesTeamPair -> coordinatesTeamPair.team() == otherTeam)
+                .map(coordinatesTeamPair -> ratePenguin(coordinatesTeamPair.coordinates()))
                 .reduce(Rating::add).orElse(Rating.ZERO);
         return other.subtract(own);
     }

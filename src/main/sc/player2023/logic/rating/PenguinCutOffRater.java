@@ -21,8 +21,8 @@ public class PenguinCutOffRater implements Rater {
         BoardPeek board = gameState.getBoard();
         ITeam team = gameState.getCurrentTeam();
         for(var penguin : board.getPenguins()) {
-            Rating prefix = new Rating(penguin.getSecond() == team ? -1.0 : 1.0);
-            var coords = penguin.getFirst();
+            Rating prefix = new Rating(penguin.team() == team ? -1.0 : 1.0);
+            var coords = penguin.coordinates();
             Stream<Coordinates> possibleTargets = GameRuleLogic
                     .createCurrentDirectionStream().
                     map(coords::plus).filter(coordinates -> GameRuleLogic.canMoveTo(board, coordinates));

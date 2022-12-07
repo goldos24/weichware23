@@ -1,9 +1,9 @@
 package sc.player2023.logic.board;
 
 import kotlin.NotImplementedError;
-import kotlin.Pair;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.player2023.logic.Penguin;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -11,8 +11,16 @@ import java.util.Iterator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
-    final int teamOnePenguins, teamTwoPenguins;
+public class PenguinCollection implements Collection<Penguin> {
+    private final int teamOnePenguins, teamTwoPenguins;
+
+    int getTeamOnePenguins() {
+        return teamOnePenguins;
+    }
+
+    int getTeamTwoPenguins() {
+        return teamTwoPenguins;
+    }
 
     @Override
     public int size() {
@@ -40,12 +48,12 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         this.teamTwoPenguins = teamTwoPenguins;
     }
 
-    public static PenguinCollection fromOtherPenguinCollection(Collection<Pair<Coordinates, Team>> other) {
+    public static PenguinCollection fromOtherPenguinCollection(Collection<Penguin> other) {
         int teamOne = 0, teamTwo = 0;
         for(var penguin : other) {
-            int current = penguin.getSecond() == Team.ONE ? teamOne : teamTwo;
-            current = bitsetWithPenguinAdded(penguin.getFirst(), current);
-            if(penguin.getSecond() == Team.ONE) {
+            int current = penguin.team() == Team.ONE ? teamOne : teamTwo;
+            current = bitsetWithPenguinAdded(penguin.coordinates(), current);
+            if(penguin.team() == Team.ONE) {
                 teamOne = current;
             }
             else {
@@ -62,11 +70,11 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         return bitset;
     }
 
-    public PenguinCollection withExtraPenguin(Pair<Coordinates, Team> penguin) {
-        Team team = penguin.getSecond();
+    public PenguinCollection withExtraPenguin(Penguin penguin) {
+        Team team = penguin.team();
         return new PenguinCollection(
-                team == Team.ONE ? bitsetWithPenguinAdded(penguin.getFirst(), teamOnePenguins) : teamOnePenguins,
-                team == Team.TWO ? bitsetWithPenguinAdded(penguin.getFirst(), teamTwoPenguins) : teamTwoPenguins
+                team == Team.ONE ? bitsetWithPenguinAdded(penguin.coordinates(), teamOnePenguins) : teamOnePenguins,
+                team == Team.TWO ? bitsetWithPenguinAdded(penguin.coordinates(), teamTwoPenguins) : teamTwoPenguins
         );
     }
 
@@ -83,9 +91,9 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         return getBitSetWithPenguinAtPos(to, bitset, i);
     }
 
-    public PenguinCollection withPenguinMoved(Pair<Coordinates, Team> penguin, Coordinates target) {
-        var team = penguin.getSecond();
-        var from = penguin.getFirst();
+    public PenguinCollection withPenguinMoved(Penguin penguin, Coordinates target) {
+        var team = penguin.team();
+        var from = penguin.coordinates();
         return new PenguinCollection(
                 team == Team.ONE ? bitsetWithPenguinMoved(from, target, teamOnePenguins) : teamOnePenguins,
                 team == Team.TWO ? bitsetWithPenguinMoved(from, target, teamTwoPenguins) : teamTwoPenguins
@@ -115,26 +123,26 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
         return current;
     }
 
-    static Stream<Pair<Coordinates, Team>> getPenguinStreamForTeam(int bitset, Team team) {
+    static Stream<Penguin> getPenguinStreamForTeam(int bitset, Team team) {
         int length = bitset & penguinCountBitMask;
         IntStream indices = IntStream.iterate(0, index -> index < length, index -> index + 1);
-        return indices.mapToObj(index -> new Pair<>(getCoordsAtBitSetIndex(bitset, index), team));
+        return indices.mapToObj(index -> new Penguin(getCoordsAtBitSetIndex(bitset, index), team));
     }
 
-    public Stream<Pair<Coordinates, Team>> streamForTeam(Team team) {
+    public Stream<Penguin> streamForTeam(Team team) {
         return getPenguinStreamForTeam(team == Team.ONE? teamOnePenguins : teamTwoPenguins, team);
     }
 
     @Nonnull
     @Override
-    public Iterator<Pair<Coordinates, Team>> iterator() {
+    public Iterator<Penguin> iterator() {
         return stream().iterator();
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("PenguinCollection{ ");
-        for(Pair<Coordinates, Team> penguin : this) {
+        for(Penguin penguin : this) {
             stringBuilder.append(penguin);
         }
         return stringBuilder.append(" }").toString();
@@ -153,7 +161,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     }
 
     @Override
-    public boolean add(Pair<Coordinates, Team> coordinatesTeamPair) {
+    public boolean add(Penguin penguin) {
         throw new NotImplementedError();
     }
 
@@ -168,7 +176,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     }
 
     @Override
-    public boolean addAll(@Nonnull Collection<? extends Pair<Coordinates, Team>> c) {
+    public boolean addAll(@Nonnull Collection<? extends Penguin> c) {
         throw new NotImplementedError();
     }
 
@@ -188,7 +196,7 @@ public class PenguinCollection implements Collection<Pair<Coordinates, Team>> {
     }
 
     @Override
-    public Stream<Pair<Coordinates, Team>> stream() {
+    public Stream<Penguin> stream() {
         var streamTeamOne = getPenguinStreamForTeam(teamOnePenguins, Team.ONE);
         var streamTeamTwo = getPenguinStreamForTeam(teamTwoPenguins, Team.TWO);
         return Stream.concat(streamTeamOne, streamTeamTwo);

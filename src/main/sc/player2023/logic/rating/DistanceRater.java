@@ -1,10 +1,9 @@
 package sc.player2023.logic.rating;
 
-import kotlin.Pair;
 import sc.api.plugins.Coordinates;
-import sc.api.plugins.Team;
-import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.Penguin;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.gameState.ImmutableGameState;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -15,15 +14,15 @@ public class DistanceRater implements Rater {
                 coordinates2.getY() - coordinates1.getY());
     }
 
-    public static int getCombinedDistancesToOtherPenguins(Pair<Coordinates, Team> currentPenguin,
-                                                   Collection<Pair<Coordinates, Team>> penguins) {
+    public static int getCombinedDistancesToOtherPenguins(Penguin currentPenguin,
+                                                   Collection<Penguin> penguins) {
         int result = 0;
-        for (Pair<Coordinates, Team> currentOtherPenguin : penguins) {
+        for (Penguin currentOtherPenguin : penguins) {
             if (currentOtherPenguin.equals(currentPenguin)
-                    || currentOtherPenguin.getSecond() != currentPenguin.getSecond()) {
+                    || currentOtherPenguin.team() != currentPenguin.team()) {
                 continue;
             }
-            result += getDistance(currentPenguin.getFirst(), currentOtherPenguin.getFirst());
+            result += getDistance(currentPenguin.coordinates(), currentOtherPenguin.coordinates());
         }
         return result;
     }
@@ -31,11 +30,11 @@ public class DistanceRater implements Rater {
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
         BoardPeek board = gameState.getBoard();
-        Collection<Pair<Coordinates, Team>> penguins = board.getPenguins();
+        Collection<Penguin> penguins = board.getPenguins();
         Rating result = Rating.ZERO;
-        for (Pair<Coordinates, Team> currentPenguin : penguins) {
+        for (Penguin currentPenguin : penguins) {
             int combinedDistance = getCombinedDistancesToOtherPenguins(currentPenguin, penguins);
-            if (currentPenguin.getSecond() == gameState.getCurrentTeam()) {
+            if (currentPenguin.team() == gameState.getCurrentTeam()) {
                 result = result.add(combinedDistance);
             }
             else {

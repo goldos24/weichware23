@@ -12,7 +12,7 @@ public class DirectionalDivergenceRater implements Rater {
     static Rating rateForTeam(@Nonnull ImmutableGameState gameState, ITeam team) {
         var penguins = gameState.getBoard().getPenguins().streamForTeam((Team) team);
         double[] angles = penguins.mapToDouble(penguin -> {
-            Coordinates penguinCoords = penguin.getFirst();
+            Coordinates penguinCoords = penguin.coordinates();
             Coordinates centerDifference = penguinCoords.minus(GameRuleLogic.nonReachableBoardCenter).unaryPlus();
             return Math.atan2(centerDifference.getY(), centerDifference.getX()/2.0);
         }).toArray();

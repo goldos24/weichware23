@@ -1,16 +1,16 @@
 package sc.player2023.logic.rating;
 
-import kotlin.Pair;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.player2023.logic.GameStateFixture;
-import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.Penguin;
 import sc.player2023.logic.board.BoardPeek;
+import sc.player2023.logic.gameState.ImmutableGameState;
 
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static sc.player2023.logic.rating.Rating.ZERO;
 
 class DistanceRaterTest {
@@ -25,11 +25,11 @@ class DistanceRaterTest {
 
     @Test
     void getCombinedDistancesToOtherPenguins() {
-        Pair<Coordinates, Team> currentPenguin = new Pair<>(new Coordinates(4, 0), Team.ONE);
+        Penguin currentPenguin = new Penguin(new Coordinates(4, 0), Team.ONE);
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         int ownDistances = 2 + 4 + 6;
         BoardPeek board = testGameState.getBoard();
-        Collection<Pair<Coordinates, Team>> penguins =  board.getPenguins();
+        Collection<Penguin> penguins =  board.getPenguins();
         assertEquals(ownDistances, DistanceRater.getCombinedDistancesToOtherPenguins(currentPenguin, penguins));
     }
 
