@@ -31,10 +31,18 @@ public class ShuffledPossibleMovePVSMoveGetter implements MoveGetter {
 
     private static final Logger log = LoggerFactory.getLogger(ShuffledPossibleMovePVSMoveGetter.class);
 
+    private static List<Move> getShuffledPossibleMoves(@Nonnull ImmutableGameState gameState) {
+        var board = gameState.getBoard();
+        var currentTeam = gameState.getCurrentTeam();
+        var unmodifieableMoveList = PossibleMoveStreamFactory.getPossibleMoves(board, currentTeam).toList();
+        ArrayList<Move> result = new ArrayList<>(unmodifieableMoveList);
+        Collections.shuffle(result);
+        return result;
+    }
+
     private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
                               @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
-        List<Move> possibleMoves = new ArrayList<>(PossibleMoveStreamFactory.getPossibleMoves(gameState.getBoard(), gameState.getCurrentTeam()).toList());
-        Collections.shuffle(possibleMoves);
+        List<Move> possibleMoves = getShuffledPossibleMoves(gameState);
         if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
             return rater.rate(gameState);
         }
@@ -109,8 +117,7 @@ public class ShuffledPossibleMovePVSMoveGetter implements MoveGetter {
         double alpha = Double.NEGATIVE_INFINITY, score, beta = Double.POSITIVE_INFINITY;
         AlphaBeta alphaBeta = new AlphaBeta(alpha, beta);
         Move bestMove = null;
-        List<Move> possibleMoves = new ArrayList<>(PossibleMoveStreamFactory.getPossibleMoves(gameState.getBoard(), gameState.getCurrentTeam()).toList());
-        Collections.shuffle(possibleMoves);
+        List<Move> possibleMoves = getShuffledPossibleMoves(gameState);
         boolean firstChild = true;
         double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
