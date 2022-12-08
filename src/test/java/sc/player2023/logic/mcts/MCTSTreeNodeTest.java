@@ -83,7 +83,8 @@ public class MCTSTreeNodeTest {
 
         ImmutableGameState testGameState = GameStateFixture.createTestGameState();
         MCTSTreeNode node = new MCTSTreeNode(testGameState);
-        node.addBackpropagatedChildrenAfterSteps(List.of(), List.of(expandedNode));
+        node.addChildren(List.of(expandedNode));
+        node.backpropagateResults(List.of());
 
         int children = node.getChildren().size();
         assertEquals(1, children);

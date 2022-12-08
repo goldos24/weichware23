@@ -57,7 +57,8 @@ public class MCTSMoveGetter implements MoveGetter {
             iterations++;
 
             List<MCTSTreeNode> newNodes = this.nodeExpander.createChildren(expandedNode);
-            rootNode.addBackpropagatedChildrenAfterSteps(selectedPath, newNodes);
+            expandedNode.addChildren(newNodes);
+            rootNode.backpropagateResults(selectedPath);
         }
 
         log.info("Root node: {}", rootNode.toInformativeString());

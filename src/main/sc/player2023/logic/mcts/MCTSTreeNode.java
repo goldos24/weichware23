@@ -134,16 +134,10 @@ public class MCTSTreeNode {
         this.statistics = this.statistics.addPlayoutResult(result, currentTeam);
     }
 
-    public void addBackpropagatedChildrenAfterSteps(@Nonnull List<Integer> steps, @Nonnull List<MCTSTreeNode> childNodes) {
-        // Example:     -> return this
-        // Example: 0   -> return this.getChildren(0)
-        // Example: 0 1 -> return this.getChildren(0).getChildren(1)
-        List<MCTSTreeNode> targetNodes = this.traceAll(steps);
+    public void backpropagateResults(@Nonnull List<Integer> selectedPath) {
+        List<MCTSTreeNode> targetNodes = this.traceAll(selectedPath);
         assert targetNodes != null;
         assert !targetNodes.isEmpty();
-
-        MCTSTreeNode lastNode = targetNodes.get(targetNodes.size() - 1);
-        lastNode.addChildren(childNodes);
 
         Collections.reverse(targetNodes);
         for (MCTSTreeNode node : targetNodes) {
