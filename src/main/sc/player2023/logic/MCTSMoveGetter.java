@@ -23,12 +23,14 @@ public class MCTSMoveGetter implements MoveGetter {
 
     @Nonnull private final RootChildrenInitialiser rootChildrenInitialiser;
 
-    private final int maxExpansionAmount;
+    @Nonnull private final NodeExpander nodeExpander;
 
-    public MCTSMoveGetter(@Nonnull NodeSelector selector, @Nonnull RootChildrenInitialiser rootChildrenInitialiser, int maxExpansionAmount) {
+    public MCTSMoveGetter(@Nonnull NodeSelector selector,
+                          @Nonnull RootChildrenInitialiser rootChildrenInitialiser,
+                          @Nonnull NodeExpander nodeExpander) {
         this.selector = selector;
         this.rootChildrenInitialiser = rootChildrenInitialiser;
-        this.maxExpansionAmount = maxExpansionAmount;
+        this.nodeExpander = nodeExpander;
     }
 
     @Override
@@ -41,33 +43,24 @@ public class MCTSMoveGetter implements MoveGetter {
         long totalSelectionPathLength = 0;
         long iterations = 0;
 
+        MCTSTreeNode rootNode = tree.rootNode();
         while (!timer.ranOutOfTime()) {
-            MCTSTreeNode rootNode = tree.rootNode();
             List<Integer> selectedPath = this.selector.select(rootNode);
-            Expansion expansion = tree.createExpansion(selectedPath);
+            MCTSTreeNode expandedNode = rootNode.trace(selectedPath);
 
-            if (!expansion.isPossible()) {
+            assert expandedNode != null;
+            if (!this.nodeExpander.canExpand(expandedNode)) {
                 continue;
             }
 
             totalSelectionPathLength += selectedPath.size();
             iterations++;
 
-            List<MCTSTreeNode> newNodes = expansion.expandAndSimulate(this.maxExpansionAmount);
-
+            List<MCTSTreeNode> newNodes = this.nodeExpander.createChildren(expandedNode);
             rootNode.addBackpropagatedChildrenAfterSteps(selectedPath, newNodes);
         }
 
-        MCTSTreeNode treeRootNode = tree.rootNode();
-        Statistics treeRootNodeStatistics = treeRootNode.getStatistics();
-        List<MCTSTreeNode> rootNodeChildren = treeRootNode.getChildren();
-
-        log.info("Root node visits: {}", treeRootNodeStatistics.visits());
-
-        long rootWins = treeRootNodeStatistics.wins();
-        long ownWins = treeRootNodeStatistics.inverted().wins();
-        log.info("Root node wins: {} -> Own wins: {}", rootWins, ownWins);
-        log.info("Root node children: {}", rootNodeChildren.size());
+        log.info("Root node: {}", rootNode.toInformativeString());
         log.info("Average selection path length: {} with {} full iterations", (double)totalSelectionPathLength / iterations, iterations);
 
         Move move = tree.bestMove();
