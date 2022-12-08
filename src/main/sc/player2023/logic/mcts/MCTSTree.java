@@ -40,11 +40,4 @@ public record MCTSTree(@Nonnull MCTSTreeNode rootNode) {
 
         return bestMove;
     }
-
-    @Nonnull
-    public Expansion createExpansion(List<Integer> stepsToSelectedNode) {
-        MCTSTreeNode tracedNode = this.rootNode.trace(stepsToSelectedNode);
-        assert tracedNode != null;
-        return new Expansion(tracedNode);
-    }
 }
