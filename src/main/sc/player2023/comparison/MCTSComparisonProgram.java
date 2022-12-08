@@ -5,35 +5,49 @@ import sc.player2023.logic.mcts.NodeEvaluator;
 import sc.player2023.logic.mcts.NodeExpander;
 import sc.player2023.logic.mcts.NodeSelector;
 import sc.player2023.logic.mcts.RootChildrenInitialiser;
-import sc.player2023.logic.mcts.evaluators.ScoreDiffWeightedUCTEvaluator;
+import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
 import sc.player2023.logic.mcts.expanders.FullNodeExpander;
-import sc.player2023.logic.mcts.expanders.SimulatingNodeExpansionProvider;
+import sc.player2023.logic.mcts.expanders.PlayoutNodeExpansionProvider;
+import sc.player2023.logic.mcts.expanders.SortedCappedNodeExpander;
 import sc.player2023.logic.mcts.initialisers.AllMovesInitialiser;
 import sc.player2023.logic.mcts.selectors.BasicEvaluatorSelector;
-import sc.player2023.logic.pvs.PVSMoveGetter;
 import sc.player2023.logic.rating.*;
 
 public class MCTSComparisonProgram {
 
-    public static Rater createCombinedRater() {
-        CappedFishDifferenceRater cappedFishDifferenceRater = new CappedFishDifferenceRater();
-        WeightedRater weightedStupidRater = new WeightedRater(5, cappedFishDifferenceRater);
-        Rater weightedUselessPenguinRater = new WeightedRater(20, new PenguinCutOffRater());
-        Rater[] raters = {weightedStupidRater, new WeightedRater(3, new PotentialFishRater()),
-            weightedUselessPenguinRater, new WeightedRater(5, new ReachableFishRater())};
+    public static Rater createSimpleCombinedRater() {
+        Rater potentialFishRater = new WeightedRater(1, new PotentialFishRater());
+        Rater cappedFishDifferenceRater = new WeightedRater(2, new CappedFishDifferenceRater());
+
+        Rater[] raters = {
+            potentialFishRater, cappedFishDifferenceRater
+        };
         return new CompositeRater(raters);
     }
 
-    public static void main(String[] args) {
-        NodeEvaluator scoreDiffWeightedEvaluator = new ScoreDiffWeightedUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
-
-        NodeSelector selector = new BasicEvaluatorSelector(scoreDiffWeightedEvaluator);
+    public static MCTSMoveGetter createFirstMCTSMoveGetter() {
+        NodeEvaluator evaluator = new PureUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
+        NodeSelector selector = new BasicEvaluatorSelector(evaluator);
         RootChildrenInitialiser initialiser = new AllMovesInitialiser();
-        NodeExpander expander = new FullNodeExpander(new SimulatingNodeExpansionProvider());
+        NodeExpander expander = new FullNodeExpander(new PlayoutNodeExpansionProvider());
 
-        Fighter mctsFighter = new Fighter(new MCTSMoveGetter(selector, initialiser, expander), createCombinedRater());
-        Fighter pvsFighter = new Fighter(new PVSMoveGetter(), createCombinedRater());
-        BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(1));
+        return new MCTSMoveGetter(selector, initialiser, expander);
+    }
+
+    public static MCTSMoveGetter createSecondMCTSMoveGetter() {
+        Rater rater = createSimpleCombinedRater();
+        NodeEvaluator evaluator = new PureUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
+        NodeSelector selector = new BasicEvaluatorSelector(evaluator);
+        RootChildrenInitialiser initialiser = new AllMovesInitialiser();
+        NodeExpander expander = new SortedCappedNodeExpander(new PlayoutNodeExpansionProvider(), rater, 6);
+
+        return new MCTSMoveGetter(selector, initialiser, expander);
+    }
+
+    public static void main(String[] args) {
+        Fighter mctsFighter = new Fighter(createFirstMCTSMoveGetter(), createSimpleCombinedRater());
+        Fighter pvsFighter = new Fighter(createSecondMCTSMoveGetter(), createSimpleCombinedRater());
+        BattleResult result = Battle.run(mctsFighter, pvsFighter, new BattleData(5));
         System.out.println(result);
     }
 }
