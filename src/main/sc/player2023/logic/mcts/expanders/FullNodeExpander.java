@@ -8,7 +8,6 @@ import sc.player2023.logic.mcts.NodeExpander;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -20,23 +19,17 @@ public class FullNodeExpander extends NodeExpander {
 
     @Nonnull
     @Override
-    public List<MCTSTreeNode> createChildren(@Nonnull MCTSTreeNode selectedNode) {
-        ImmutableGameState selectedGameState = selectedNode.getGameState();
+    public List<MCTSTreeNode> createChildren(@Nonnull MCTSTreeNode node) {
+        ImmutableGameState selectedGameState = node.getGameState();
         assert !selectedGameState.isOver();
 
         List<Move> moves = GameRuleLogic.getPossibleMoves(selectedGameState);
-        int expansionAmount = moves.size();
+        Stream<Move> movesStream = moves.stream();
 
-        List<MCTSTreeNode> children = new ArrayList<>();
-        for (int i = 0; i < expansionAmount; ++i) {
-            int randomMoveIndex = GameRuleLogic.getRandomMoveIndex(moves);
-            Move randomMove = moves.get(randomMoveIndex);
+        NodeExpansionProvider nodeProvider = this.getNodeProvider();
+        Stream<MCTSTreeNode> nodesStream = movesStream.map(move -> nodeProvider.provideNode(selectedGameState, move));
 
-            MCTSTreeNode providedNode = this.getNodeProvider().provideNode(selectedGameState, randomMove);
-            children.add(providedNode);
-        }
-
-        return children;
+        return nodesStream.toList();
     }
 
     @Override
