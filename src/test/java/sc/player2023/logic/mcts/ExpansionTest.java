@@ -2,8 +2,12 @@ package sc.player2023.logic.mcts;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sc.player2023.logic.Logic;
 import sc.player2023.logic.mcts.evaluators.PureUCTEvaluator;
+import sc.player2023.logic.mcts.expanders.PlayoutNodeExpansionProvider;
+import sc.player2023.logic.mcts.expanders.SortedCappedNodeExpander;
 import sc.player2023.logic.mcts.selectors.BasicEvaluatorSelector;
+import sc.player2023.logic.rating.Rater;
 
 import java.util.List;
 
@@ -11,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpansionTest {
 
-    private static final int EXPANSION_AMOUNT = 2;
+    private static final int MAX_CHILD_NODES = 2;
 
     private static final double EXPLORATION_WEIGHT = Math.sqrt(2);
 
@@ -19,26 +23,31 @@ public class ExpansionTest {
 
     NodeSelector selector;
 
+    NodeExpander expander;
+
     @BeforeEach
     void setUp() {
+        Rater rater = Logic.createCombinedRater();
         NodeEvaluator evaluator = new PureUCTEvaluator(EXPLORATION_WEIGHT);
         this.selector = new BasicEvaluatorSelector(evaluator);
+        this.expander = new SortedCappedNodeExpander(new PlayoutNodeExpansionProvider(), rater, MAX_CHILD_NODES);
         this.tree = MCTSTreeFixture.createTestTree();
     }
 
     @Test
     void expansionMakesNewNodeTest() {
         MCTSTreeNode rootNode = this.tree.rootNode();
-        List<Integer> selectedNodeTrace = this.selector.select(rootNode);
-        Expansion expansion = this.tree.createExpansion(selectedNodeTrace);
+        List<Integer> selectedPath = this.selector.select(rootNode);
+        MCTSTreeNode expandedNode = rootNode.trace(selectedPath);
 
-        assertTrue(expansion.isPossible());
+        assertNotNull(expandedNode);
+        assertTrue(this.expander.canExpand(expandedNode));
 
-        List<MCTSTreeNode> expandedNodes = expansion.expandAndSimulate(EXPANSION_AMOUNT);
-        assertEquals(EXPANSION_AMOUNT, expandedNodes.size());
+        List<MCTSTreeNode> expandedNodes = this.expander.createChildren(expandedNode);
+        assertEquals(MAX_CHILD_NODES, expandedNodes.size());
 
-        for (MCTSTreeNode expandedNode : expandedNodes) {
-            List<MCTSTreeNode> children = expandedNode.getChildren();
+        for (MCTSTreeNode childNode : expandedNodes) {
+            List<MCTSTreeNode> children = childNode.getChildren();
 
             for (MCTSTreeNode child : children) {
                 long visits = child.getStatistics().visits();
