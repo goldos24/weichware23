@@ -26,7 +26,7 @@ public record Statistics(long visits, long wins) {
     /**
      * Returns a new Statistics instance, with wins = visits - wins
      * <br>
-     * This essentially means the Statistics from the perspective of the opponent.
+     * This is, in essence, the Statistics from the perspective of the opponent.
      *
      * @return Statistics with wins = visits - wins
      */
@@ -48,8 +48,8 @@ public record Statistics(long visits, long wins) {
         PlayoutResult.Kind kind = result.getKind();
 
         return switch (kind) {
-            case WIN -> this.addVisit();              // Opponent win is bad for the current team
-            case LOSS, DRAW -> this.addVisitAndWin(); // Opponent loss/draw is good for the current team
+            case WIN, DRAW -> this.addVisit();  // Opponent win/draw is bad for the current team
+            case LOSS -> this.addVisitAndWin(); // Opponent loss is good for the current team
             case NONE -> this;
         };
     }

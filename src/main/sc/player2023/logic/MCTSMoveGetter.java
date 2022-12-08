@@ -37,8 +37,7 @@ public class MCTSMoveGetter implements MoveGetter {
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
         timer.reset();
 
-        List<MCTSTreeNode> children = this.rootChildrenInitialiser.getChildren(gameState);
-        MCTSTree tree = MCTSTree.withChildren(gameState, children);
+        MCTSTree tree = MCTSTree.fromInitialiser(gameState, this.rootChildrenInitialiser);
 
         long totalSelectionPathLength = 0;
         long iterations = 0;

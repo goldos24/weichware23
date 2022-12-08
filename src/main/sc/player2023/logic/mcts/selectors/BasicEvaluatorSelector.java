@@ -53,20 +53,15 @@ public class BasicEvaluatorSelector implements NodeSelector {
     public List<Integer> select(MCTSTreeNode rootNode) {
         assert rootNode.hasChildren();
 
-        // Select a random child node of the root
-        List<MCTSTreeNode> children = rootNode.getChildren();
-        int randomIndex = (int)Math.round(Math.random() * (children.size() - 1));
-        MCTSTreeNode currentNode = children.get(randomIndex);
-
+        MCTSTreeNode currentNode = rootNode;
         List<Integer> indices = new ArrayList<>();
-        indices.add(randomIndex);
 
-        // Pick successive children nodes from the randomly selected node
+        // Pick successive child node from the current node until a leaf node is reached
         while (currentNode.hasChildren()) {
             int childIndex = this.pickChildNode(currentNode);
             indices.add(childIndex);
-            List<MCTSTreeNode> currentChildren = currentNode.getChildren();
 
+            List<MCTSTreeNode> currentChildren = currentNode.getChildren();
             currentNode = currentChildren.get(childIndex);
         }
 

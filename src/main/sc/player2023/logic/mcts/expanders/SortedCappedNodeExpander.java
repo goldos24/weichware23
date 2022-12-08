@@ -36,9 +36,9 @@ public class SortedCappedNodeExpander extends NodeExpander {
 
         List<MCTSTreeNode> children = new ArrayList<>();
         for (int i = 0; i < expansionAmount; ++i) {
-            Move randomMove = sortedMoves.get(i);
+            Move move = sortedMoves.get(i);
 
-            MCTSTreeNode providedNode = this.getNodeProvider().provideNode(selectedGameState, randomMove);
+            MCTSTreeNode providedNode = this.getNodeProvider().provideNode(selectedGameState, move);
             children.add(providedNode);
         }
 
