@@ -1,6 +1,5 @@
 package sc.player2023.logic.mcts.expanders;
 
-import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.mcts.MCTSTreeNode;
 import sc.player2023.logic.mcts.NodeExpander;
@@ -12,7 +11,6 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class SortedCappedNodeExpander extends NodeExpander {
 
@@ -50,10 +48,6 @@ public class SortedCappedNodeExpander extends NodeExpander {
     @Override
     public boolean canExpand(@Nonnull MCTSTreeNode node) {
         ImmutableGameState gameState = node.getGameState();
-        if (gameState.isOver())
-            return false;
-
-        Stream<Move> possibleMoveStream = GameRuleLogic.getPossibleMoveStream(gameState);
-        return possibleMoveStream.findFirst().isPresent();
+        return !gameState.isOver();
     }
 }

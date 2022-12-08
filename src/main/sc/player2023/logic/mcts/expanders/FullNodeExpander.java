@@ -35,10 +35,6 @@ public class FullNodeExpander extends NodeExpander {
     @Override
     public boolean canExpand(@Nonnull MCTSTreeNode node) {
         ImmutableGameState gameState = node.getGameState();
-        if (gameState.isOver())
-            return false;
-
-        Stream<Move> possibleMoveStream = GameRuleLogic.getPossibleMoveStream(gameState);
-        return possibleMoveStream.findFirst().isPresent();
+        return !gameState.isOver();
     }
 }
