@@ -9,15 +9,14 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class SimulatingNodeExpansionProvider implements NodeExpansionProvider {
+public class PlayoutNodeExpansionProvider implements NodeExpansionProvider {
 
     @Override
     @Nonnull
     public MCTSTreeNode provideNode(ImmutableGameState parentGameState, Move move) {
         ImmutableGameState gameStateWithRandomMove = GameRuleLogic.withMovePerformed(parentGameState, move);
 
-        Playout playout = new Playout(gameStateWithRandomMove);
-        ImmutableGameState playedOutGameState = playout.complete();
+        ImmutableGameState playedOutGameState = Playout.completeRandomly(gameStateWithRandomMove);
         ITeam currentTeam = gameStateWithRandomMove.getCurrentTeam();
         PlayoutResult result = PlayoutResult.of(playedOutGameState, currentTeam);
 
