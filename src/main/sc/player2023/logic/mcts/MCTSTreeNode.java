@@ -177,4 +177,19 @@ public class MCTSTreeNode {
             ", children=" + children +
             '}';
     }
+
+    public String toInformativeString() {
+        Statistics stats = this.getStatistics();
+        List<MCTSTreeNode> children = this.getChildren();
+
+        StringBuilder builder = new StringBuilder();
+
+        long wins = stats.wins();
+        long invertedWins = stats.inverted().wins();
+        builder.append(String.format("Visits: %s, ", stats.visits()));
+        builder.append(String.format("Wins: %d -> Opponent team wins: %d, ", wins, invertedWins));
+        builder.append(String.format("Number of children: %d", children.size()));
+
+        return builder.toString();
+    }
 }
