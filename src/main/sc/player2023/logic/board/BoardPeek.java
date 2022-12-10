@@ -192,7 +192,7 @@ public class BoardPeek {
                             ifFishFieldThenFishModulo2OtherwisePenguinCount, nonZeroFishCount);
     }
 
-    Map<String, String> toStringEncodingMap = Map.of("0", "\u001b[46m ",
+    private static final Map<String, String> toStringEncodingMap = Map.of("0", "\u001b[46m ",
                                                      "R", "\u001B[32mG",
                                                      "B", "\u001B[35mP",
                                                      "1", "-",
