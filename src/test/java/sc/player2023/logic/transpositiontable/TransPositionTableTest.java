@@ -9,23 +9,21 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
 
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransPositionTableTest {
 
-    GameStateSelector selector = gameState -> true;
-    GameStateHolderFactory factory = TrivialGameStateHolder::new;
 
     TransPositionTable transPositionTable;
 
     ImmutableGameState gameState1;
     ImmutableGameState gameState2;
 
+    TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+
     @BeforeEach
     void initTransPositionTable() {
-        transPositionTable = new TransPositionTable(new HashMap<>(), factory, selector);
+        transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(3);
     }
 
     @BeforeEach
