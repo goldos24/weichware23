@@ -8,7 +8,7 @@ import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
-import sc.player2023.logic.rating.AlphaBeta;
+import sc.player2023.logic.rating.alphabeta.AlphaBeta;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;

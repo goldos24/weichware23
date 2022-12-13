@@ -8,9 +8,10 @@ import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
-import sc.player2023.logic.rating.AlphaBeta;
+import sc.player2023.logic.rating.alphabeta.AlphaBeta;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.rating.alphabeta.FailHardPVSAlphaBetaUtil;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -67,7 +68,7 @@ public class ShuffledPossibleMovePVSMoveGetter implements MoveGetter {
                         postMoveRatingFactor
                 );
                 score = negated.rating(); /* * search with a null window */
-                if (alphaBeta.canBeCutScore(score)) {
+                if (FailHardPVSAlphaBetaUtil.canBeCutScore(alphaBeta, score)) {
                     AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
                     Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
                                               timeMeasurer).multiply(
@@ -78,7 +79,7 @@ public class ShuffledPossibleMovePVSMoveGetter implements MoveGetter {
             }
             alpha = Math.max(alpha, score);
             AlphaBeta newAlphaBeta = new AlphaBeta(alpha, beta);
-            if (newAlphaBeta.canBeCutBeta()) {
+            if (FailHardPVSAlphaBetaUtil.canBeCutBeta(newAlphaBeta)) {
                 break; /* beta cut-off */
             }
         }
@@ -138,7 +139,7 @@ public class ShuffledPossibleMovePVSMoveGetter implements MoveGetter {
                         postMoveRatingFactor
                 );
                 score = negated.rating(); /* * search with a null window */
-                if (alphaBeta.canBeCutScore(score)) {
+                if (FailHardPVSAlphaBetaUtil.canBeCutScore(alphaBeta, score)) {
                     AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
                     Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater, timeMeasurer).multiply(
                             postMoveRatingFactor
@@ -151,7 +152,7 @@ public class ShuffledPossibleMovePVSMoveGetter implements MoveGetter {
             }
             alpha = Math.max(alpha, score);
             AlphaBeta newAlphaBeta = new AlphaBeta(alpha, beta);
-            if (newAlphaBeta.canBeCutBeta()) {
+            if (FailHardPVSAlphaBetaUtil.canBeCutBeta(newAlphaBeta)) {
                 break; /* beta cut-off */
             }
         }
