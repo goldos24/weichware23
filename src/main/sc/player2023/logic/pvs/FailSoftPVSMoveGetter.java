@@ -12,6 +12,7 @@ import sc.player2023.logic.rating.alphabeta.AlphaBeta;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.alphabeta.AlphaBetaFactory;
+import sc.player2023.logic.rating.alphabeta.FailSoftAlphaBetaUtil;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
@@ -77,8 +78,8 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 );
                 bestScore = score;
                 bestMove = move;
-                if(score.isGreaterThan(alphaBeta.alpha()) ) {
-                    if (score.isGreaterThan(alphaBeta.beta()) || score.equals(alphaBeta.beta()))
+                if(FailSoftAlphaBetaUtil.scoreGreaterThanAlpha(alphaBeta, score)) {
+                    if (FailSoftAlphaBetaUtil.canDoBetaCutOff(alphaBeta, score))
                         break;
                     alphaBeta = AlphaBetaFactory.withNewAlpha(alphaBeta, score);
                 }
@@ -103,7 +104,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 if(score.isGreaterThan(bestScore)) {
                     bestScore = score;
                     bestMove = move;
-                    if(score.isGreaterThan(alphaBeta.beta()) || score.equals(alphaBeta.beta()))
+                    if(FailSoftAlphaBetaUtil.canDoBetaCutOff(alphaBeta, score))
                         break; // Beta cut-off
                 }
             }
