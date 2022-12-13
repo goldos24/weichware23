@@ -10,6 +10,7 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.alphabeta.AlphaBeta;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.rating.alphabeta.AlphaBetaFactory;
 import sc.player2023.logic.rating.alphabeta.FailHardPVSAlphaBetaUtil;
 import sc.plugin2023.Move;
 
@@ -37,27 +38,25 @@ public class PVSMoveGetter implements MoveGetter {
         }
         boolean firstChild = true;
         double score;
-        double alpha = alphaBeta.alpha();
-        double beta = alphaBeta.beta();
         double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
+                AlphaBeta newAlphaBeta = AlphaBetaFactory.inverseOf(alphaBeta);
                 Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating();
             }
             else {
-                AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
+                AlphaBeta newAlphaBeta = AlphaBetaFactory.alphaNullWindow(alphaBeta);
                 Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating(); /* * search with a null window */
                 if (FailHardPVSAlphaBetaUtil.canBeCutScore(alphaBeta, score)) {
-                    AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
+                    AlphaBeta newAlphaBetaCut = new AlphaBeta(alphaBeta.beta().negate(), new Rating(-score));
                     Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
                                               timeMeasurer).multiply(
                             postMoveRatingFactor
@@ -65,13 +64,14 @@ public class PVSMoveGetter implements MoveGetter {
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
                 }
             }
-            alpha = Math.max(alpha, score);
-            AlphaBeta newAlphaBeta = new AlphaBeta(alpha, beta);
-            if (FailHardPVSAlphaBetaUtil.canBeCutBeta(newAlphaBeta)) {
+            if(score > alphaBeta.alpha().rating()) {
+                alphaBeta = AlphaBetaFactory.withNewAlpha(alphaBeta, new Rating(score));
+            }
+            if (FailHardPVSAlphaBetaUtil.canBeCutBeta(alphaBeta)) {
                 break; /* beta cut-off */
             }
         }
-        return new Rating(alpha);
+        return alphaBeta.alpha();
     }
 
     public PVSMoveGetter() {
@@ -108,44 +108,43 @@ public class PVSMoveGetter implements MoveGetter {
     @Nullable
     public static Move getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                            TimeMeasurer timeMeasurer, int depth) {
-        double alpha = Double.NEGATIVE_INFINITY, score, beta = Double.POSITIVE_INFINITY;
+        Rating alpha = Rating.NEGATIVE_INFINITY, beta = Rating.POSITIVE_INFINITY;
         AlphaBeta alphaBeta = new AlphaBeta(alpha, beta);
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         boolean firstChild = true;
+        double score;
         double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater,
-                                     timeMeasurer).multiply(
+                AlphaBeta newAlphaBeta = AlphaBetaFactory.inverseOf(alphaBeta);
+                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating();
             }
             else {
-                AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater,
-                                     timeMeasurer).multiply(
+                AlphaBeta newAlphaBeta = AlphaBetaFactory.alphaNullWindow(alphaBeta);
+                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating(); /* * search with a null window */
                 if (FailHardPVSAlphaBetaUtil.canBeCutScore(alphaBeta, score)) {
-                    AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
-                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater, timeMeasurer).multiply(
+                    AlphaBeta newAlphaBetaCut = new AlphaBeta(alphaBeta.beta().negate(), new Rating(-score));
+                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
+                            timeMeasurer).multiply(
                             postMoveRatingFactor
                     );
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
                 }
             }
-            if (score > alpha) {
+            if(score > alphaBeta.alpha().rating()) {
+                alphaBeta = AlphaBetaFactory.withNewAlpha(alphaBeta, new Rating(score));
                 bestMove = move;
             }
-            alpha = Math.max(alpha, score);
-            AlphaBeta newAlphaBeta = new AlphaBeta(alpha, beta);
-            if (FailHardPVSAlphaBetaUtil.canBeCutBeta(newAlphaBeta)) {
+            if (FailHardPVSAlphaBetaUtil.canBeCutBeta(alphaBeta)) {
                 break; /* beta cut-off */
             }
         }

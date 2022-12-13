@@ -11,6 +11,7 @@ import sc.player2023.logic.move.PossibleMoveStreamFactory;
 import sc.player2023.logic.rating.alphabeta.AlphaBeta;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.rating.alphabeta.AlphaBetaFactory;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
@@ -63,56 +64,51 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
         }
         boolean firstChild = true;
         Move bestMove = null;
-        double score, bestScore = Double.NEGATIVE_INFINITY;
-        double alpha = alphaBeta.alpha();
-        double beta = alphaBeta.beta();
+        Rating score, bestScore = Rating.NEGATIVE_INFINITY;
         double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer, transPositionTable)
+                AlphaBeta newAlphaBeta = AlphaBetaFactory.inverseOf(alphaBeta);
+                score = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer, transPositionTable)
                         .rating().multiply(
                         postMoveRatingFactor
                 );
-                score = negated.rating();
                 bestScore = score;
                 bestMove = move;
-                if(score > alpha ) {
-                    if (score >= beta)
+                if(score.isGreaterThan(alphaBeta.alpha()) ) {
+                    if (score.isGreaterThan(alphaBeta.beta()) || score.equals(alphaBeta.beta()))
                         break;
-                    alpha = score;
+                    alphaBeta = AlphaBetaFactory.withNewAlpha(alphaBeta, score);
                 }
             }
             else {
-                AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer, transPositionTable).
+                AlphaBeta newAlphaBeta = AlphaBetaFactory.alphaNullWindow(alphaBeta);
+                score = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer, transPositionTable).
                         rating().multiply(
                         postMoveRatingFactor
-                );
-                score = negated.rating(); /* * search with a null window */
-                if (score > alpha && score < beta) {
-                    AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -alpha);
-                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
+                ); /* * search with a null window */
+                if (score.isGreaterThan(alphaBeta.alpha()) && score.isLessThan(alphaBeta.beta())) {
+                    AlphaBeta newAlphaBetaCut = AlphaBetaFactory.inverseOf(alphaBeta);
+                    score = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
                                               timeMeasurer, transPositionTable).
                             rating().multiply(
                             postMoveRatingFactor
-                    );
-                    score = otherNegated.rating(); /* if it failed high, do a full re-search */
-                    if(score > alpha) {
-                        alpha = score;
+                    ); /* if it failed high, do a full re-search */
+                    if(score.isGreaterThan(alphaBeta.beta())) {
+                        alphaBeta = AlphaBetaFactory.withNewAlpha(alphaBeta, score);
                     }
                 }
-                if(score > bestScore) {
+                if(score.isGreaterThan(bestScore)) {
                     bestScore = score;
                     bestMove = move;
-                    if(score >= beta)
+                    if(score.isGreaterThan(alphaBeta.beta()) || score.equals(alphaBeta.beta()))
                         break; // Beta cut-off
                 }
             }
         }
-        return new RatingWithMove(bestMove, new Rating(bestScore));
+        return new RatingWithMove(bestMove, bestScore);
     }
 
     public FailSoftPVSMoveGetter() {
@@ -148,7 +144,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
     public static Move getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                            TimeMeasurer timeMeasurer, int depth,
                                            TransPositionTable transPositionTable) {
-        return pvs(gameState, depth, new AlphaBeta(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY), rater, timeMeasurer, transPositionTable).move();
+        return pvs(gameState, depth, new AlphaBeta(Rating.NEGATIVE_INFINITY, Rating.POSITIVE_INFINITY), rater, timeMeasurer, transPositionTable).move();
     }
 
 }
