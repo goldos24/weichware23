@@ -21,13 +21,6 @@ import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 
 public class PVSMoveGetter implements MoveGetter {
 
-    private static double getRatingFactorForNextMove(@Nonnull ImmutableGameState gameState) {
-        if(GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam().opponent())) {
-            return -1;
-        }
-        return 1;
-    }
-
     private static final Logger log = LoggerFactory.getLogger(PVSMoveGetter.class);
 
     private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
@@ -38,7 +31,7 @@ public class PVSMoveGetter implements MoveGetter {
         }
         boolean firstChild = true;
         double score;
-        double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
+        double postMoveRatingFactor = MoveGetterUtil.getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
@@ -114,7 +107,7 @@ public class PVSMoveGetter implements MoveGetter {
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         boolean firstChild = true;
         double score;
-        double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
+        double postMoveRatingFactor = MoveGetterUtil.getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
