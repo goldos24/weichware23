@@ -22,15 +22,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
+import static sc.player2023.logic.pvs.MoveGetterUtil.getRatingFactorForNextMove;
 
 public class TransPositionTablePVSMoveGetter implements MoveGetter {
-
-    private static double getRatingFactorForNextMove(@Nonnull ImmutableGameState gameState) {
-        if(GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam().opponent())) {
-            return -1;
-        }
-        return 1;
-    }
 
     private static final Logger log = LoggerFactory.getLogger(TransPositionTablePVSMoveGetter.class);
 

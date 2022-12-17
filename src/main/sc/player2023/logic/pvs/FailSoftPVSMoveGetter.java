@@ -9,6 +9,7 @@ import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
 import sc.player2023.logic.rating.AlphaBeta;
+import sc.player2023.logic.rating.RatingWithMove;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
@@ -22,15 +23,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
+import static sc.player2023.logic.pvs.MoveGetterUtil.getRatingFactorForNextMove;
 
 public class FailSoftPVSMoveGetter implements MoveGetter {
-
-    private static double getRatingFactorForNextMove(@Nonnull ImmutableGameState gameState) {
-        if(GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam().opponent())) {
-            return -1;
-        }
-        return 1;
-    }
 
     private static final Logger log = LoggerFactory.getLogger(FailSoftPVSMoveGetter.class);
 
@@ -42,11 +37,6 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
         Collections.shuffle(result);
         return result;
     }
-
-    private record RatingWithMove(
-            @Nullable Move move,
-            @Nonnull Rating rating
-    ) {}
 
 
     private static RatingWithMove pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
