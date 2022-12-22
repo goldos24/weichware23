@@ -1,14 +1,14 @@
 package sc.player2023.comparison;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
-import sc.player2023.logic.gameState.ImmutableGameState;
-import sc.player2023.logic.gameState.ImmutableGameStateFactory;
 import sc.player2023.logic.Logic;
 import sc.player2023.logic.StupidMoveGetter;
+import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.gameState.ImmutableGameStateFactory;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.StupidRater;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BattleTest {
     @Test
@@ -25,7 +25,7 @@ class BattleTest {
     @Test
     void randomPlayerVsGoodStupidMoveGetter() {
         Fighter expectedWinner = new Fighter(new StupidMoveGetter(), Logic.createCombinedRater());
-        Fighter randomPlayer = new Fighter(new StupidMoveGetter(), gameState -> new Rating(Math.random()));
+        Fighter randomPlayer = new Fighter(new StupidMoveGetter(), gameState -> new Rating((int) (Math.random() * 10)));
         BattleResult expected = new BattleResult(0, 10);
         BattleResult got = Battle.run(randomPlayer, expectedWinner, new BattleData(5));
         assertEquals(expected, got);

@@ -7,6 +7,8 @@ import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.move.PossibleMoveGenerator;
+import sc.player2023.logic.move.PossibleMoveIterable;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
 import sc.player2023.logic.rating.*;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static sc.player2023.logic.GameRuleLogic.getPossibleMoves;
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 import static sc.player2023.logic.pvs.MoveGetterUtil.getRatingFactorForNextMove;
 
@@ -26,7 +29,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
 
     private static final Logger log = LoggerFactory.getLogger(FailSoftPVSMoveGetter.class);
 
-    private static List<Move> getShuffledPossibleMoves(@Nonnull ImmutableGameState gameState) {
+    public static List<Move> getShuffledPossibleMoves(@Nonnull ImmutableGameState gameState) {
         var board = gameState.getBoard();
         var currentTeam = gameState.getCurrentTeam();
         var unmodifieableMoveList = PossibleMoveStreamFactory.getPossibleMoves(board, currentTeam).toList();
@@ -38,12 +41,13 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
 
     public static RatedMove pvs(@Nonnull ImmutableGameState gameState, int depth, SearchWindow searchWindow,
                                 @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer,
-                                TransPositionTable transPositionTable) {
-        if(transPositionTable.hasGameState(gameState)) {
+                                TransPositionTable transPositionTable, PossibleMoveGenerator moveGenerator) {
+        if (transPositionTable.hasGameState(gameState)) {
             return new RatedMove(transPositionTable.getRatingForGameState(gameState), null);
         }
-        List<Move> possibleMoves = getShuffledPossibleMoves(gameState);
-        if (depth < 0 || gameState.isOver() || possibleMoves.isEmpty() || timeMeasurer.ranOutOfTime()) {
+        Iterable<Move> possibleMoves = moveGenerator.getPossibleMoves(gameState);
+        boolean isEmpty = !possibleMoves.iterator().hasNext();
+        if (depth < 0 || gameState.isOver() || isEmpty || timeMeasurer.ranOutOfTime()) {
             Rating rating = rater.rate(gameState);
             transPositionTable.add(gameState, rating);
             return new RatedMove(rating, null);
@@ -59,43 +63,47 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
             if (firstChild) {
                 firstChild = false;
                 SearchWindow newSearchWindow = new SearchWindow(-upperBound, -lowerBound);
-                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer, transPositionTable)
+                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer,
+                                     transPositionTable, PossibleMoveIterable::new)
                         .rating().multiply(
-                        postMoveRatingFactor
-                );
+                                postMoveRatingFactor
+                        );
                 score = negated.rating();
                 bestScore = score;
                 bestMove = move;
-                if(score > lowerBound ) {
-                    if (score >= upperBound)
+                if (score > lowerBound) {
+                    if (score >= upperBound) {
                         break;
+                    }
                     lowerBound = score;
                 }
             }
             else {
                 SearchWindow newSearchWindow = new SearchWindow(-lowerBound - 1, -lowerBound);
-                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer, transPositionTable).
+                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer,
+                                     transPositionTable, PossibleMoveIterable::new).
                         rating().multiply(
-                        postMoveRatingFactor
-                );
+                                postMoveRatingFactor
+                        );
                 score = negated.rating(); /* * search with a null window */
                 if (score > lowerBound && score < upperBound) {
                     SearchWindow newSearchWindowCut = new SearchWindow(-upperBound, -lowerBound);
                     Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindowCut, rater,
-                                              timeMeasurer, transPositionTable).
+                                              timeMeasurer, transPositionTable, PossibleMoveIterable::new).
                             rating().multiply(
-                            postMoveRatingFactor
-                    );
+                                    postMoveRatingFactor
+                            );
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
-                    if(score > lowerBound) {
+                    if (score > lowerBound) {
                         lowerBound = score;
                     }
                 }
-                if(score > bestScore) {
+                if (score > bestScore) {
                     bestScore = score;
                     bestMove = move;
-                    if(score >= upperBound)
+                    if (score >= upperBound) {
                         break; // Beta cut-off
+                    }
                 }
             }
         }
@@ -110,9 +118,9 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
-        Move bestMove = null;
+        Move bestMove = getPossibleMoves(gameState).get(0);
         int depth = 0;
-        while (!timeMeasurer.ranOutOfTime() || depth == 0) {
+        while (!timeMeasurer.ranOutOfTime()) {
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             Move currentMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable);
             if (currentMove == null) {
@@ -131,12 +139,14 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
         log.info("Board: {}", gameState.getBoard());
         return bestMove;
     }
+
     @Nullable
     public static Move getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                            TimeMeasurer timeMeasurer, int depth,
                                            TransPositionTable transPositionTable) {
         SearchWindow searchWindow = new SearchWindow(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-        return pvs(gameState, depth, searchWindow, rater, timeMeasurer, transPositionTable).move();
+        return pvs(gameState, depth, searchWindow, rater, timeMeasurer, transPositionTable,
+                   FailSoftPVSMoveGetter::getShuffledPossibleMoves).move();
     }
 
 }

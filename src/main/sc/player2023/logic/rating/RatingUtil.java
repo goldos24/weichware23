@@ -18,4 +18,11 @@ public class RatingUtil {
         var opponentTeam = ownTeam.opponent();
         return teamRater.rateForTeam(gameState, ownTeam).subtract(teamRater.rateForTeam(gameState, opponentTeam));
     }
+
+    public static boolean isInSearchWindow(@Nonnull SearchWindow searchWindow, @Nonnull Rating rating) {
+        double lowerBound = searchWindow.lowerBound();
+        double upperBound = searchWindow.upperBound();
+        double score = rating.rating();
+        return lowerBound < score && score < upperBound;
+    }
 }

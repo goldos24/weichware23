@@ -10,44 +10,44 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RatingTest {
 
-    private final Rating rating = new Rating(5.0);
+    private final Rating rating = new Rating(5);
 
     @Test
     void addRating() {
-        Rating other = new Rating(3.0);
-        Rating expected = new Rating(8.0);
+        Rating other = new Rating(3);
+        Rating expected = new Rating(8);
         Rating actual = rating.add(other);
         assertEquals(expected, actual, "addRating");
     }
 
     @Test
     void addDouble() {
-        double other = 3.0;
-        Rating expected = new Rating(8.0);
+        int other = 3;
+        Rating expected = new Rating(8);
         Rating actual = rating.add(other);
         assertEquals(expected, actual, "addDouble");
     }
 
     @Test
     void subtractRating() {
-        Rating other = new Rating(3.0);
-        Rating expected = new Rating(2.0);
+        Rating other = new Rating(3);
+        Rating expected = new Rating(2);
         Rating actual = rating.subtract(other);
         assertEquals(expected, actual, "subtractRating");
     }
 
     @Test
     void subtractDouble() {
-        double other = 3.0;
-        Rating expected = new Rating(2.0);
+        int other = 3;
+        Rating expected = new Rating(2);
         Rating actual = rating.subtract(other);
         assertEquals(expected, actual, "subtractDouble");
     }
 
     @Test
     void multiply() {
-        double other = 3.0;
-        Rating expected = new Rating(15.0);
+        int other = 3;
+        Rating expected = new Rating(15);
         Rating actual = rating.multiply(other);
         assertEquals(expected, actual, "multiply");
     }
@@ -62,35 +62,35 @@ class RatingTest {
 
     @Test
     void isGreaterThanTrue() {
-        Rating other = new Rating(3.0);
+        Rating other = new Rating(3);
         boolean actual = rating.isGreaterThan(other);
         assertTrue(actual, "subtractRating");
     }
 
     @Test
     void isGreaterThanFalse() {
-        Rating other = new Rating(6.0);
+        Rating other = new Rating(6);
         boolean actual = rating.isGreaterThan(other);
         assertFalse(actual, "subtractRating");
     }
 
     @Test
     void isLessThanTrue() {
-        Rating other = new Rating(6.0);
+        Rating other = new Rating(6);
         boolean actual = rating.isLessThan(other);
         assertTrue(actual, "subtractRating");
     }
 
     @Test
     void isLessThanFalse() {
-        Rating other = new Rating(3.0);
+        Rating other = new Rating(3);
         boolean actual = rating.isLessThan(other);
         assertFalse(actual, "subtractRating");
     }
 
     @Test
     void testEquals() {
-        Rating expected = new Rating(5.0);
+        Rating expected = new Rating(5);
         assertEquals(expected, rating, "equal");
     }
 
@@ -106,7 +106,7 @@ class RatingTest {
 
     @Test
     void testHashCode() {
-        int expected = new Rating(5.0).hashCode();
+        int expected = new Rating(5).hashCode();
         int actual = rating.hashCode();
         assertEquals(expected, actual, "hashCode");
 
@@ -114,7 +114,7 @@ class RatingTest {
 
     @Test
     void testToString() {
-        String expected = new Rating(5.0).toString();
+        String expected = new Rating(5).toString();
         String actual = rating.toString();
         assertEquals(expected, actual, "toString");
 
@@ -122,7 +122,7 @@ class RatingTest {
 
     @Test
     void rating() {
-        double expected = 5.0;
+        int expected = 5;
         double actual = rating.rating();
         assertEquals(expected, actual, "rating");
     }
