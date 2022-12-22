@@ -7,7 +7,7 @@ import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
-import sc.player2023.logic.rating.AlphaBeta;
+import sc.player2023.logic.rating.SearchWindow;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.plugin2023.Move;
@@ -21,7 +21,7 @@ public class PVSMoveGetter implements MoveGetter {
 
     private static final Logger log = LoggerFactory.getLogger(PVSMoveGetter.class);
 
-    private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
+    private static Rating pvs(@Nonnull ImmutableGameState gameState, int depth, SearchWindow searchWindow,
                               @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer) {
         Iterable<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         if (depth < 0 || gameState.isOver() || timeMeasurer.ranOutOfTime()) {
@@ -29,28 +29,28 @@ public class PVSMoveGetter implements MoveGetter {
         }
         boolean firstChild = true;
         double score;
-        double alpha = alphaBeta.alpha();
-        double beta = alphaBeta.beta();
+        double alpha = searchWindow.alpha();
+        double beta = searchWindow.beta();
         double postMoveRatingFactor = MoveGetterUtil.getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
+                SearchWindow newSearchWindow = new SearchWindow(-beta, -alpha);
+                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating();
             }
             else {
-                AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater, timeMeasurer).multiply(
+                SearchWindow newSearchWindow = new SearchWindow(-alpha - 1, -alpha);
+                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating(); /* * search with a null window */
-                if (alphaBeta.canBeCutScore(score)) {
-                    AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
-                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater,
+                if (searchWindow.canBeCutScore(score)) {
+                    SearchWindow newSearchWindowCut = new SearchWindow(-beta, -score);
+                    Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindowCut, rater,
                                               timeMeasurer).multiply(
                             postMoveRatingFactor
                     );
@@ -58,8 +58,8 @@ public class PVSMoveGetter implements MoveGetter {
                 }
             }
             alpha = Math.max(alpha, score);
-            AlphaBeta newAlphaBeta = new AlphaBeta(alpha, beta);
-            if (newAlphaBeta.canBeCutBeta()) {
+            SearchWindow newSearchWindow = new SearchWindow(alpha, beta);
+            if (newSearchWindow.canBeCutBeta()) {
                 break; /* beta cut-off */
             }
         }
@@ -92,16 +92,11 @@ public class PVSMoveGetter implements MoveGetter {
         return bestMove;
     }
 
-    public static Move getBestMoveWithDepthOfThree(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
-                                                   TimeMeasurer timeMeasurer) {
-        return getBestMoveForDepth(gameState, rater, timeMeasurer, 3);
-    }
-
     @Nullable
     public static Move getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                            TimeMeasurer timeMeasurer, int depth) {
         double alpha = Double.NEGATIVE_INFINITY, score, beta = Double.POSITIVE_INFINITY;
-        AlphaBeta alphaBeta = new AlphaBeta(alpha, beta);
+        SearchWindow searchWindow = new SearchWindow(alpha, beta);
         Move bestMove = null;
         List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
         boolean firstChild = true;
@@ -110,23 +105,23 @@ public class PVSMoveGetter implements MoveGetter {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                AlphaBeta newAlphaBeta = new AlphaBeta(-beta, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater,
+                SearchWindow newSearchWindow = new SearchWindow(-beta, -alpha);
+                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater,
                                      timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating();
             }
             else {
-                AlphaBeta newAlphaBeta = new AlphaBeta(-alpha - 1, -alpha);
-                Rating negated = pvs(childGameState, depth - 1, newAlphaBeta, rater,
+                SearchWindow newSearchWindow = new SearchWindow(-alpha - 1, -alpha);
+                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater,
                                      timeMeasurer).multiply(
                         postMoveRatingFactor
                 );
                 score = negated.rating(); /* * search with a null window */
-                if (alphaBeta.canBeCutScore(score)) {
-                    AlphaBeta newAlphaBetaCut = new AlphaBeta(-beta, -score);
-                    Rating otherNegated = pvs(childGameState, depth - 1, newAlphaBetaCut, rater, timeMeasurer).multiply(
+                if (searchWindow.canBeCutScore(score)) {
+                    SearchWindow newSearchWindowCut = new SearchWindow(-beta, -score);
+                    Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindowCut, rater, timeMeasurer).multiply(
                             postMoveRatingFactor
                     );
                     score = otherNegated.rating(); /* if it failed high, do a full re-search */
@@ -136,8 +131,8 @@ public class PVSMoveGetter implements MoveGetter {
                 bestMove = move;
             }
             alpha = Math.max(alpha, score);
-            AlphaBeta newAlphaBeta = new AlphaBeta(alpha, beta);
-            if (newAlphaBeta.canBeCutBeta()) {
+            SearchWindow newSearchWindow = new SearchWindow(alpha, beta);
+            if (newSearchWindow.canBeCutBeta()) {
                 break; /* beta cut-off */
             }
         }
