@@ -11,7 +11,7 @@ import sc.player2023.logic.move.PossibleMoveGenerator;
 import sc.player2023.logic.move.PossibleMoveIterable;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
 import sc.player2023.logic.rating.*;
-import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
+import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
@@ -114,7 +114,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
 
     }
 
-    TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+    TransPositionTableFactory transPositionTableFactory = new SmartTransPositionTableFactory();
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {

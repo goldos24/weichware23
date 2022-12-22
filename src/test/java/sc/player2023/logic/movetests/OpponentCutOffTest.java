@@ -15,7 +15,7 @@ import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.SearchWindow;
 import sc.player2023.logic.score.GameScore;
-import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
+import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
@@ -23,7 +23,7 @@ import sc.plugin2023.Move;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OpponentCutOffTest {
-    private final TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+    private final TransPositionTableFactory transPositionTableFactory = new SmartTransPositionTableFactory();
 
 
     private final static String LATE_GAME_HUGE_CUTOFF_SITUATION = """

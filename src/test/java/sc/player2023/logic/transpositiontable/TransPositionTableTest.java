@@ -19,7 +19,7 @@ class TransPositionTableTest {
     ImmutableGameState gameState1;
     ImmutableGameState gameState2;
 
-    TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+    TransPositionTableFactory transPositionTableFactory = new SmartTransPositionTableFactory();
 
     @BeforeEach
     void initTransPositionTable() {

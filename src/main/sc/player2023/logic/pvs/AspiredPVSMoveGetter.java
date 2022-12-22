@@ -12,6 +12,7 @@ import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.SearchWindow;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
+import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
@@ -43,7 +44,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         int depth = 0;
         Rating[] lastRating = new Rating[2];
         Arrays.fill(lastRating, rater.rate(gameState));
-        while (!timeMeasurer.ranOutOfTime() || depth == 0) {
+        while (!timeMeasurer.ranOutOfTime()) {
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             RatedMove currentRatedMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable,
                                                              lastRating[depth % 2]);
@@ -52,9 +53,9 @@ public class AspiredPVSMoveGetter implements MoveGetter {
             if (currentMove == null) {
                 continue;
             }
-            if (timeMeasurer.ranOutOfTime() && depth != 0) {
+            /*if (timeMeasurer.ranOutOfTime() && depth != 0) {
                 break;
-            }
+            }*/
             if (depth > GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT) {
                 break;
             }
@@ -71,8 +72,8 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                                                 TimeMeasurer timeMeasurer, int depth,
                                                 @Nonnull TransPositionTable transPositionTable,
                                                 @Nonnull Rating lastRating) {
-        final int initialOffset = 4;
-        final int wideningFactor = 10;
+        final int initialOffset = 1;
+        int wideningFactor = 4;
         int offsetUpperBound = initialOffset;
         int offsetLowerBound = -initialOffset;
         double lowerBound = lastRating.add(offsetLowerBound).rating();
@@ -89,6 +90,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                 log.info("SearchWindow: {}", searchWindow);
                 return currentMove;
             }
+            wideningFactor *= wideningFactor;
             double rating = currentRating.rating();
             if (rating <= lowerBound) {
                 upperBound = lowerBound;
@@ -100,7 +102,8 @@ public class AspiredPVSMoveGetter implements MoveGetter {
             offsetUpperBound *= wideningFactor;
             upperBound = lastRating.add(offsetUpperBound).rating();
         }
-        while (true);
+        while (!timeMeasurer.ranOutOfTime());
+        return new RatedMove(Rating.NEGATIVE_INFINITY, null);
     }
 
 }

@@ -11,7 +11,7 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.score.GameScore;
-import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
+import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class NoSelfCutOffTest {
     Rater rater = Logic.createCombinedRater();
 
-    TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+    TransPositionTableFactory transPositionTableFactory = new SmartTransPositionTableFactory();
 
 
     Move getMoveForDepth(BoardPeek situation, Team team, GameScore teamPointsMap, int depth) {

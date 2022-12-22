@@ -10,7 +10,7 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.StupidRater;
-import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
+import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class FailSoftPVSMoveGetterTest {
 
-    private final TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+    private final TransPositionTableFactory transPositionTableFactory = new SmartTransPositionTableFactory();
     private final TransPositionTable table = transPositionTableFactory.createTransPositionTableFromDepth(5);
 
     @Test
