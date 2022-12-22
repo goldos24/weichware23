@@ -1,6 +1,5 @@
 package sc.player2023.logic.movetests;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
@@ -9,13 +8,15 @@ import sc.player2023.logic.TimeMeasurerFixture;
 import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
-import sc.player2023.logic.rating.AlphaBeta;
+import sc.player2023.logic.rating.RatedMove;
 import sc.player2023.logic.rating.Rater;
-import sc.player2023.logic.rating.RatingWithMove;
+import sc.player2023.logic.rating.SearchWindow;
 import sc.player2023.logic.score.GameScore;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OpponentCutOffTest {
     TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
@@ -47,12 +48,12 @@ public class OpponentCutOffTest {
     void reducedWindowLateGameHugeCutOff() {
         Rater rater = Logic.createCombinedRater();
         ImmutableGameState gameState = new ImmutableGameState(new GameScore(3, 0), BoardParser.boardFromString(LATE_GAME_HUGE_CUTOFF_SITUATION), Team.TWO);
-        AlphaBeta alphaBeta = new AlphaBeta(-210, -208);
-        RatingWithMove ratingWithMove = FailSoftPVSMoveGetter.pvs(gameState, LATE_GAME_HUGE_CUTOFF_DEPTH, alphaBeta, rater,
-                TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer(),
-                transPositionTableFactory.createTransPositionTableFromDepth(LATE_GAME_HUGE_CUTOFF_DEPTH));
-        Move got = ratingWithMove.move();
-        System.out.println(ratingWithMove.rating());
+        SearchWindow searchWindow = new SearchWindow(-210, -210);
+        RatedMove ratedMove = FailSoftPVSMoveGetter.pvs(gameState, LATE_GAME_HUGE_CUTOFF_DEPTH, searchWindow, rater,
+                                                             TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer(),
+                                                             transPositionTableFactory.createTransPositionTableFromDepth(LATE_GAME_HUGE_CUTOFF_DEPTH));
+        Move got = ratedMove.move();
+        System.out.println(ratedMove.rating());
         assertEquals(LATE_GAME_HUGE_CUTOFF_EXPECTED_MOVE, got);
     }
 }

@@ -8,10 +8,7 @@ import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
-import sc.player2023.logic.rating.SearchWindow;
-import sc.player2023.logic.rating.RatingWithMove;
-import sc.player2023.logic.rating.Rater;
-import sc.player2023.logic.rating.Rating;
+import sc.player2023.logic.rating.*;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
@@ -39,17 +36,17 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
     }
 
 
-    public static RatingWithMove pvs(@Nonnull ImmutableGameState gameState, int depth, SearchWindow searchWindow,
-                              @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer,
-                              TransPositionTable transPositionTable) {
+    public static RatedMove pvs(@Nonnull ImmutableGameState gameState, int depth, SearchWindow searchWindow,
+                                @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer,
+                                TransPositionTable transPositionTable) {
         if(transPositionTable.hasGameState(gameState)) {
-            return new RatingWithMove(null, transPositionTable.getRatingForGameState(gameState));
+            return new RatedMove(transPositionTable.getRatingForGameState(gameState), null);
         }
         List<Move> possibleMoves = getShuffledPossibleMoves(gameState);
         if (depth < 0 || gameState.isOver() || possibleMoves.isEmpty() || timeMeasurer.ranOutOfTime()) {
             Rating rating = rater.rate(gameState);
             transPositionTable.add(gameState, rating);
-            return new RatingWithMove(null, rating);
+            return new RatedMove(rating, null);
         }
         boolean firstChild = true;
         Move bestMove = null;
@@ -102,7 +99,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 }
             }
         }
-        return new RatingWithMove(bestMove, new Rating(bestScore));
+        return new RatedMove(new Rating(bestScore), bestMove);
     }
 
     public FailSoftPVSMoveGetter() {
