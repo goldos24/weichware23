@@ -48,7 +48,7 @@ public class OpponentCutOffTest {
     void reducedWindowLateGameHugeCutOff() {
         Rater rater = Logic.createCombinedRater();
         ImmutableGameState gameState = new ImmutableGameState(new GameScore(3, 0), BoardParser.boardFromString(LATE_GAME_HUGE_CUTOFF_SITUATION), Team.TWO);
-        SearchWindow searchWindow = new SearchWindow(-210, -210);
+        SearchWindow searchWindow = new SearchWindow(-210, -208);
         RatedMove ratedMove = FailSoftPVSMoveGetter.pvs(gameState, LATE_GAME_HUGE_CUTOFF_DEPTH, searchWindow, rater,
                                                              TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer(),
                                                              transPositionTableFactory.createTransPositionTableFromDepth(LATE_GAME_HUGE_CUTOFF_DEPTH));
