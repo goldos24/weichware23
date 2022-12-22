@@ -39,7 +39,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
     }
 
 
-    private static RatingWithMove pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
+    public static RatingWithMove pvs(@Nonnull ImmutableGameState gameState, int depth, AlphaBeta alphaBeta,
                               @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer,
                               TransPositionTable transPositionTable) {
         if(transPositionTable.hasGameState(gameState)) {
@@ -138,7 +138,8 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
     public static Move getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                            TimeMeasurer timeMeasurer, int depth,
                                            TransPositionTable transPositionTable) {
-        return pvs(gameState, depth, new AlphaBeta(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY), rater, timeMeasurer, transPositionTable).move();
+        AlphaBeta alphaBeta = new AlphaBeta(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        return pvs(gameState, depth, alphaBeta, rater, timeMeasurer, transPositionTable).move();
     }
 
 }
