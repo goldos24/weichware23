@@ -29,8 +29,8 @@ public class PVSMoveGetter implements MoveGetter {
         }
         boolean firstChild = true;
         double score;
-        double alpha = searchWindow.alpha();
-        double beta = searchWindow.beta();
+        double alpha = searchWindow.lowerBound();
+        double beta = searchWindow.upperBound();
         double postMoveRatingFactor = MoveGetterUtil.getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);

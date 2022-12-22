@@ -54,8 +54,8 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
         boolean firstChild = true;
         Move bestMove = null;
         double score, bestScore = Double.NEGATIVE_INFINITY;
-        double lowerBound = searchWindow.alpha();
-        double upperBound = searchWindow.beta();
+        double lowerBound = searchWindow.lowerBound();
+        double upperBound = searchWindow.upperBound();
         double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
