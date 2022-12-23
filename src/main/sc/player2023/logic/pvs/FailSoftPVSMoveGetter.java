@@ -24,6 +24,7 @@ import java.util.List;
 import static sc.player2023.logic.GameRuleLogic.getPossibleMoves;
 import static sc.player2023.logic.GameRuleLogic.withMovePerformed;
 import static sc.player2023.logic.pvs.MoveGetterUtil.getRatingFactorForNextMove;
+import static sc.player2023.logic.rating.RatingUtil.isInSearchWindow;
 
 public class FailSoftPVSMoveGetter implements MoveGetter {
 
@@ -107,7 +108,11 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 }
             }
         }
-        return new RatedMove(new Rating(bestScore), bestMove);
+        Rating rating = new Rating(bestScore);
+        if(isInSearchWindow(new SearchWindow(lowerBound, upperBound), rating)) {
+            transPositionTable.add(gameState, rating);
+        }
+        return new RatedMove(rating, bestMove);
     }
 
     public FailSoftPVSMoveGetter() {
