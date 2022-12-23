@@ -12,7 +12,6 @@ import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.SearchWindow;
 import sc.player2023.logic.transpositiontable.SimpleTransPositionTableFactory;
-import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
@@ -40,7 +39,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
 
     @Override
     public Move getBestMove(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, TimeMeasurer timeMeasurer) {
-        Move bestMove = null;
+        Move bestMove = GameRuleLogic.getPossibleMoves(gameState).get(0);
         int depth = 0;
         Rating[] lastRating = new Rating[2];
         Arrays.fill(lastRating, rater.rate(gameState));

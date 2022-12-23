@@ -8,7 +8,6 @@ import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveGenerator;
-import sc.player2023.logic.move.PossibleMoveIterable;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
 import sc.player2023.logic.rating.*;
 import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
@@ -65,7 +64,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 firstChild = false;
                 SearchWindow newSearchWindow = new SearchWindow(-upperBound, -lowerBound);
                 Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer,
-                                     transPositionTable, PossibleMoveIterable::new)
+                                     transPositionTable, moveGenerator)
                         .rating().multiply(
                                 postMoveRatingFactor
                         );
@@ -82,7 +81,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
             else {
                 SearchWindow newSearchWindow = new SearchWindow(-lowerBound - 1, -lowerBound);
                 Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer,
-                                     transPositionTable, PossibleMoveIterable::new).
+                                     transPositionTable, moveGenerator).
                         rating().multiply(
                                 postMoveRatingFactor
                         );
@@ -90,7 +89,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 if (score > lowerBound && score < upperBound) {
                     SearchWindow newSearchWindowCut = new SearchWindow(-upperBound, -lowerBound);
                     Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindowCut, rater,
-                                              timeMeasurer, transPositionTable, PossibleMoveIterable::new).
+                                              timeMeasurer, transPositionTable, moveGenerator).
                             rating().multiply(
                                     postMoveRatingFactor
                             );
