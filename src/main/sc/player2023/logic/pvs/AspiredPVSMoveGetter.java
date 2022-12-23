@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.MoveGetter;
+import sc.player2023.logic.StupidMoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveIterable;
@@ -31,6 +32,16 @@ public class AspiredPVSMoveGetter implements MoveGetter {
 
     private static final Logger log = LoggerFactory.getLogger(AspiredPVSMoveGetter.class);
 
+    private static final StupidMoveGetter GUESS_CREATION_MOVE_GETTER = new StupidMoveGetter();
+
+    private static Rating createAspirationGuess(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater, @Nonnull TimeMeasurer timeMeasurer, int depth) {
+        for(int moveCount = 0; moveCount < depth && GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam()); ++moveCount) {
+            Move move = GUESS_CREATION_MOVE_GETTER.getBestMove(gameState, rater, timeMeasurer);
+            gameState = GameRuleLogic.withMovePerformed(gameState, move);
+        }
+        return rater.rate(gameState);
+    }
+
     public AspiredPVSMoveGetter() {
 
     }
@@ -46,7 +57,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         while (!timeMeasurer.ranOutOfTime()) {
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             RatedMove currentRatedMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable,
-                                                             lastRating[depth % 2]);
+                                                             createAspirationGuess(gameState, rater, timeMeasurer, depth));
             lastRating[depth % 2] = currentRatedMove.rating();
             Move currentMove = currentRatedMove.move();
             if (currentMove == null) {
@@ -71,7 +82,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                                                 TimeMeasurer timeMeasurer, int depth,
                                                 @Nonnull TransPositionTable transPositionTable,
                                                 @Nonnull Rating lastRating) {
-        final int initialOffset = 1;
+        final int initialOffset = 10;
         int wideningFactor = 4;
         int offsetUpperBound = initialOffset;
         int offsetLowerBound = -initialOffset;
@@ -89,7 +100,6 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                 log.info("SearchWindow: {}", searchWindow);
                 return currentMove;
             }
-            wideningFactor *= wideningFactor;
             double rating = currentRating.rating();
             if (rating <= lowerBound) {
                 upperBound = lowerBound;
