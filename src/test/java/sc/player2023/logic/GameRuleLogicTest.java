@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.player2023.logic.board.BoardFixture;
+import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
@@ -22,6 +23,23 @@ class GameRuleLogicTest {
         BoardPeek board = new BoardPeek(BoardFixture.createTestBoard());
         assertTrue(GameRuleLogic.canMoveTo(board, new Coordinates(0, 0)));
         assertFalse(GameRuleLogic.canMoveTo(board, BoardFixture.FIRST_PENGUIN_COORDINATES));
+    }
+
+    @Test
+    void getEmptyFieldCountFromBoard() {
+        String situation = """
+                P     P       G\s
+                         P      \s
+                              -\s
+                     -   G      \s
+                - G   -     =  \s
+                       =       P\s
+                      -        \s
+                         3   G  \s
+                """;
+        int expected = 48;
+        int got = GameRuleLogic.getEmptyFieldCountFromBoard(BoardParser.boardFromString(situation));
+        assertEquals(expected, got);
     }
 
     @Test

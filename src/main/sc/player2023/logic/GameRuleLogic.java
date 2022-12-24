@@ -39,6 +39,10 @@ public class GameRuleLogic {
         return (int) Math.round(Math.random() * (possibleMoves.size() - 1));
     }
 
+    public static int getEmptyFieldCountFromBoard(@Nonnull BoardPeek board) {
+        return createBoardCoordinateStream().map(board::get).mapToInt(field -> field.isEmpty() ? 1 : 0).sum();
+    }
+
     @Nonnull
     public static ImmutableGameState withRandomMovePerformed(@Nonnull ImmutableGameState gameState) {
         List<Move> moves = GameRuleLogic.getPossibleMoves(gameState);

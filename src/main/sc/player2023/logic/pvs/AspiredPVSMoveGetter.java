@@ -57,15 +57,15 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         while (!timeMeasurer.ranOutOfTime()) {
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             RatedMove currentRatedMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable,
-                                                             createAspirationGuess(gameState, rater, timeMeasurer, depth));
+                                                             lastRating[depth%2]);
             lastRating[depth % 2] = currentRatedMove.rating();
             Move currentMove = currentRatedMove.move();
             if (currentMove == null) {
                 continue;
             }
-            /*if (timeMeasurer.ranOutOfTime() && depth != 0) {
+            if (timeMeasurer.ranOutOfTime() && depth != 0) {
                 break;
-            }*/
+            }
             if (depth > GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT) {
                 break;
             }
