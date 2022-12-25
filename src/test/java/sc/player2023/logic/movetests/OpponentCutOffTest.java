@@ -104,7 +104,7 @@ public class OpponentCutOffTest {
         Move expected = new Move(new Coordinates(6, 6), new Coordinates(5, 5));
         RatedMove move = FailSoftPVSMoveGetter.pvs(
                 EARLY_GAME_CUTOFF_GAME_STATE,
-                EARLY_GAME_CUTOFF_DEPTH, new SearchWindow(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY), RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER,
+                EARLY_GAME_CUTOFF_DEPTH, new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND), RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER,
                 transPositionTableFactory.createTransPositionTableFromDepth(EARLY_GAME_CUTOFF_DEPTH), FailSoftPVSMoveGetter::getShuffledPossibleMoves);
         System.out.println(move.rating());
         assertEquals(move.move(), expected);

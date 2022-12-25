@@ -55,8 +55,8 @@ class RatingTest {
     @Test
     void negate() {
         Rating actual = rating.negate();
-        double expectedDouble = -rating.rating();
-        Rating expected = new Rating(expectedDouble);
+        int expectedValue = -rating.rating();
+        Rating expected = new Rating(expectedValue);
         assertEquals(expected, actual, "negate");
     }
 

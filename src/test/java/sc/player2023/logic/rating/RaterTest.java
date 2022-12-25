@@ -13,7 +13,7 @@ class RaterTest {
         // Only works with stupid rater if it doesn't override getAnalytics
         Rater rater = new StupidRater();
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        String expected = "StupidRater{0.0}";
+        String expected = "StupidRater{0}";
         String got = rater.getAnalytics(gameState);
         assertEquals(expected, got);
     }

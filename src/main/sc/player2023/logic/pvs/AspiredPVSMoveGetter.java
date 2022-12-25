@@ -82,12 +82,12 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                                                 TimeMeasurer timeMeasurer, int depth,
                                                 @Nonnull TransPositionTable transPositionTable,
                                                 @Nonnull Rating lastRating) {
-        final int initialOffset = 10;
-        int wideningFactor = 4;
+        final int initialOffset = 12;
+        int wideningFactor = 4_000;
         int offsetUpperBound = initialOffset;
         int offsetLowerBound = -initialOffset;
-        double lowerBound = lastRating.add(offsetLowerBound).rating();
-        double upperBound = lastRating.add(offsetUpperBound).rating();
+        int lowerBound = lastRating.add(offsetLowerBound).rating();
+        int upperBound = lastRating.add(offsetUpperBound).rating();
         do {
             SearchWindow searchWindow = new SearchWindow(lowerBound, upperBound);
             RatedMove currentMove = pvs(gameState, depth, searchWindow, rater, timeMeasurer, transPositionTable,

@@ -19,7 +19,7 @@ public class MaxRating implements Rater {
     public Rating rateGameStateForTeam(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team) {
         Rating rating = Rating.ZERO;
         Rating fish = new Rating(
-                gameState.getScoreForTeam(team).subtract(gameState.getScoreForTeam(team.opponent())).score());
+                gameState.getScoreForTeam(team).subtract(gameState.getScoreForTeam(team.opponent())).score()).multiply(10);
         Rating potentialFish = this.ratePotentialFishForTeam(gameState, team);
         return rating.add(fish).add(potentialFish);
     }
@@ -36,7 +36,7 @@ public class MaxRating implements Rater {
                 .toList();
         int theirFish = this.getFishFromMoves(gameState, theirPotentialMoves);
         rating = rating.add(new Rating(ourFish - theirFish));
-        return rating.multiply(.1);
+        return rating;
     }
 
     private int getFishFromMoves(@Nonnull ImmutableGameState gameState, @Nonnull List<Move> moves) {

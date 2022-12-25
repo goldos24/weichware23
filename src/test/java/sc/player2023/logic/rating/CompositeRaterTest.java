@@ -11,7 +11,7 @@ class CompositeRaterTest {
     void getAnalytics() {
         Rater rater = new CompositeRater(new Rater[] {new StupidRater(), new StupidRater()});
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        String expected = "CompositeRater[StupidRater{0.0}, StupidRater{0.0}]";
+        String expected = "CompositeRater[StupidRater{0}, StupidRater{0}]";
         String got = rater.getAnalytics(gameState);
         assertEquals(expected, got);
     }

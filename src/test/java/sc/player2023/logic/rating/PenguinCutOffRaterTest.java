@@ -11,7 +11,7 @@ class PenguinCutOffRaterTest {
     void rate() {
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
         Rater rater = new PenguinCutOffRater();
-        Rating expected = new Rating(-10.1);
+        Rating expected = new Rating(-101);
         Rating got = rater.rate(gameState);
         assertEquals(expected, got);
     }

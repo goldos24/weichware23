@@ -13,7 +13,9 @@ import java.util.stream.Stream;
 
 public class PenguinCutOffRater implements Rater {
 
-    private static final Map<Long, Double> possibleTargetCountRatings = Map.of(0L, 5.0, 1L, 0.2, 2L, 0.1);
+    private static final Map<Long, Integer> possibleTargetCountRatings = Map.of(0L, 50,
+            1L, 2,
+            2L, 1);
 
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
@@ -21,13 +23,13 @@ public class PenguinCutOffRater implements Rater {
         BoardPeek board = gameState.getBoard();
         ITeam team = gameState.getCurrentTeam();
         for(var penguin : board.getPenguins()) {
-            Rating prefix = new Rating(penguin.team() == team ? -1.0 : 1.0);
+            Rating prefix = new Rating(penguin.team() == team ? -1 : 1);
             var coords = penguin.coordinates();
             Stream<Coordinates> possibleTargets = GameRuleLogic
                     .createCurrentDirectionStream().
                     map(coords::plus).filter(coordinates -> GameRuleLogic.canMoveTo(board, coordinates));
             long possibleTargetCount = possibleTargets.count();
-            @Nullable Double targetCountRating = possibleTargetCountRatings.get(possibleTargetCount);
+            @Nullable Integer targetCountRating = possibleTargetCountRatings.get(possibleTargetCount);
             if(targetCountRating != null) {
                 result = result.add(prefix.multiply(targetCountRating));
             }

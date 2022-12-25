@@ -29,7 +29,7 @@ public class MTDFMoveGetter implements MoveGetter {
     public Move getBestMove(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer) {
         Move bestMove = getPossibleMoves(gameState).get(0);
         int depth = 2;
-        RatedMove initialRatedMove = FailSoftPVSMoveGetter.pvs(gameState, depth, new SearchWindow(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY), rater, timeMeasurer,
+        RatedMove initialRatedMove = FailSoftPVSMoveGetter.pvs(gameState, depth, new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND), rater, timeMeasurer,
                 transPositionTableFactory.createTransPositionTableFromDepth(depth),
                 PossibleMoveIterable::new);
         Rating firstGuess = initialRatedMove.rating();
@@ -63,13 +63,13 @@ public class MTDFMoveGetter implements MoveGetter {
 
     private int getBestMoveForDepth(ImmutableGameState gameState, Rater rater, TimeMeasurer timeMeasurer, int depth,
                                           TransPositionTable transPositionTable, Rating firstGuess) {
-        int f = (int) firstGuess.rating();
+        int f = firstGuess.rating();
         int[] bound = new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE}; // lower, upper
         do {
             int beta = f + boolToInt(f == bound[0]);
             RatedMove ratedMove = FailSoftPVSMoveGetter.pvs(gameState, depth, new SearchWindow(beta - 1, beta), rater, timeMeasurer, transPositionTable,
                     PossibleMoveIterable::new);
-            f = (int) ratedMove.rating().rating();
+            f = ratedMove.rating().rating();
             bound[boolToInt(f < beta)] = f;
         } while (bound[0] < bound[1]);
         return f;

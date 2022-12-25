@@ -12,7 +12,7 @@ class WeightedRaterTest {
     void getAnalytics() {
         Rater rater = new WeightedRater(5, new StupidRater());
         ImmutableGameState gameState = GameStateFixture.createTestGameState();
-        String expected = "(0.0=5*StupidRater{0.0})";
+        String expected = "(0=5*StupidRater{0})";
         String got = rater.getAnalytics(gameState);
         assertEquals(expected, got);
     }

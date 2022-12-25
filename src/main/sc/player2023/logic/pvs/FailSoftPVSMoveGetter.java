@@ -54,10 +54,10 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
         }
         boolean firstChild = true;
         Move bestMove = null;
-        double score, bestScore = Double.NEGATIVE_INFINITY;
-        double lowerBound = searchWindow.lowerBound();
-        double upperBound = searchWindow.upperBound();
-        double postMoveRatingFactor = getRatingFactorForNextMove(gameState);
+        int score, bestScore = Integer.MIN_VALUE;
+        int lowerBound = searchWindow.lowerBound();
+        int upperBound = searchWindow.upperBound();
+        int postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
@@ -148,7 +148,7 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
     public static Move getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                            TimeMeasurer timeMeasurer, int depth,
                                            TransPositionTable transPositionTable) {
-        SearchWindow searchWindow = new SearchWindow(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        SearchWindow searchWindow = new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND);
         return pvs(gameState, depth, searchWindow, rater, timeMeasurer, transPositionTable,
                    FailSoftPVSMoveGetter::getShuffledPossibleMoves).move();
     }
