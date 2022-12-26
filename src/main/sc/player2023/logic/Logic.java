@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import sc.api.plugins.IGameState;
 import sc.player.IGameHandler;
 import sc.player2023.logic.gameState.ImmutableGameState;
-import sc.player2023.logic.gameState.ImmutableGameStateFactory;
+import sc.player2023.logic.gameState.ImmutableGameStateFactory;import sc.player2023.logic.pvs.AspiredPVSMoveGetter;
 import sc.player2023.logic.rating.*;
 import sc.plugin2023.GameState;
 import sc.plugin2023.Move;
@@ -55,7 +55,7 @@ public class Logic implements IGameHandler {
     log.info("Es wurde ein Zug von {} angefordert.", gameState.getCurrentTeam());
     log.info("Anzahl möglicher Züge: {}", gameState.getPossibleMoves().size());
 
-    MoveGetter moveGetter = MoveGetters.HYBRID_ASPIRATION_FAIL_SOFT_MOVE_GETTER;
+    MoveGetter moveGetter = new AspiredPVSMoveGetter();
 
     ImmutableGameState immutableGameState = ImmutableGameStateFactory.createFromGameState(gameState);
     TimeMeasurer timeMeasurer = createDefaultRunningTimeMeasurer();
