@@ -83,7 +83,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                                                 @Nonnull TransPositionTable transPositionTable,
                                                 @Nonnull Rating lastRating) {
         final int initialOffset = 12;
-        int wideningFactor = 4_000;
+        int wideningFactor = 3;
         int offsetUpperBound = initialOffset;
         int offsetLowerBound = -initialOffset;
         int lowerBound = lastRating.add(offsetLowerBound).rating();
