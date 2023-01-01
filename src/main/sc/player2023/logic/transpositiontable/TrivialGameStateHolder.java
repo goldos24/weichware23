@@ -4,7 +4,7 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 
 import javax.annotation.Nonnull;
 
-public record TrivialGameStateHolder(ImmutableGameState gameState) implements GameStateHolder {
+public record TrivialGameStateHolder(@Nonnull ImmutableGameState gameState) implements GameStateHolder {
     @Nonnull
     @Override
     public ImmutableGameState getGameState() {

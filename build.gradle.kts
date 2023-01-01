@@ -20,9 +20,10 @@ repositories {
 
 dependencies {
     implementation("com.google.guava:guava:31.1-jre")
+    testImplementation("org.mockito:mockito-core:4.11.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
-    if(gradle.startParameter.isOffline) {
+    if (gradle.startParameter.isOffline) {
         implementation(fileTree("lib"))
     } else {
         implementation("com.github.software-challenge.backend", "penguins_2023", "23.0.2")

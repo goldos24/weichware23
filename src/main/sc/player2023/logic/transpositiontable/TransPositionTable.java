@@ -4,6 +4,7 @@ import sc.player2023.logic.rating.Rating;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Objects;
 
 public final class TransPositionTable {
     @Nonnull
@@ -33,5 +34,23 @@ public final class TransPositionTable {
 
     public Rating getRatingForGameState(@Nonnull ImmutableGameState gameState) {
         return contents.get(gameStateHolderFactory.holderFromGameState(gameState));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TransPositionTable that)) {
+            return false;
+        }
+        return contents.equals(that.contents)
+                && gameStateHolderFactory.equals(that.gameStateHolderFactory)
+                && selector.equals(that.selector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contents, gameStateHolderFactory, selector);
     }
 }
