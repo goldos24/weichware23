@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 
 import java.util.Arrays;
 
-import static sc.player2023.logic.pvs.FailSoftPVSMoveGetter.pvs;
+import static sc.player2023.logic.pvs.PrincipalVariationSearch.pvs;
 import static sc.player2023.logic.rating.RatingUtil.isInSearchWindow;
 
 /**
@@ -90,8 +90,9 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         int upperBound = lastRating.add(offsetUpperBound).rating();
         do {
             SearchWindow searchWindow = new SearchWindow(lowerBound, upperBound);
-            RatedMove currentMove = pvs(gameState, depth, searchWindow, rater, timeMeasurer, transPositionTable,
-                                        PossibleMoveIterable::new);
+            RatedMove currentMove = pvs(gameState, depth, searchWindow,
+                    new ConstantPVSParameters(rater, timeMeasurer, transPositionTable,
+                                        PossibleMoveIterable::new));
             Rating currentRating = currentMove.rating();
             boolean inSearchWindow = isInSearchWindow(searchWindow, currentRating);
             if (inSearchWindow) {

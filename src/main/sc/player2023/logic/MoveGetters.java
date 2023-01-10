@@ -14,4 +14,8 @@ public class MoveGetters {
             16,
             32
     );
+
+
+    @Nonnull
+    public static final FailSoftPVSMoveGetter FAIL_SOFT_PVS_MOVE_GETTER = new FailSoftPVSMoveGetter();
 }

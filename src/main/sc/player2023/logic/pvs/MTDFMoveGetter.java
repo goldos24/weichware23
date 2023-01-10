@@ -25,13 +25,13 @@ public class MTDFMoveGetter implements MoveGetter {
     private static final Logger log = LoggerFactory.getLogger(MTDFMoveGetter.class);
 
     private final static TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
+
     @Override
     public Move getBestMove(@NotNull ImmutableGameState gameState, @NotNull Rater rater, TimeMeasurer timeMeasurer) {
         Move bestMove = getPossibleMoves(gameState).get(0);
         int depth = 2;
-        RatedMove initialRatedMove = FailSoftPVSMoveGetter.pvs(gameState, depth, new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND), rater, timeMeasurer,
-                transPositionTableFactory.createTransPositionTableFromDepth(depth),
-                PossibleMoveIterable::new);
+        RatedMove initialRatedMove = PrincipalVariationSearch.pvs(gameState, depth, new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND),
+                new ConstantPVSParameters(rater, timeMeasurer, transPositionTableFactory.createTransPositionTableFromDepth(depth), PossibleMoveIterable::new));
         Rating firstGuess = initialRatedMove.rating();
         Rating[] lastRatedMove = new Rating[2];
         Arrays.fill(lastRatedMove, firstGuess);
@@ -39,12 +39,8 @@ public class MTDFMoveGetter implements MoveGetter {
             int lastRatingIndex = depth % 2;
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             int depthClone = depth;
-            RatedMove currentMove = GameRuleLogic.getPossibleMoveStream(gameState).map(move -> new RatedMove(
-                    new Rating(getBestMoveForDepth(gameState, rater, timeMeasurer, depthClone, transPositionTable, lastRatedMove[lastRatingIndex])),
-                    move
-                    )).reduce((ratedMove, ratedMove2) -> ratedMove.rating().isGreaterThan(ratedMove2.rating()) ? ratedMove : ratedMove2).orElse(null);
-            if(currentMove == null)
-                continue;
+            RatedMove currentMove = GameRuleLogic.getPossibleMoveStream(gameState).map(move -> new RatedMove(new Rating(getBestMoveForDepth(gameState, rater, timeMeasurer, depthClone, transPositionTable, lastRatedMove[lastRatingIndex])), move)).reduce((ratedMove, ratedMove2) -> ratedMove.rating().isGreaterThan(ratedMove2.rating()) ? ratedMove : ratedMove2).orElse(null);
+            if (currentMove == null) continue;
             lastRatedMove[lastRatingIndex] = currentMove.rating();
             if (depth > GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT) {
                 break;
@@ -61,14 +57,13 @@ public class MTDFMoveGetter implements MoveGetter {
         return b ? 1 : 0;
     }
 
-    private int getBestMoveForDepth(ImmutableGameState gameState, Rater rater, TimeMeasurer timeMeasurer, int depth,
-                                          TransPositionTable transPositionTable, Rating firstGuess) {
+    private int getBestMoveForDepth(ImmutableGameState gameState, Rater rater, TimeMeasurer timeMeasurer, int depth, TransPositionTable transPositionTable, Rating firstGuess) {
         int f = firstGuess.rating();
         int[] bound = new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE}; // lower, upper
         do {
             int beta = f + boolToInt(f == bound[0]);
-            RatedMove ratedMove = FailSoftPVSMoveGetter.pvs(gameState, depth, new SearchWindow(beta - 1, beta), rater, timeMeasurer, transPositionTable,
-                    PossibleMoveIterable::new);
+            RatedMove ratedMove = PrincipalVariationSearch.pvs(gameState, depth, new SearchWindow(beta - 1, beta),
+                    new ConstantPVSParameters(rater, timeMeasurer, transPositionTable, PossibleMoveIterable::new));
             f = ratedMove.rating().rating();
             bound[boolToInt(f < beta)] = f;
         } while (bound[0] < bound[1]);

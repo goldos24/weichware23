@@ -15,6 +15,7 @@ import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
+import static sc.player2023.logic.MoveGetters.FAIL_SOFT_PVS_MOVE_GETTER;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -26,7 +27,7 @@ public class NoSelfCutOffTest {
 
     Move getMoveForDepth(BoardPeek situation, Team team, GameScore teamPointsMap, int depth) {
         TransPositionTable table = transPositionTableFactory.createTransPositionTableFromDepth(5);
-        return FailSoftPVSMoveGetter.getBestMoveForDepth(
+        return FAIL_SOFT_PVS_MOVE_GETTER.getBestMoveForDepth(
                 new ImmutableGameState(teamPointsMap, situation, team),
                 rater,
                 TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer(),

@@ -8,6 +8,7 @@ import sc.player2023.logic.TimeMeasurerFixture;
 import sc.player2023.logic.board.BoardFixture;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
+import sc.player2023.logic.pvs.IterativeDeepeningAlphaBetaMoveGetter;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.StupidRater;
 import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
@@ -17,6 +18,7 @@ import sc.plugin2023.Move;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static sc.player2023.logic.MoveGetters.FAIL_SOFT_PVS_MOVE_GETTER;
 
 class FailSoftPVSMoveGetterTest {
 
@@ -46,7 +48,7 @@ class FailSoftPVSMoveGetterTest {
         TimeMeasurer timeMeasurer = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
         int depth = 0;
         Rater rater = new StupidRater();
-        Move move = FailSoftPVSMoveGetter.getBestMoveForDepth(gameState, rater, timeMeasurer, depth, table);
+        Move move = FAIL_SOFT_PVS_MOVE_GETTER.getBestMoveForDepth(gameState, rater, timeMeasurer, depth, table);
         assertEquals(bestMove, move);
     }
 
@@ -56,7 +58,7 @@ class FailSoftPVSMoveGetterTest {
         TimeMeasurer timeMeasurer = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
         int depth = 1;
         Rater rater = new StupidRater();
-        Move move = FailSoftPVSMoveGetter.getBestMoveForDepth(gameState, rater, timeMeasurer, depth, table);
+        Move move = FAIL_SOFT_PVS_MOVE_GETTER.getBestMoveForDepth(gameState, rater, timeMeasurer, depth, table);
         assertEquals(bestMove, move);
     }
 
