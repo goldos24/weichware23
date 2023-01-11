@@ -2,6 +2,7 @@ package sc.player2023.logic;
 
 import sc.player2023.logic.pvs.AspiredPVSMoveGetter;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
+import sc.player2023.logic.pvs.NegaMaxMoveGetter;
 
 import javax.annotation.Nonnull;
 
@@ -18,4 +19,7 @@ public class MoveGetters {
 
     @Nonnull
     public static final FailSoftPVSMoveGetter FAIL_SOFT_PVS_MOVE_GETTER = new FailSoftPVSMoveGetter();
+
+    @Nonnull
+    public static final NegaMaxMoveGetter NEGA_MAX_MOVE_GETTER = new NegaMaxMoveGetter();
 }

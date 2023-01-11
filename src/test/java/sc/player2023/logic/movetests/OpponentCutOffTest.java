@@ -8,10 +8,7 @@ import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.TimeMeasurerFixture;
 import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.gameState.ImmutableGameState;
-import sc.player2023.logic.pvs.AspiredPVSMoveGetter;
-import sc.player2023.logic.pvs.ConstantPVSParameters;
-import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
-import sc.player2023.logic.pvs.PrincipalVariationSearch;
+import sc.player2023.logic.pvs.*;
 import sc.player2023.logic.rating.RatedMove;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
@@ -24,6 +21,7 @@ import sc.plugin2023.Move;
 import static sc.player2023.logic.MoveGetters.FAIL_SOFT_PVS_MOVE_GETTER;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static sc.player2023.logic.MoveGetters.NEGA_MAX_MOVE_GETTER;
 
 public class OpponentCutOffTest {
     private static final TimeMeasurer ALREADY_RUNNING_INFINITE_TIME_MEASURER = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
@@ -67,6 +65,16 @@ public class OpponentCutOffTest {
         RatedMove got = AspiredPVSMoveGetter.getBestMoveForDepth(gameState, RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER,
                                                                  LATE_GAME_HUGE_CUTOFF_DEPTH, table, lastRating);
         assertEquals(LATE_GAME_HUGE_CUTOFF_EXPECTED_MOVE, got.move());
+    }
+
+    @Test
+    void lateGameHugeCutOffNegaMax() {
+        ImmutableGameState gameState = new ImmutableGameState(new GameScore(3, 0), BoardParser.boardFromString(
+                LATE_GAME_HUGE_CUTOFF_SITUATION), Team.TWO);
+        Rating lastRating = Rating.ZERO;
+        TransPositionTable table = transPositionTableFactory.createTransPositionTableFromDepth(5);
+        Move got = NEGA_MAX_MOVE_GETTER.getBestMoveForDepth(gameState, RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER, LATE_GAME_HUGE_CUTOFF_DEPTH, table);
+        assertEquals(LATE_GAME_HUGE_CUTOFF_EXPECTED_MOVE, got);
     }
 
     @Test
