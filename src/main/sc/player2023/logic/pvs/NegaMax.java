@@ -6,6 +6,7 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.RatedMove;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.SearchWindow;
+import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
@@ -13,11 +14,16 @@ import javax.annotation.Nonnull;
 public class NegaMax {
     public static RatedMove negaMax(@Nonnull ImmutableGameState gameState, int depth,
                                     @Nonnull SearchWindow searchWindow, @Nonnull ConstantPVSParameters constParams) {
-        if(constParams.transPositionTable().hasGameState(gameState)) { // transposition table cutoff
-            return new RatedMove(constParams.transPositionTable().getRatingForGameState(gameState), null);
+        final TransPositionTable transPositionTable = constParams.transPositionTable();
+        if(transPositionTable.hasGameStateWithExactRating(gameState)) { // transposition table cutoff
+            return new RatedMove(transPositionTable.getRatingForGameState(gameState), null);
         }
         if(hasToCancelSearch(gameState, depth, constParams)) {
-            return new RatedMove(constParams.rater().rate(gameState), null);
+            Rating rating = constParams.rater().rate(gameState);
+            if(!transPositionTable.hasGameState(gameState)) {
+                transPositionTable.addExact(gameState, rating);
+            }
+            return new RatedMove(rating, null);
         }
         Iterable<Move> possibleMoves = constParams.moveGenerator().getPossibleMoves(gameState);
         Move bestMove = null;

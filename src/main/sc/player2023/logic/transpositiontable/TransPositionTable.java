@@ -8,32 +8,50 @@ import java.util.Objects;
 
 public final class TransPositionTable {
     @Nonnull
-    private final HashMap<GameStateHolder, Rating> contents;
+    private final HashMap<GameStateHolder, TransPositionTableEntry> contents;
     @Nonnull
     private final GameStateHolderFactory gameStateHolderFactory;
     @Nonnull
     private final GameStateSelector selector;
 
-    public TransPositionTable(@Nonnull HashMap<GameStateHolder, Rating> contents,
+    public TransPositionTable(@Nonnull HashMap<GameStateHolder, Rating> exactValueContents,
                               @Nonnull GameStateHolderFactory gameStateHolderFactory,
                               @Nonnull GameStateSelector selector) {
-        this.contents = contents;
+
+        this.contents = new HashMap<>();
+        for(var entry : exactValueContents.entrySet()) {
+            contents.put(entry.getKey(), new TransPositionTableEntry(entry.getValue(), RatingType.EXACT));
+        }
         this.gameStateHolderFactory = gameStateHolderFactory;
         this.selector = selector;
     }
 
-    public void add(@Nonnull ImmutableGameState gameState, @Nonnull Rating rating) {
+    public void addExact(@Nonnull ImmutableGameState gameState, @Nonnull Rating rating) {
+        TransPositionTableEntry entry = new TransPositionTableEntry(rating, RatingType.EXACT);
+        add(gameState, entry);
+    }
+
+    public void add(@Nonnull ImmutableGameState gameState, @Nonnull TransPositionTableEntry entry) {
         if(!selector.toBeSaved(gameState))
             return;
-        contents.put(gameStateHolderFactory.holderFromGameState(gameState), rating);
+        contents.put(gameStateHolderFactory.holderFromGameState(gameState), entry);
     }
 
     public boolean hasGameState(@Nonnull ImmutableGameState gameState) {
-        return contents.containsKey(gameStateHolderFactory.holderFromGameState(gameState));
+        GameStateHolder key = gameStateHolderFactory.holderFromGameState(gameState);
+        return contents.containsKey(key);
+    }
+
+    public boolean hasGameStateWithExactRating(@Nonnull ImmutableGameState gameState) {
+        if(!hasGameState(gameState)) {
+            return false;
+        }
+        GameStateHolder key = gameStateHolderFactory.holderFromGameState(gameState);
+        return contents.get(key).ratingType() == RatingType.EXACT;
     }
 
     public Rating getRatingForGameState(@Nonnull ImmutableGameState gameState) {
-        return contents.get(gameStateHolderFactory.holderFromGameState(gameState));
+        return contents.get(gameStateHolderFactory.holderFromGameState(gameState)).rating();
     }
 
     @Override

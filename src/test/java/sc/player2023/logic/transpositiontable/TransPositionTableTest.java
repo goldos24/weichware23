@@ -47,21 +47,21 @@ class TransPositionTableTest {
     @Test
     void add() {
         Rating rating = new Rating(42);
-        transPositionTable.add(gameState1, rating);
+        transPositionTable.addExact(gameState1, rating);
         assertEquals(rating, transPositionTable.getRatingForGameState(gameState1));
     }
 
     @Test
     void hasGameState() {
         Rating rating = new Rating(42);
-        transPositionTable.add(gameState1, rating);
-        assertTrue(transPositionTable.hasGameState(gameState1));
+        transPositionTable.addExact(gameState1, rating);
+        assertTrue(transPositionTable.hasGameStateWithExactRating(gameState1));
     }
 
     @Test
     void getRatingForGameState() {
         Rating rating = new Rating(42);
-        transPositionTable.add(gameState1, rating);
+        transPositionTable.addExact(gameState1, rating);
         Rating got = transPositionTable.getRatingForGameState(gameState2);
         assertEquals(rating, got);
     }

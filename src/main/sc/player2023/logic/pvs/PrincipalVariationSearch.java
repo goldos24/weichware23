@@ -23,14 +23,14 @@ public class PrincipalVariationSearch {
         final PossibleMoveGenerator moveGenerator = constParams.moveGenerator();
         final Rater rater = constParams.rater();
         final TimeMeasurer timeMeasurer = constParams.timeMeasurer();
-        if (transPositionTable.hasGameState(gameState)) {
+        if (transPositionTable.hasGameStateWithExactRating(gameState)) {
             return new RatedMove(transPositionTable.getRatingForGameState(gameState), null);
         }
         Iterable<Move> possibleMoves = moveGenerator.getPossibleMoves(gameState);
         boolean isEmpty = !possibleMoves.iterator().hasNext();
         if (depth < 0 || gameState.isOver() || isEmpty || timeMeasurer.ranOutOfTime()) {
             Rating rating = rater.rate(gameState);
-            transPositionTable.add(gameState, rating);
+            transPositionTable.addExact(gameState, rating);
             return new RatedMove(rating, null);
         }
         boolean firstChild = true;
@@ -87,7 +87,7 @@ public class PrincipalVariationSearch {
         }
         Rating rating = new Rating(bestScore);
         if(isInSearchWindow(new SearchWindow(lowerBound, upperBound), rating)) {
-            transPositionTable.add(gameState, rating);
+            transPositionTable.addExact(gameState, rating);
         }
         return new RatedMove(rating, bestMove);
     }
