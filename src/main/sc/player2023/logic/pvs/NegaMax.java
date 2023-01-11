@@ -11,6 +11,8 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 
+import static sc.player2023.logic.pvs.AlphaBetaTranspositionTableUtil.addExactIfNotPresent;
+
 public class NegaMax {
     public static RatedMove negaMax(@Nonnull ImmutableGameState gameState, int depth,
                                     @Nonnull SearchWindow searchWindow, @Nonnull ConstantPVSParameters constParams) {
@@ -20,9 +22,7 @@ public class NegaMax {
         }
         if(hasToCancelSearch(gameState, depth, constParams)) {
             Rating rating = constParams.rater().rate(gameState);
-            if(!transPositionTable.hasGameState(gameState)) {
-                transPositionTable.addExact(gameState, rating);
-            }
+            addExactIfNotPresent(gameState, transPositionTable, rating);
             return new RatedMove(rating, null);
         }
         Iterable<Move> possibleMoves = constParams.moveGenerator().getPossibleMoves(gameState);
