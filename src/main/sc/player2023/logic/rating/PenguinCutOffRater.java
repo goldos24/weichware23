@@ -14,23 +14,24 @@ import java.util.stream.Stream;
 public class PenguinCutOffRater implements Rater {
 
     private static final Map<Long, Integer> possibleTargetCountRatings = Map.of(0L, 50,
-            1L, 2,
-            2L, 1);
+                                                                                1L, 2,
+                                                                                2L, 1);
 
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
         Rating result = Rating.ZERO;
         BoardPeek board = gameState.getBoard();
         ITeam team = gameState.getCurrentTeam();
-        for(var penguin : board.getPenguins()) {
+        for (var penguin : board.getPenguins()) {
             Rating prefix = new Rating(penguin.team() == team ? -1 : 1);
             var coords = penguin.coordinates();
             Stream<Coordinates> possibleTargets = GameRuleLogic
                     .createCurrentDirectionStream().
-                    map(coords::plus).filter(coordinates -> GameRuleLogic.canMoveTo(board, coordinates));
+                    map(direction -> coords.plus(direction.getVector()))
+                    .filter(coordinates -> GameRuleLogic.canMoveTo(board, coordinates));
             long possibleTargetCount = possibleTargets.count();
             @Nullable Integer targetCountRating = possibleTargetCountRatings.get(possibleTargetCount);
-            if(targetCountRating != null) {
+            if (targetCountRating != null) {
                 result = result.add(prefix.multiply(targetCountRating));
             }
         }

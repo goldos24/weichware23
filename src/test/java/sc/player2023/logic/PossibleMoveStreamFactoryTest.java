@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
 import sc.api.plugins.Vector;
+import sc.player2023.Direction;
 import sc.player2023.logic.board.BoardFixture;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
@@ -40,7 +41,7 @@ class PossibleMoveStreamFactoryTest {
         Stream<Coordinates> coordStream = PossibleMoveStreamFactory.getPossibleTargetCoordsForPenguinInDirection(
                 board,
                 BoardFixture.FIRST_PENGUIN_COORDINATES,
-                new Vector(-2, 0)
+                Direction.LEFT
         );
         List<Coordinates> got = coordStream.toList();
         List<Coordinates> expected = List.of(new Coordinates(2, 0), new Coordinates(0,0));
