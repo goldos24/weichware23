@@ -57,7 +57,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         while (!timeMeasurer.ranOutOfTime()) {
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             RatedMove currentRatedMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable,
-                                                             lastRating[depth%2]);
+                                                             lastRating[depth % 2]);
             lastRating[depth % 2] = currentRatedMove.rating();
             Move currentMove = currentRatedMove.move();
             if (currentMove == null) {
@@ -79,7 +79,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
 
     @Nonnull
     public static RatedMove getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
-                                                TimeMeasurer timeMeasurer, int depth,
+                                                @Nonnull TimeMeasurer timeMeasurer, int depth,
                                                 @Nonnull TransPositionTable transPositionTable,
                                                 @Nonnull Rating lastRating) {
         final int initialOffset = 12;
@@ -105,11 +105,12 @@ public class AspiredPVSMoveGetter implements MoveGetter {
                 upperBound = lowerBound;
                 offsetLowerBound *= wideningFactor;
                 lowerBound = lastRating.add(offsetLowerBound).rating();
-                continue;
             }
-            lowerBound = upperBound;
-            offsetUpperBound *= wideningFactor;
-            upperBound = lastRating.add(offsetUpperBound).rating();
+            else {
+                lowerBound = upperBound;
+                offsetUpperBound *= wideningFactor;
+                upperBound = lastRating.add(offsetUpperBound).rating();
+            }
         }
         while (!timeMeasurer.ranOutOfTime());
         return new RatedMove(Rating.NEGATIVE_INFINITY, null);

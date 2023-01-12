@@ -13,8 +13,11 @@ import sc.player2023.logic.mcts.initialisers.AllMovesInitialiser;
 import sc.player2023.logic.mcts.selectors.BasicEvaluatorSelector;
 import sc.player2023.logic.rating.*;
 
+import javax.annotation.Nonnull;
+
 public class MCTSComparisonProgram {
 
+    @Nonnull
     public static Rater createSimpleCombinedRater() {
         Rater potentialFishRater = new WeightedRater(1, new PotentialFishRater());
         Rater cappedFishDifferenceRater = new WeightedRater(2, new CappedFishDifferenceRater());
@@ -25,6 +28,7 @@ public class MCTSComparisonProgram {
         return new CompositeRater(raters);
     }
 
+    @Nonnull
     public static MCTSMoveGetter createFirstMCTSMoveGetter() {
         NodeEvaluator evaluator = new PureUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
         NodeSelector selector = new BasicEvaluatorSelector(evaluator);
@@ -34,6 +38,7 @@ public class MCTSComparisonProgram {
         return new MCTSMoveGetter(selector, initialiser, expander);
     }
 
+    @Nonnull
     public static MCTSMoveGetter createSecondMCTSMoveGetter() {
         Rater rater = createSimpleCombinedRater();
         NodeEvaluator evaluator = new PureUCTEvaluator(MCTSMoveGetter.THEORETICAL_EXPLORATION_WEIGHT);
