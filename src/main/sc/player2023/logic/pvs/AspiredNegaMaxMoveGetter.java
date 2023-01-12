@@ -9,9 +9,9 @@ import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
  * @author Till Fransson
  * @since 22.12.2022
  */
-public class AspiredPVSMoveGetter implements AspirationMoveGetter {
+public class AspiredNegaMaxMoveGetter implements AspirationMoveGetter {
 
-    private static final Logger log = LoggerFactory.getLogger(AspiredPVSMoveGetter.class);
+    private static final Logger log = LoggerFactory.getLogger(AspiredNegaMaxMoveGetter.class);
     private static final TransPositionTableFactory TRANS_POSITION_TABLE_FACTORY = new SimpleTransPositionTableFactory();
 
     @Override
@@ -26,6 +26,6 @@ public class AspiredPVSMoveGetter implements AspirationMoveGetter {
 
     @Override
     public AlphaBetaSearch algorithm() {
-        return PrincipalVariationSearch::pvs;
+        return NegaMax::negaMax;
     }
 }

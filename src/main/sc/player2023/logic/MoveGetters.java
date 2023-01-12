@@ -22,4 +22,7 @@ public class MoveGetters {
 
     @Nonnull
     public static final NegaMaxMoveGetter NEGA_MAX_MOVE_GETTER = new NegaMaxMoveGetter();
+
+    @Nonnull
+    public static final AspiredPVSMoveGetter ASPIRED_PVS_MOVE_GETTER = new AspiredPVSMoveGetter();
 }

@@ -6,6 +6,7 @@ import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.move.PossibleMoveIterable;
 import sc.player2023.logic.rating.Rater;
 import sc.player2023.logic.rating.Rating;
 import sc.player2023.logic.rating.SearchWindow;
@@ -53,6 +54,6 @@ public interface IterativeDeepeningAlphaBetaMoveGetter extends MoveGetter {
                                            TransPositionTable transPositionTable) {
         SearchWindow searchWindow = new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND);
         return algorithm().search(gameState, depth, searchWindow, new ConstantPVSParameters(rater, timeMeasurer, transPositionTable,
-                FailSoftPVSMoveGetter::getShuffledPossibleMoves)).move();
+                PossibleMoveIterable::new)).move();
     }
 }

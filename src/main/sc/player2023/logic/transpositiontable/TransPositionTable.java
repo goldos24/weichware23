@@ -1,4 +1,5 @@
 package sc.player2023.logic.transpositiontable;
+import org.jetbrains.annotations.NotNull;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.rating.Rating;
 
@@ -51,7 +52,11 @@ public final class TransPositionTable {
     }
 
     public Rating getRatingForGameState(@Nonnull ImmutableGameState gameState) {
-        return contents.get(gameStateHolderFactory.holderFromGameState(gameState)).rating();
+        return getTransPositionTableEntry(gameState).rating();
+    }
+
+    public TransPositionTableEntry getTransPositionTableEntry(@NotNull ImmutableGameState gameState) {
+        return contents.get(gameStateHolderFactory.holderFromGameState(gameState));
     }
 
     @Override

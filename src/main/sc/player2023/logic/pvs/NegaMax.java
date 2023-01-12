@@ -11,7 +11,7 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 
-import static sc.player2023.logic.pvs.AlphaBetaTranspositionTableUtil.addExactIfNotPresent;
+import static sc.player2023.logic.pvs.AlphaBetaTranspositionTableUtil.*;
 
 public class NegaMax {
     public static RatedMove negaMax(@Nonnull ImmutableGameState gameState, int depth,
@@ -28,10 +28,19 @@ public class NegaMax {
         Iterable<Move> possibleMoves = constParams.moveGenerator().getPossibleMoves(gameState);
         Move bestMove = null;
         Rating bestRating = Rating.NEGATIVE_INFINITY;
+        SearchWindow bestNextSearchWindow = null;
         int postMoveRatingFactor = MoveGetterUtil.getRatingFactorForNextMove(gameState);
         for(Move currentMove : possibleMoves) {
             SearchWindow nextSearchWindow = new SearchWindow(-searchWindow.upperBound(), -bestRating.rating());
+            if(bestNextSearchWindow == null) {
+                bestNextSearchWindow = nextSearchWindow;
+            }
             ImmutableGameState nextGameState = GameRuleLogic.withMovePerformed(gameState, currentMove);
+            if(isGameStateKnownToBeLowerThanRating(nextGameState, transPositionTable, bestRating)) {
+                continue;
+            } else if (isGameStateKnownToBeHigherThanUpperBound(nextGameState, transPositionTable, searchWindow)) {
+                break;
+            }
             Rating rawRating = negaMax(nextGameState, depth - 1, nextSearchWindow, constParams).rating();
             Rating currentRating = rawRating.multiply(
                     postMoveRatingFactor
@@ -39,11 +48,13 @@ public class NegaMax {
             if(bestMove == null || bestRating.isLessThan(currentRating)) {
                 bestMove = currentMove;
                 bestRating = currentRating;
+                bestNextSearchWindow = nextSearchWindow;
             }
             if(bestRating.rating() >= searchWindow.upperBound()) {
                 break;
             }
         }
+        addIfNotPresent(gameState, transPositionTable, bestRating, bestNextSearchWindow);
         return new RatedMove(bestRating, bestMove);
     }
 

@@ -18,10 +18,9 @@ import sc.player2023.logic.transpositiontable.SmartTransPositionTableFactory;
 import sc.player2023.logic.transpositiontable.TransPositionTable;
 import sc.player2023.logic.transpositiontable.TransPositionTableFactory;
 import sc.plugin2023.Move;
-import static sc.player2023.logic.MoveGetters.FAIL_SOFT_PVS_MOVE_GETTER;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static sc.player2023.logic.MoveGetters.NEGA_MAX_MOVE_GETTER;
+import static sc.player2023.logic.MoveGetters.*;
 
 public class OpponentCutOffTest {
     private static final TimeMeasurer ALREADY_RUNNING_INFINITE_TIME_MEASURER = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
@@ -62,7 +61,7 @@ public class OpponentCutOffTest {
                 LATE_GAME_HUGE_CUTOFF_SITUATION), Team.TWO);
         Rating lastRating = Rating.ZERO;
         TransPositionTable table = transPositionTableFactory.createTransPositionTableFromDepth(5);
-        RatedMove got = AspiredPVSMoveGetter.getBestMoveForDepth(gameState, RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER,
+        RatedMove got = ASPIRED_PVS_MOVE_GETTER.getBestMoveForDepth(gameState, RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER,
                                                                  LATE_GAME_HUGE_CUTOFF_DEPTH, table, lastRating);
         assertEquals(LATE_GAME_HUGE_CUTOFF_EXPECTED_MOVE, got.move());
     }
