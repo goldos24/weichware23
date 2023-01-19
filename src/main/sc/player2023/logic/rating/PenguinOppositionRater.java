@@ -1,5 +1,7 @@
 package sc.player2023.logic.rating;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
@@ -11,10 +13,8 @@ import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.plugin2023.Field;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static sc.player2023.Direction.*;
@@ -30,16 +30,16 @@ public class PenguinOppositionRater implements Rater {
 
 
     @Nonnull
-    private static final Map<Direction, List<Direction>> RIGHT_ANGLE_MAP = Map.of(LEFT,
-                                                                                  List.of(BOTTOM_RIGHT, TOP_RIGHT),
-                                                                                  TOP_LEFT, List.of(LEFT, RIGHT),
-                                                                                  TOP_RIGHT, List.of(LEFT, RIGHT),
-                                                                                  RIGHT, List.of(BOTTOM_LEFT, TOP_LEFT),
-                                                                                  BOTTOM_RIGHT, List.of(LEFT, RIGHT),
-                                                                                  BOTTOM_LEFT, List.of(LEFT, RIGHT));
+    private static final ImmutableMap<Direction, ImmutableList<Direction>> RIGHT_ANGLE_MAP
+            = ImmutableMap.of(LEFT, ImmutableList.of(BOTTOM_RIGHT, TOP_RIGHT),
+                              TOP_LEFT, ImmutableList.of(LEFT, RIGHT),
+                              TOP_RIGHT, ImmutableList.of(LEFT, RIGHT),
+                              RIGHT, ImmutableList.of(BOTTOM_LEFT, TOP_LEFT),
+                              BOTTOM_RIGHT, ImmutableList.of(LEFT, RIGHT),
+                              BOTTOM_LEFT, ImmutableList.of(LEFT, RIGHT));
 
     static void addReachableCoordsToSet(boolean[] set, @Nonnull Coordinates startCoords, @Nonnull BoardPeek board,
-                                        Optional<Team> team) {
+                                        @Nullable Team team) {
         int index = GameRuleLogic.coordsToIndex(startCoords);
         if (set[index]) {
             return;
@@ -58,10 +58,10 @@ public class PenguinOppositionRater implements Rater {
             }
             Field field = board.get(coordinates);
             if (field.getFish() == 0) {
-                if (team.isPresent()) {
-                    if (field.getPenguin() == team.get().opponent()) {
-                        List<Direction> rightAngle = RIGHT_ANGLE_MAP.get(direction);
-                        for (Direction rightAngleDirection : rightAngle) {
+                if (team != null) {
+                    if (field.getPenguin() == team.opponent()) {
+                        ImmutableList<Direction> rightAngle = RIGHT_ANGLE_MAP.get(direction);
+                        for (Direction rightAngleDirection : Objects.requireNonNull(rightAngle)) {
                             Coordinates currentCoordinates = coordinates;
                             while (board.get(currentCoordinates).getFish() != 0) {
                                 Vector rightAngleDirectionVector = rightAngleDirection.getVector();
@@ -105,8 +105,7 @@ public class PenguinOppositionRater implements Rater {
             Coordinates penguinPosition = penguin.coordinates();
             Team currentTeam = penguin.team();
             boolean[] ownSet = reachableCoords.get(currentTeam);
-            Optional<Team> optionalTeam = Optional.of(currentTeam);
-            addReachableCoordsToSet(ownSet, penguinPosition, board, optionalTeam);
+            addReachableCoordsToSet(ownSet, penguinPosition, board, currentTeam);
         }
         Rating ownRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(ownTeam)));
         Rating opponentRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(otherTeam)));
