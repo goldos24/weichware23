@@ -10,6 +10,7 @@ import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
+import sc.player2023.logic.opposition.VectorMath;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;
 
@@ -101,49 +102,5 @@ class GameRuleLogicTest {
         assertEquals(expected, got);
         System.out.println(gameState.getBoard());
     }
-
-    @Test
-    void collinearityTestSimpleVertical() {
-        Vector start = new Vector(0, 2);
-        Vector end = new Vector(0, 8);
-        assertTrue(GameRuleLogic.isCollinear(start, end));
-    }
-
-    @Test
-    void collinearityTestSimpleHorizontal() {
-        Vector start = new Vector(2, 0);
-        Vector end = new Vector(8, 0);
-        assertTrue(GameRuleLogic.isCollinear(start, end));
-    }
-
-    @Test
-    void collinearityTestSimpleDiagonal() {
-        Vector start = new Vector(1, 1);
-        Vector end = new Vector(4, 4);
-        assertTrue(GameRuleLogic.isCollinear(start, end));
-    }
-
-    @Test
-    void collinearityTestNegativeDiagonal() {
-        Vector start = new Vector(-1, -1);
-        Vector end = new Vector(4, 4);
-        assertTrue(GameRuleLogic.isCollinear(start, end));
-    }
-
-    @Test
-    void collinearityTestNegativeDiagonalFalse() {
-        Vector start = new Vector(-1, 1);
-        Vector end = new Vector(4, 4);
-        assertFalse(GameRuleLogic.isCollinear(start, end));
-    }
-
-    @Test
-    void collinearityTestNegativeDiagonalTrue() {
-        Vector start = new Vector(-1, 1);
-        Vector end = new Vector(4, -4);
-        assertTrue(GameRuleLogic.isCollinear(start, end));
-    }
-
-
 
 }

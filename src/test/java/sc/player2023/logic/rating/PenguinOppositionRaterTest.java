@@ -55,5 +55,22 @@ public class PenguinOppositionRaterTest {
         assertEquals(expected, rater.rate(gameState), "OppositionReachableRater");
     }
 
-
+    @Test
+    void OppositionRaterWorksDifferentThanReachable_inSimpleCase() {
+        String boardString = """
+                  - - - -   - -\s
+                 G - - P -   - -\s
+                            - -\s
+                 - - - - - - - -\s
+                - - - - - - - -\s
+                 - - - - - - - -\s
+                              -\s
+                 G G G P P P   -\s
+                """;
+        BoardPeek board = BoardParser.boardFromString(boardString);
+        GameScore gameScore = new GameScore(0, 0);
+        ImmutableGameState gameState = new ImmutableGameState(gameScore, board, Team.ONE);
+        Rating expected = Rating.TWO.negate();
+        assertEquals(expected, rater.rate(gameState), "OppositionReachableRater");
+    }
 }

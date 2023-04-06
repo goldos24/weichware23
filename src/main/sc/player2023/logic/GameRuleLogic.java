@@ -122,8 +122,4 @@ public class GameRuleLogic {
     public static int coordsToIndex(Coordinates coordinates) {
         return coordinates.getY() * BOARD_WIDTH + coordinates.getX() / 2;
     }
-
-    public static boolean isCollinear(@Nonnull Vector start, @Nonnull Vector end) {
-        return start.getDx() * end.getDy() == start.getDy() * end.getDx();
-    }
 }
