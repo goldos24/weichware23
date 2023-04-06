@@ -25,61 +25,45 @@ import static sc.player2023.Direction.*;
  */
 public class PenguinOppositionRater implements Rater {
 
-    @Nonnull
-    private static final List<Coordinates> UNREACHABLE_COORDINATES = new ArrayList<>();
+static Set<Coordinates> getReachableCoordsFromCoordinate(Coordinates startCoords, BoardPeek board) {
+    Set<Coordinates> result = new HashSet<>();
+    boolean[] array = new boolean[ARRAY_SIZE];
+    addReachableCoordsToSet(array, startCoords, board);
+    for (int i = 0; i < array.length; ++i) {
+        if (array[i]) {
+            result.add(GameRuleLogic.indexToCoords(i));
+        }
+    }
+    return result;
+}
 
-
-    @Nonnull
-    private static final ImmutableMap<Direction, ImmutableList<Direction>> RIGHT_ANGLE_MAP
-            = ImmutableMap.of(LEFT, ImmutableList.of(BOTTOM_RIGHT, TOP_RIGHT),
-                              TOP_LEFT, ImmutableList.of(LEFT, RIGHT),
-                              TOP_RIGHT, ImmutableList.of(LEFT, RIGHT),
-                              RIGHT, ImmutableList.of(BOTTOM_LEFT, TOP_LEFT),
-                              BOTTOM_RIGHT, ImmutableList.of(LEFT, RIGHT),
-                              BOTTOM_LEFT, ImmutableList.of(LEFT, RIGHT));
-
-    static void addReachableCoordsToSet(boolean[] set, @Nonnull Coordinates startCoords, @Nonnull BoardPeek board,
-                                        @Nullable Team team) {
+    static void addReachableCoordsToSet(boolean[] set, Coordinates startCoords, BoardPeek board) {
         int index = GameRuleLogic.coordsToIndex(startCoords);
         if (set[index]) {
             return;
         }
         set[index] = true;
-        Stream<Direction> currentDirectionStream = GameRuleLogic
-                .createCurrentDirectionStream();
-        currentDirectionStream.forEach(direction -> {
-            Vector directionVector = direction.getVector();
-            Coordinates coordinates = startCoords.plus(directionVector);
+        Stream<Coordinates> directlyReachableCoords = GameRuleLogic
+                .createCurrentDirectionStream()
+                .map(direction -> startCoords.plus(direction.getVector()));
+        directlyReachableCoords.forEach(coordinates -> {
             if (!GameRuleLogic.coordsValid(coordinates)) {
                 return;
             }
-            if (UNREACHABLE_COORDINATES.contains(coordinates)) {
+            if (board.get(coordinates).getFish() == 0) {
                 return;
             }
-            Field field = board.get(coordinates);
-            if (field.getFish() == 0) {
-                if (team != null) {
-                    if (field.getPenguin() == team.opponent()) {
-                        ImmutableList<Direction> rightAngle = RIGHT_ANGLE_MAP.get(direction);
-                        for (Direction rightAngleDirection : Objects.requireNonNull(rightAngle)) {
-                            Coordinates currentCoordinates = coordinates;
-                            while (board.get(currentCoordinates).getFish() != 0) {
-                                Vector rightAngleDirectionVector = rightAngleDirection.getVector();
-                                currentCoordinates = currentCoordinates.plus(rightAngleDirectionVector);
-                                UNREACHABLE_COORDINATES.add(currentCoordinates);
-                            }
-                        }
-                    }
-                    else {
-                        return;
-                    }
-                }
-                else {
-                    return;
-                }
-            }
-            addReachableCoordsToSet(set, coordinates, board, team);
+            addReachableCoordsToSet(set, coordinates, board);
         });
+    }
+
+    static int getReachableFishFromCoordinate(Coordinates startCoords, BoardPeek board) {
+        Set<Coordinates> coords = getReachableCoordsFromCoordinate(startCoords, board);
+        boolean[] array = new boolean[ARRAY_SIZE];
+        for (Coordinates coordinates : coords) {
+            array[GameRuleLogic.coordsToIndex(coordinates)] = true;
+        }
+        return getReachableFishFromCoordSet(board, array);
     }
 
     private static int getReachableFishFromCoordSet(BoardPeek board, boolean[] coords) {
@@ -100,15 +84,16 @@ public class PenguinOppositionRater implements Rater {
         ITeam ownTeam = gameState.getCurrentTeam();
         ITeam otherTeam = ownTeam.opponent();
         Map<ITeam, boolean[]> reachableCoords = Map.of(Team.ONE, new boolean[ARRAY_SIZE], Team.TWO,
-                                                       new boolean[ARRAY_SIZE]);
+                new boolean[ARRAY_SIZE]);
         for (var penguin : board.getPenguins()) {
             Coordinates penguinPosition = penguin.coordinates();
-            Team currentTeam = penguin.team();
-            boolean[] ownSet = reachableCoords.get(currentTeam);
-            addReachableCoordsToSet(ownSet, penguinPosition, board, currentTeam);
+            boolean[] ownSet = reachableCoords.get(penguin.team());
+            addReachableCoordsToSet(ownSet, penguinPosition, board);
         }
         Rating ownRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(ownTeam)));
         Rating opponentRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(otherTeam)));
         return ownRating.subtract(opponentRating);
     }
+
+
 }

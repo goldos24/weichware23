@@ -3,6 +3,7 @@ package sc.player2023.logic;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
+import sc.api.plugins.Vector;
 import sc.player2023.Direction;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
@@ -120,5 +121,9 @@ public class GameRuleLogic {
 
     public static int coordsToIndex(Coordinates coordinates) {
         return coordinates.getY() * BOARD_WIDTH + coordinates.getX() / 2;
+    }
+
+    public static boolean isCollinear(@Nonnull Vector start, @Nonnull Vector end) {
+        return start.getDx() * end.getDy() == start.getDy() * end.getDx();
     }
 }

@@ -15,12 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class PenguinOppositionRaterTest {
 
-    @Test
-    void addReachableCoordsToSet() {
-    }
+    private final PenguinOppositionRater rater = new PenguinOppositionRater();
 
     @Test
-    void rate() {
+    void rateInComplexCase() {
         String boardString = """
                 4 3 3 =   = = 3\s
                  - = - = = - - =\s
@@ -35,7 +33,27 @@ public class PenguinOppositionRaterTest {
         GameScore gameScore = new GameScore(2, 1);
         Team team = Team.TWO;
         ImmutableGameState gameState = new ImmutableGameState(gameScore, board, team);
-        PenguinOppositionRater rater = new PenguinOppositionRater();
         assertEquals(new Rating(22), rater.rate(gameState), "PenguinOpposition");
     }
+
+    @Test
+    void OppositionRaterWorksLikeReachable() {
+        String boardString = """
+                  - -       - -\s
+                 G - - P -   - -\s
+                            - -\s
+                 - - - - - - - -\s
+                - - - - - - - -\s
+                 - - - - - - - -\s
+                              -\s
+                 G G G P P P   -\s
+                """;
+        BoardPeek board = BoardParser.boardFromString(boardString);
+        GameScore gameScore = new GameScore(0, 0);
+        ImmutableGameState gameState = new ImmutableGameState(gameScore, board, Team.ONE);
+        Rating expected = Rating.ONE.negate();
+        assertEquals(expected, rater.rate(gameState), "OppositionReachableRater");
+    }
+
+
 }
