@@ -4,6 +4,7 @@ import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
 import sc.api.plugins.Team;
 import sc.api.plugins.Vector;
+import sc.player2023.Direction;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
@@ -52,21 +53,8 @@ public class GameRuleLogic {
     }
 
 
-    private static final int HALF_TILE_X_CHANGE = 1;
-    private static final int FULL_TILE_X_CHANGE = 2;
-    private static final int FULL_TILE_Y_CHANGE = 1;
-    @Nonnull
-    private static final Vector[] POSSIBLE_MOVE_DIRECTIONS = {
-            new Vector(-FULL_TILE_X_CHANGE, 0), // left
-            new Vector(-HALF_TILE_X_CHANGE, FULL_TILE_Y_CHANGE), // top left
-            new Vector(HALF_TILE_X_CHANGE, FULL_TILE_Y_CHANGE), // top right
-            new Vector(FULL_TILE_X_CHANGE, 0), // right
-            new Vector(HALF_TILE_X_CHANGE, -FULL_TILE_Y_CHANGE), // bottom right
-            new Vector(-HALF_TILE_X_CHANGE, -FULL_TILE_Y_CHANGE), // bottom left
-    };
-
-    public static Stream<Vector> createCurrentDirectionStream() {
-        return Arrays.stream(POSSIBLE_MOVE_DIRECTIONS);
+    public static Stream<Direction> createCurrentDirectionStream() {
+        return Arrays.stream(Direction.values());
     }
 
     public static boolean anyPossibleMovesForPlayer(@Nonnull BoardPeek board, @Nonnull ITeam team) {

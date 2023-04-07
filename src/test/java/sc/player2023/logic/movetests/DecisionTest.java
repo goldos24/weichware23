@@ -57,7 +57,7 @@ public class DecisionTest {
         FailSoftPVSMoveGetter moveGetter = new FailSoftPVSMoveGetter();
         TimeMeasurer timeMeasurer = TimeMeasurerFixture.createAlreadyRunningInfiniteTimeMeasurer();
         ImmutableGameState gameState = new ImmutableGameState(score, testBoard, team);
-        Rater rater = Logic.createCombinedRater();
+        Rater rater = Logic.createNewCombinedRater();
         var transFactory = new SimpleTransPositionTableFactory();
         int depth = 3;
         Move move = moveGetter.getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transFactory.createTransPositionTableFromDepth(depth));

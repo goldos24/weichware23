@@ -3,11 +3,14 @@ package sc.player2023.logic;
 import org.junit.jupiter.api.Test;
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.Team;
+import sc.api.plugins.Vector;
+import sc.player2023.Direction;
 import sc.player2023.logic.board.BoardFixture;
 import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
 import sc.player2023.logic.move.PossibleMoveStreamFactory;
+import sc.player2023.logic.opposition.VectorMath;
 import sc.plugin2023.Field;
 import sc.plugin2023.Move;
 
@@ -99,4 +102,5 @@ class GameRuleLogicTest {
         assertEquals(expected, got);
         System.out.println(gameState.getBoard());
     }
+
 }

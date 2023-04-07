@@ -33,6 +33,7 @@ public class Logic implements IGameHandler {
     result.reset();
     return result;
   }
+
   public static Rater createCombinedRater() {
     StupidRater stupidRater = new StupidRater();
     WeightedRater weightedStupidRater = new WeightedRater(11, stupidRater);
@@ -42,6 +43,19 @@ public class Logic implements IGameHandler {
     EarlyGameRater earlyGameEdgePenalty = new EarlyGameRater(new EdgePenguinPenalty());
     Rater[] raters = {weightedStupidRater, new WeightedRater(3, new PotentialFishRater()),
             weightedUselessPenguinRater, weightedReachableFishRater, weightedQuadrantOccupationRater,
+            earlyGameEdgePenalty};
+    return new CompositeRater(raters);
+  }
+
+  public static Rater createNewCombinedRater() {
+    StupidRater stupidRater = new StupidRater();
+    WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
+    Rater weightedUselessPenguinRater = new WeightedRater(2, new PenguinCutOffRater());
+    Rater weightedQuadrantOccupationRater = new WeightedRater(10, new QuadrantOccupationRater());
+    Rater weightedPenguinOppositionRater = new WeightedRater(5, new PenguinOppositionRater());
+    EarlyGameRater earlyGameEdgePenalty = new EarlyGameRater(new EdgePenguinPenalty());
+    Rater[] raters = {weightedStupidRater, new WeightedRater(3, new PotentialFishRater()),
+            weightedUselessPenguinRater, weightedPenguinOppositionRater, weightedQuadrantOccupationRater,
             earlyGameEdgePenalty};
     return new CompositeRater(raters);
   }

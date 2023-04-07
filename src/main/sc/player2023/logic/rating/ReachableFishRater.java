@@ -19,8 +19,8 @@ public class ReachableFishRater implements Rater {
         Set<Coordinates> result = new HashSet<>();
         boolean[] array = new boolean[ARRAY_SIZE];
         addReachableCoordsToSet(array, startCoords, board);
-        for(int i = 0; i < array.length; ++i) {
-            if(array[i]) {
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i]) {
                 result.add(GameRuleLogic.indexToCoords(i));
             }
         }
@@ -29,16 +29,18 @@ public class ReachableFishRater implements Rater {
 
     static void addReachableCoordsToSet(boolean[] set, Coordinates startCoords, BoardPeek board) {
         int index = GameRuleLogic.coordsToIndex(startCoords);
-        if(set[index]) {
+        if (set[index]) {
             return;
         }
         set[index] = true;
-        Stream<Coordinates> directlyReachableCoords = GameRuleLogic.createCurrentDirectionStream().map(startCoords::plus);
+        Stream<Coordinates> directlyReachableCoords = GameRuleLogic
+                .createCurrentDirectionStream()
+                .map(direction -> startCoords.plus(direction.getVector()));
         directlyReachableCoords.forEach(coordinates -> {
-            if(!GameRuleLogic.coordsValid(coordinates)) {
+            if (!GameRuleLogic.coordsValid(coordinates)) {
                 return;
             }
-            if(board.get(coordinates).getFish() == 0) {
+            if (board.get(coordinates).getFish() == 0) {
                 return;
             }
             addReachableCoordsToSet(set, coordinates, board);
@@ -48,7 +50,7 @@ public class ReachableFishRater implements Rater {
     static int getReachableFishFromCoordinate(Coordinates startCoords, BoardPeek board) {
         Set<Coordinates> coords = getReachableCoordsFromCoordinate(startCoords, board);
         boolean[] array = new boolean[ARRAY_SIZE];
-        for(Coordinates coordinates : coords) {
+        for (Coordinates coordinates : coords) {
             array[GameRuleLogic.coordsToIndex(coordinates)] = true;
         }
         return getReachableFishFromCoordSet(board, array);
@@ -56,8 +58,8 @@ public class ReachableFishRater implements Rater {
 
     private static int getReachableFishFromCoordSet(BoardPeek board, boolean[] coords) {
         int result = 0;
-        for(int i = 0; i < coords.length; ++i) {
-            if(coords[i]) {
+        for (int i = 0; i < coords.length; ++i) {
+            if (coords[i]) {
                 result += board.get(GameRuleLogic.indexToCoords(i)).getFish();
             }
         }
@@ -71,8 +73,9 @@ public class ReachableFishRater implements Rater {
         BoardPeek board = gameState.getBoard();
         ITeam ownTeam = gameState.getCurrentTeam();
         ITeam otherTeam = ownTeam.opponent();
-        Map<ITeam, boolean[]> reachableCoords = Map.of(Team.ONE, new boolean[ARRAY_SIZE], Team.TWO, new boolean[ARRAY_SIZE]);
-        for(var penguin : board.getPenguins()) {
+        Map<ITeam, boolean[]> reachableCoords = Map.of(Team.ONE, new boolean[ARRAY_SIZE], Team.TWO,
+                                                       new boolean[ARRAY_SIZE]);
+        for (var penguin : board.getPenguins()) {
             Coordinates penguinPosition = penguin.coordinates();
             boolean[] ownSet = reachableCoords.get(penguin.team());
             addReachableCoordsToSet(ownSet, penguinPosition, board);
