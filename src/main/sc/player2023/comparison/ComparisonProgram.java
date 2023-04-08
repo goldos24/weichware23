@@ -4,6 +4,7 @@ import sc.player2023.logic.Logic;
 import sc.player2023.logic.pvs.AspiredPVSMoveGetter;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
 import sc.player2023.logic.pvs.NegaMaxMoveGetter;
+import sc.player2023.logic.rating.StupidRater;
 
 public class ComparisonProgram {
     public static void main(String[] args) {
