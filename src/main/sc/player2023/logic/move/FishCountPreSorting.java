@@ -1,6 +1,5 @@
 package sc.player2023.logic.move;
 
-import sc.api.plugins.Coordinates;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.board.BoardPeek;
 import sc.player2023.logic.gameState.ImmutableGameState;
@@ -8,6 +7,7 @@ import sc.plugin2023.Field;
 import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,13 +21,15 @@ public class FishCountPreSorting {
     
     @Nonnull
     public static List<Move> getPossibleMoves(@Nonnull ImmutableGameState gameState) {
-        List<Move> possibleMoves = GameRuleLogic.getPossibleMoves(gameState);
+        List<Move> possibleMoves = new ArrayList<>(GameRuleLogic.getPossibleMoves(gameState));
         BoardPeek board = gameState.getBoard();
-        for (Move possibleMove : possibleMoves) {
-            Coordinates to = possibleMove.getTo();
-            Field field = board.get(to);
-            int fish = field.getFish();
-        }
+        possibleMoves.sort((a, b) -> {
+            Field fieldA = board.get(a.getTo());
+            int fieldAFish = fieldA.getFish();
+            Field fieldB = board.get(b.getTo());
+            int fieldBFish = fieldB.getFish();
+            return Integer.compare(fieldBFish, fieldAFish);
+        });
         return possibleMoves;
     }
 

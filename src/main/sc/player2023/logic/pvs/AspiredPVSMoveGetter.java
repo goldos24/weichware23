@@ -7,6 +7,7 @@ import sc.player2023.logic.MoveGetter;
 import sc.player2023.logic.StupidMoveGetter;
 import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.move.PossibleMoveGenerator;
 import sc.player2023.logic.move.PossibleMoveIterable;
 import sc.player2023.logic.rating.RatedMove;
 import sc.player2023.logic.rating.Rater;
@@ -42,8 +43,14 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         return rater.rate(gameState);
     }
 
+    PossibleMoveGenerator generator = PossibleMoveIterable::new;
+
     public AspiredPVSMoveGetter() {
 
+    }
+
+    public AspiredPVSMoveGetter(PossibleMoveGenerator generator) {
+        this.generator = generator;
     }
 
     TransPositionTableFactory transPositionTableFactory = new SimpleTransPositionTableFactory();
@@ -57,7 +64,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         while (!timeMeasurer.ranOutOfTime()) {
             TransPositionTable transPositionTable = transPositionTableFactory.createTransPositionTableFromDepth(depth);
             RatedMove currentRatedMove = getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable,
-                                                             lastRating[depth % 2]);
+                                                             lastRating[depth % 2], generator);
             lastRating[depth % 2] = currentRatedMove.rating();
             Move currentMove = currentRatedMove.move();
             if (currentMove == null) {
@@ -81,7 +88,8 @@ public class AspiredPVSMoveGetter implements MoveGetter {
     public static RatedMove getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
                                                 @Nonnull TimeMeasurer timeMeasurer, int depth,
                                                 @Nonnull TransPositionTable transPositionTable,
-                                                @Nonnull Rating lastRating) {
+                                                @Nonnull Rating lastRating,
+                                                @Nonnull PossibleMoveGenerator generator) {
         final int initialOffset = 12;
         int wideningFactor = 3;
         int offsetUpperBound = initialOffset;
@@ -91,7 +99,7 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         do {
             SearchWindow searchWindow = new SearchWindow(lowerBound, upperBound);
             RatedMove currentMove = pvs(gameState, depth, searchWindow, rater, timeMeasurer, transPositionTable,
-                                        PossibleMoveIterable::new);
+                                        generator);
             Rating currentRating = currentMove.rating();
             boolean inSearchWindow = isInSearchWindow(searchWindow, currentRating);
             if (inSearchWindow) {
@@ -114,6 +122,13 @@ public class AspiredPVSMoveGetter implements MoveGetter {
         }
         while (!timeMeasurer.ranOutOfTime());
         return new RatedMove(Rating.NEGATIVE_INFINITY, null);
+    }
+
+    @Nonnull public static RatedMove getBestMoveForDepth(@Nonnull ImmutableGameState gameState, @Nonnull Rater rater,
+                                                         @Nonnull TimeMeasurer timeMeasurer, int depth,
+                                                         @Nonnull TransPositionTable transPositionTable,
+                                                         @Nonnull Rating lastRating) {
+        return getBestMoveForDepth(gameState, rater, timeMeasurer, depth, transPositionTable, lastRating, PossibleMoveIterable::new);
     }
 
 }
