@@ -44,6 +44,6 @@ public class NoGreedTest {
         Move bestMove = moveGetter.getBestMove(gameState, rater, timeMeasurer);
         Coordinates to = new Coordinates(14, 6);
         Move unexpected = new Move(null, to);
-        assertNotEquals(unexpected, bestMove, () -> "Did not expect greedy Move in Board:" + boardString);
+        assertNotEquals(unexpected, bestMove, () -> "Did not expect greedy Move in Board: \n" + boardString);
     }
 }
