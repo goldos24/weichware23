@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 public class BitsetPenguinOppositionRater implements Rater {
 
     static long addReachableCoordsToSet(long set, Coordinates startCoords, BoardPeek board, List<Restriction> restrictions) {
-        System.out.println("SBF:" + Long.toBinaryString(set));
         int index = GameRuleLogic.coordsToIndex(startCoords);
         if ((set & (1L << index)) != 0) {
             return set;
@@ -33,22 +32,16 @@ public class BitsetPenguinOppositionRater implements Rater {
                 return set;
         }
         set |= 1L << index;
-        System.out.println("set:" + Long.toBinaryString(set));
-        System.out.println(startCoords);
         List<Coordinates> directlyReachableCoords = GameRuleLogic
                 .createCurrentDirectionStream()
                 .map(direction -> startCoords.plus(direction.getVector())).toList();
-        System.out.println(directlyReachableCoords);
         for (Coordinates coordinates : directlyReachableCoords) {
-            System.out.println(coordinates);
             if (!GameRuleLogic.coordsValid(coordinates)) {
                 continue;
             }
-            System.out.println(coordinates);
             if (board.get(coordinates).getFish() == 0) {
                 continue;
             }
-            System.out.println(coordinates);
             set |= addReachableCoordsToSet(set, coordinates, board, restrictions);
         }
         return set;
@@ -105,8 +98,6 @@ public class BitsetPenguinOppositionRater implements Rater {
                     .streamForTeam(team.opponent()).map(Penguin::coordinates).toList());
             reachableCoords.replace(team, addReachableCoordsToSet(ownSet, penguinPosition, board, restrictions));
         }
-        System.out.println(Long.toBinaryString(reachableCoords.get(Team.ONE)));
-        System.out.println(Long.toBinaryString(reachableCoords.get(Team.TWO)));
         Rating ownRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(ownTeam)));
         Rating opponentRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(otherTeam)));
         return ownRating.subtract(opponentRating);
