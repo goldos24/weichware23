@@ -26,7 +26,7 @@ public class Logic implements IGameHandler {
   /** Aktueller Spielstatus. */
   private GameState gameState;
 
-  public static final int MAX_TIME = 1900;
+  public static final int MAX_TIME = 1500;
 
   public static TimeMeasurer createDefaultRunningTimeMeasurer() {
     TimeMeasurer result = new TimeMeasurer(MAX_TIME);
@@ -38,7 +38,7 @@ public class Logic implements IGameHandler {
     WeightedRater weightedStupidRater = new WeightedRater(11, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(2, new PenguinCutOffRater());
     Rater weightedQuadrantOccupationRater = new WeightedRater(10, new QuadrantOccupationRater());
-    Rater weightedReachableFishRater = new WeightedRater(5, new ReachableFishRater());
+    Rater weightedReachableFishRater = new WeightedRater(5, new PenguinOppositionRater());
     EarlyGameRater earlyGameEdgePenalty = new EarlyGameRater(new EdgePenguinPenalty());
     Rater[] raters = {weightedStupidRater, new WeightedRater(3, new PotentialFishRater()),
             weightedUselessPenguinRater, weightedReachableFishRater, weightedQuadrantOccupationRater,

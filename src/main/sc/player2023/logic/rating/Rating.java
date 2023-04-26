@@ -1,12 +1,41 @@
 package sc.player2023.logic.rating;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * @author Till Fransson
  * @since 14.10.2022
  */
-public record Rating(int rating) implements Comparable<Rating> {
+public final class Rating implements Comparable<Rating> {
+    private final int rating;
+
+    public Rating(int rating) {
+        this.rating = rating;
+    }
+
+    public int rating() {
+        return rating;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (Rating) obj;
+        return this.rating == that.rating;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rating);
+    }
+
+    @Override
+    public String toString() {
+        return "Rating[" +
+                "rating=" + rating + ']';
+    }
 
     public static final Rating ZERO = new Rating(0);
 

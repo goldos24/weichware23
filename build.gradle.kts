@@ -39,3 +39,10 @@ tasks.shadowJar {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
+
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}

@@ -6,7 +6,12 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 
-public record PossibleMoveIterable(@Nonnull ImmutableGameState gameState) implements Iterable<Move> {
+public class PossibleMoveIterable implements Iterable<Move> {
+    @Nonnull ImmutableGameState gameState;
+
+    public PossibleMoveIterable(@Nonnull ImmutableGameState gameState) {
+        this.gameState = gameState;
+    }
 
     @Nonnull
     @Override

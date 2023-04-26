@@ -10,6 +10,7 @@ import sc.plugin2023.Move;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static sc.player2023.logic.move.PossibleMoveStreamFactory.getPossibleMovesInNormalCase;
@@ -28,7 +29,7 @@ public class PotentialFishRater implements Rater {
         Rating rating = Rating.ZERO;
         BoardPeek board = gameState.getBoard();
         Stream<Move> possibleMovesStream = getPossibleMovesInNormalCase(board, team);
-        List<Move> possibleMoves = possibleMovesStream.toList();
+        List<Move> possibleMoves = possibleMovesStream.collect(Collectors.toList());
         for (Move possibleMove : possibleMoves) {
             Coordinates fieldPosition = possibleMove.getTo();
             Field field = board.get(fieldPosition);

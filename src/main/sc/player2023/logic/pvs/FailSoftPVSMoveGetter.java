@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FailSoftPVSMoveGetter implements IterativeDeepeningAlphaBetaMoveGetter {
 
@@ -25,8 +26,7 @@ public class FailSoftPVSMoveGetter implements IterativeDeepeningAlphaBetaMoveGet
     public static List<Move> getShuffledPossibleMoves(@Nonnull ImmutableGameState gameState) {
         var board = gameState.getBoard();
         var currentTeam = gameState.getCurrentTeam();
-        var unmodifieableMoveList = PossibleMoveStreamFactory.getPossibleMoves(board, currentTeam).toList();
-        ArrayList<Move> result = new ArrayList<>(unmodifieableMoveList);
+        ArrayList<Move> result = PossibleMoveStreamFactory.getPossibleMoves(board, currentTeam).collect(Collectors.toCollection(ArrayList::new));
         Collections.shuffle(result);
         return result;
     }

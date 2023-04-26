@@ -64,9 +64,10 @@ public final class TransPositionTable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TransPositionTable that)) {
+        if (!(o instanceof TransPositionTable )) {
             return false;
         }
+        TransPositionTable that = (TransPositionTable) o;
         return contents.equals(that.contents)
                 && gameStateHolderFactory.equals(that.gameStateHolderFactory)
                 && selector.equals(that.selector);

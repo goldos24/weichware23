@@ -15,6 +15,7 @@ import sc.plugin2023.Move;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameRuleLogic {
@@ -74,7 +75,7 @@ public class GameRuleLogic {
     }
 
     public static List<Move> getPossibleMoves(ImmutableGameState gameState) {
-        return getPossibleMoveStream(gameState).toList();
+        return getPossibleMoveStream(gameState).collect(Collectors.toList());
     }
 
     public static Stream<Move> getPossibleMoveStream(ImmutableGameState gameState) {

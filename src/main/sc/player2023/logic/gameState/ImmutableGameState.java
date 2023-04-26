@@ -65,9 +65,10 @@ public final class ImmutableGameState {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ImmutableGameState that)) {
+        if (!(o instanceof ImmutableGameState)) {
             return false;
         }
+        ImmutableGameState that = (ImmutableGameState) o;
         return gameScore.equals(that.gameScore) && Objects.equals(board, that.board) && Objects.equals(
                 supposedCurrentTeam, that.supposedCurrentTeam);
     }
