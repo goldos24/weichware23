@@ -14,4 +14,7 @@ public record SearchWindow(int lowerBound, int upperBound) {
         return lowerBound < score && score < upperBound;
     }
 
+    public int getSpan() {
+        return Math.abs(upperBound - lowerBound);
+    }
 }
