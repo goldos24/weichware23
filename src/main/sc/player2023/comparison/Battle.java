@@ -37,7 +37,7 @@ public class Battle {
         ITeam opponentTeam = ownFighterTeam.opponent();
         Fighter fighter1 = ownFighterTeam == Team.ONE ? ownFighter : opponentFighter;
         Fighter fighter2 = ownFighterTeam == Team.TWO ? ownFighter : opponentFighter;
-        TimeMeasurer timeMeasurer = Logic.createDefaultRunningTimeMeasurer();
+        TimeMeasurer timeMeasurer = new TimeMeasurer(ComparisonProgram.MOVE_TIME_LIMIT);
         while (gameState.stillRunning()) {
             Rater rater1 = fighter1.rater();
             MoveGetter moveGetter1 = fighter1.moveGetter();
