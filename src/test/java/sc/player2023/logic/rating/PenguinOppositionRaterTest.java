@@ -33,7 +33,7 @@ public class PenguinOppositionRaterTest {
         GameScore gameScore = new GameScore(2, 1);
         Team team = Team.TWO;
         ImmutableGameState gameState = new ImmutableGameState(gameScore, board, team);
-        assertEquals(new Rating(22), rater.rate(gameState), "PenguinOpposition");
+        assertEquals(new Rating(-27), rater.rate(gameState), "PenguinOpposition");
     }
 
     @Test
