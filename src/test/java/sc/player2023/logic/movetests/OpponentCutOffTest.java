@@ -8,6 +8,7 @@ import sc.player2023.logic.TimeMeasurer;
 import sc.player2023.logic.TimeMeasurerFixture;
 import sc.player2023.logic.board.BoardParser;
 import sc.player2023.logic.gameState.ImmutableGameState;
+import sc.player2023.logic.move.FishCountPreSorting;
 import sc.player2023.logic.pvs.AspiredPVSMoveGetter;
 import sc.player2023.logic.pvs.FailSoftPVSMoveGetter;
 import sc.player2023.logic.rating.RatedMove;
@@ -101,11 +102,11 @@ public class OpponentCutOffTest {
 
     @Test
     void earlyGameCutOffTest() {
-        Move expected = new Move(new Coordinates(6, 6), new Coordinates(5, 5));
+        Move expected = new Move(new Coordinates(6, 6), new Coordinates(4, 4));
         RatedMove move = FailSoftPVSMoveGetter.pvs(
                 EARLY_GAME_CUTOFF_GAME_STATE,
                 EARLY_GAME_CUTOFF_DEPTH, new SearchWindow(Rating.PRIMITIVE_LOWER_BOUND, Rating.PRIMITIVE_UPPER_BOUND), RATER, ALREADY_RUNNING_INFINITE_TIME_MEASURER,
-                transPositionTableFactory.createTransPositionTableFromDepth(EARLY_GAME_CUTOFF_DEPTH), FailSoftPVSMoveGetter::getShuffledPossibleMoves);
+                transPositionTableFactory.createTransPositionTableFromDepth(EARLY_GAME_CUTOFF_DEPTH), FishCountPreSorting::getPossibleMoves);
         System.out.println(move.rating());
         assertEquals(move.move(), expected);
     }
