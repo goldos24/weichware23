@@ -32,10 +32,8 @@ public class BitsetPenguinOppositionRater implements Rater {
                 return set;
         }
         set |= 1L << index;
-        List<Coordinates> directlyReachableCoords = GameRuleLogic
-                .createCurrentDirectionStream()
-                .map(direction -> startCoords.plus(direction.getVector())).toList();
-        for (Coordinates coordinates : directlyReachableCoords) {
+        for (Direction direction : Direction.values()) {
+            Coordinates coordinates = startCoords.plus(direction.getVector());
             if (!GameRuleLogic.coordsValid(coordinates)) {
                 continue;
             }

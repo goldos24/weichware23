@@ -11,7 +11,7 @@ public class ComparisonProgram {
         Fighter oldRaterFighter = new Fighter(new AspiredPVSMoveGetter(FishCountPreSorting::getPossibleMoves), Logic.createCombinedRater());
         Fighter newRaterFighter = new Fighter(new AspiredPVSMoveGetter(FishCountPreSorting::getPossibleMoves),
                 Logic.createNewCombinedRater());
-        BattleResult result = Battle.run(newRaterFighter, oldRaterFighter, new BattleData(5));
+        BattleResult result = Battle.run(newRaterFighter, oldRaterFighter, new BattleData(15));
         System.out.println(result);
     }
 }
