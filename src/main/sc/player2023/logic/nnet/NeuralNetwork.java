@@ -98,6 +98,8 @@ public class NeuralNetwork implements Serializable {
             Matrix gradient = activationFunction.getGradient(outputs).multiplyHadamard(error);
             Matrix weightsT = this.weights[i].transpose();
             error = weightsT.multiply(error);
+
+            gradient = learningAlgorithm.gradientPreprocessor().process(gradient);
             gradients.add(gradient);
 
             Matrix outputsBefore = layerOutputs.get(i);
@@ -105,19 +107,9 @@ public class NeuralNetwork implements Serializable {
             deltas.add(delta);
         }
 
-        Collections.reverse(deltas);
         Collections.reverse(gradients);
-        this.updateNetwork(learningAlgorithm, deltas, gradients);
-    }
-
-    private void updateNetwork(LearningAlgorithm learningAlgorithm, List<Matrix> weightDeltas, List<Matrix> gradients) {
-        for (int i = 0; i < weightDeltas.size(); ++i) {
-            Matrix delta = weightDeltas.get(i);
-            Matrix gradient = gradients.get(i);
-
-            this.weights[i] = learningAlgorithm.updateWeights(this.weights[i], delta);
-            this.biases[i] = learningAlgorithm.updateBiases(this.biases[i], gradient);
-        }
+        Collections.reverse(deltas);
+        learningAlgorithm.updateNetwork(this, gradients, deltas);
     }
 
     public void learn(DataSetRow row, LearningAlgorithm learningAlgorithm) {
@@ -129,5 +121,13 @@ public class NeuralNetwork implements Serializable {
         for (DataSetRow row : rows) {
             this.learn(row, learningAlgorithm);
         }
+    }
+
+    public Matrix[] getWeights() {
+        return weights;
+    }
+
+    public Matrix[] getBiases() {
+        return biases;
     }
 }
