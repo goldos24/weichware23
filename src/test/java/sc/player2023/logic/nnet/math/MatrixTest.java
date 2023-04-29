@@ -145,7 +145,7 @@ public class MatrixTest {
             {5, 2},
             {-14, 8.4}
         });
-        Matrix expected = new Matrix(new double[][] {
+        Matrix expected = new Matrix(new double[][]{
             {-31.35, 38.1},
             {18.5, 117}
         });
@@ -194,6 +194,19 @@ public class MatrixTest {
             {4.5, -12},
         });
         Matrix actual = matrix.transpose();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void frobeniusNormOfMatrix() {
+        Matrix matrix = new Matrix(new double[][]{
+            {-8, -9},
+            {-1, -1},
+            {7, 4}
+        });
+        double expected = 14.560219778561036;
+        double actual = matrix.frobeniusNorm();
+
         assertEquals(expected, actual);
     }
 

@@ -148,6 +148,17 @@ public class Matrix {
         return result;
     }
 
+    public double frobeniusNorm() {
+        double sum = 0.0;
+        for (int row = 0; row < this.dimensions.rows(); ++row) {
+            for (int column = 0; column < this.dimensions.columns(); ++column) {
+                double value = Math.abs(this.values[row][column]);
+                sum += value * value;
+            }
+        }
+        return Math.sqrt(sum);
+    }
+
     public List<Double> flatten() {
         List<Double> values = new ArrayList<>();
         for (int row = 0; row < this.dimensions.rows(); ++row) {
