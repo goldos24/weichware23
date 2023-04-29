@@ -9,10 +9,10 @@ import sc.player2023.logic.nnet.math.Matrix;
 
 public class BackPropagation implements LearningAlgorithm {
 
-    private final double learningRate;
-    private final CostFunction costFunctionForTotalError;
-    private final Regularizer regularizer;
-    private final GradientPreprocessor gradientPreprocessor;
+    protected final double learningRate;
+    protected final CostFunction costFunctionForTotalError;
+    protected final Regularizer regularizer;
+    protected final GradientPreprocessor gradientPreprocessor;
 
     public BackPropagation(double learningRate) {
         this.learningRate = learningRate;

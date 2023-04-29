@@ -1,20 +1,20 @@
 package sc.player2023.logic.nnet;
 
+import org.junit.jupiter.api.Test;
 import sc.player2023.logic.nnet.activations.LeakyReLU;
 import sc.player2023.logic.nnet.activations.ReLU;
 import sc.player2023.logic.nnet.costs.MeanSquaredError;
-import sc.player2023.logic.nnet.learning.BackPropagation;
+import sc.player2023.logic.nnet.learning.MomentumBackPropagation;
 import sc.player2023.logic.nnet.learning.DataSet;
 import sc.player2023.logic.nnet.learning.DataSetRow;
 import sc.player2023.logic.nnet.math.MatrixInitializer;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LearningTest {
+public class MomentumTest {
 
     @Test
     void learnXORWithReLU() {
@@ -25,7 +25,7 @@ public class LearningTest {
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );
-        LearningAlgorithm learningAlgorithm = new BackPropagation(0.01, new MeanSquaredError());
+        LearningAlgorithm learningAlgorithm = new MomentumBackPropagation(0.01, 0.9, new MeanSquaredError());
         DataSet dataSet = new DataSet(
             new DataSetRow(new double[]{0, 0}, new double[]{0}),
             new DataSetRow(new double[]{1, 0}, new double[]{1}),
@@ -56,7 +56,7 @@ public class LearningTest {
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );
-        LearningAlgorithm learningAlgorithm = new BackPropagation(0.01, new MeanSquaredError());
+        LearningAlgorithm learningAlgorithm = new MomentumBackPropagation(0.01, 0.9, new MeanSquaredError());
         DataSet dataSet = new DataSet(
             new DataSetRow(new double[]{0, 0}, new double[]{0}),
             new DataSetRow(new double[]{1, 0}, new double[]{0}),
@@ -87,7 +87,7 @@ public class LearningTest {
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );
-        LearningAlgorithm learningAlgorithm = new BackPropagation(0.01, new MeanSquaredError());
+        LearningAlgorithm learningAlgorithm = new MomentumBackPropagation(0.01, 0.9, new MeanSquaredError());
         DataSet dataSet = new DataSet(
             new DataSetRow(new double[]{0, 0}, new double[]{0}),
             new DataSetRow(new double[]{1, 0}, new double[]{1}),
