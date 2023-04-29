@@ -12,5 +12,9 @@ public interface MatrixInitializer {
         return (row, column) -> random.nextDouble() * 2.0 - 1.0;
     }
 
+    static MatrixInitializer gaussianRandom(Random random) {
+        return (row, column) -> random.nextGaussian() * 2.0 - 1.0;
+    }
+
     double getValue(int row, int column);
 }
