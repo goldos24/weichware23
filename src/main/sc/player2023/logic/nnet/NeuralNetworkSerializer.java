@@ -2,7 +2,7 @@ package sc.player2023.logic.nnet;
 
 import java.io.*;
 
-public class NeuralNetworkSerizalizer {
+public class NeuralNetworkSerializer {
 
     public static void save(String fileName, NeuralNetwork network) throws IOException {
         FileOutputStream fileStream = new FileOutputStream(fileName);
