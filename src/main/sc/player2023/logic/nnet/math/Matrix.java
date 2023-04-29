@@ -28,12 +28,6 @@ public class Matrix {
         this.dimensions = new MatrixDimensions(rows, columns);
     }
     
-    public static Matrix rowOf(double... values) {
-        Matrix matrix = new Matrix(1, values.length);
-        System.arraycopy(values, 0, matrix.values[0], 0, values.length);
-        return matrix;
-    }
-
     public static Matrix columnOf(double... values) {
         Matrix matrix = new Matrix(values.length, 1);
         for (int row = 0; row < values.length; ++row) {

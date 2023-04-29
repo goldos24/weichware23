@@ -29,12 +29,11 @@ public class MatrixTest {
 
     @Test
     void matrixHasBadDimensions() {
-        assertThrows(MatrixDimensionsException.class, () -> {
+        assertThrows(MatrixDimensionsException.class, () ->
             new Matrix(new double[][]{
                 {1.0, 0.25, 5.3, 0.9},
                 {12.0, 8.3, 1.3},
-            });
-        }, "Incorrect matrix dimensions: 3 columns on row 1, 4 columns expected");
+            }), "Incorrect matrix dimensions: 3 columns on row 1, 4 columns expected");
     }
 
     @Test
