@@ -6,5 +6,7 @@ public interface LearningAlgorithm {
 
     CostFunction costFunctionForTotalError();
 
-    Matrix updateParameter(Matrix parameter, Matrix delta);
+    Matrix updateWeights(Matrix weights, Matrix delta);
+
+    Matrix updateBiases(Matrix biases, Matrix gradient);
 }

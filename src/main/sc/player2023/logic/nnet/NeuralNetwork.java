@@ -90,10 +90,6 @@ public class NeuralNetwork implements Serializable {
         Matrix outputOutputs = layerOutputs.get(layerOutputs.size() - 1);
         Matrix error = target.subtract(outputOutputs);
 
-        CostFunction costFunction = learningAlgorithm.costFunctionForTotalError();
-        double totalError = costFunction.calculateTotal(outputOutputs, target);
-        System.out.println("Error: " + totalError);
-
         List<Matrix> gradients = new ArrayList<>();
         List<Matrix> deltas = new ArrayList<>();
         for (int i = this.weights.length - 1; i >= 0; --i) {
@@ -119,8 +115,8 @@ public class NeuralNetwork implements Serializable {
             Matrix delta = weightDeltas.get(i);
             Matrix gradient = gradients.get(i);
 
-            this.weights[i] = learningAlgorithm.updateParameter(this.weights[i], delta);
-            this.biases[i] = learningAlgorithm.updateParameter(this.biases[i], gradient);
+            this.weights[i] = learningAlgorithm.updateWeights(this.weights[i], delta);
+            this.biases[i] = learningAlgorithm.updateBiases(this.biases[i], gradient);
         }
     }
 
