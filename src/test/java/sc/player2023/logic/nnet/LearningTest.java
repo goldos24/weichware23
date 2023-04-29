@@ -1,5 +1,6 @@
 package sc.player2023.logic.nnet;
 
+import sc.player2023.logic.nnet.activations.LeakyReLU;
 import sc.player2023.logic.nnet.activations.ReLU;
 import sc.player2023.logic.nnet.costs.MeanSquaredError;
 import sc.player2023.logic.nnet.learning.BackPropagation;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LearningTest {
 
     @Test
-    void learnXOR() {
+    void learnXORWithReLU() {
         Random random = new Random(0);
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(2, 10, 1),
@@ -47,7 +48,7 @@ public class LearningTest {
     }
 
     @Test
-    void learnAND() {
+    void learnANDWithReLU() {
         Random random = new Random(0);
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(2, 10, 1),
@@ -78,11 +79,11 @@ public class LearningTest {
     }
 
     @Test
-    void learnOR() {
+    void learnORWithLeakyReLU() {
         Random random = new Random(0);
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(2, 10, 1),
-            List.of(new ReLU(), new ReLU()),
+            List.of(new LeakyReLU(), new LeakyReLU()),
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );
