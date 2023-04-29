@@ -152,7 +152,7 @@ public class Matrix {
         double sum = 0.0;
         for (int row = 0; row < this.dimensions.rows(); ++row) {
             for (int column = 0; column < this.dimensions.columns(); ++column) {
-                double value = Math.abs(this.values[row][column]);
+                double value = this.values[row][column];
                 sum += value * value;
             }
         }

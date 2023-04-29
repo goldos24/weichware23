@@ -13,7 +13,7 @@ public class L2Regularizer implements Regularizer {
 
     @Override
     public Matrix regularize(Matrix weights, Matrix delta) {
-        Matrix regularizationTerm = weights.map(value -> value * this.lambda);
+        Matrix regularizationTerm = weights.scale(this.lambda);
         return delta.add(regularizationTerm);
     }
 }
