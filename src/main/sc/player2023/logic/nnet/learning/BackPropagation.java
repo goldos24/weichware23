@@ -40,12 +40,12 @@ public class BackPropagation implements LearningAlgorithm {
     public Matrix updateWeights(Matrix weights, Matrix delta) {
         delta = this.regularizer.regularize(weights, delta);
         delta = delta.scale(this.learningRate);
-        return weights.add(delta);
+        return weights.subtract(delta);
     }
 
     @Override
     public Matrix updateBiases(Matrix biases, Matrix gradient) {
         Matrix delta = gradient.scale(this.learningRate);
-        return biases.add(delta);
+        return biases.subtract(delta);
     }
 }

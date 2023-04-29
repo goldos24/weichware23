@@ -88,7 +88,7 @@ public class NeuralNetwork implements Serializable {
         List<Matrix> layerOutputs = this.accumulatePropagateInputArray(inputs);
         Matrix target = Matrix.columnOf(targetOutputs);
         Matrix outputOutputs = layerOutputs.get(layerOutputs.size() - 1);
-        Matrix error = target.subtract(outputOutputs);
+        Matrix error = outputOutputs.subtract(target);
 
         List<Matrix> gradients = new ArrayList<>();
         List<Matrix> deltas = new ArrayList<>();
