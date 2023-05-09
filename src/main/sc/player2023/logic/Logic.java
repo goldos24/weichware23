@@ -54,7 +54,7 @@ public class Logic implements IGameHandler {
     WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(2, new PenguinCutOffRater());
     Rater weightedQuadrantOccupationRater = new WeightedRater(10, new QuadrantOccupationRater());
-    Rater weightedPenguinOppositionRater = new WeightedRater(5, new BitsetPenguinOppositionRater());
+    Rater weightedPenguinOppositionRater = new WeightedRater(3, new PenguinOppositionRater());
     EarlyGameRater earlyGameEdgePenalty = new EarlyGameRater(new EdgePenguinPenalty());
     Rater[] raters = {weightedStupidRater, new WeightedRater(3, new PotentialFishRater()),
             weightedUselessPenguinRater, weightedPenguinOppositionRater, weightedQuadrantOccupationRater,
