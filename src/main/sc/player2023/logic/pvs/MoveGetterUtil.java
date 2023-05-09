@@ -17,7 +17,7 @@ public final class MoveGetterUtil {
 
 
     static int getRatingFactorForNextMove(@Nonnull ImmutableGameState gameState) {
-        if(GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam().opponent())) {
+        if(GameRuleLogic.anyPossibleMovesForPlayer(gameState.getBoard(), gameState.getCurrentTeam())) {
             return -1;
         }
         return 1;

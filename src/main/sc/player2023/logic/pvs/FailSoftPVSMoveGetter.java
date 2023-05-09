@@ -57,12 +57,14 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
         int score, bestScore = Integer.MIN_VALUE;
         int lowerBound = searchWindow.lowerBound();
         int upperBound = searchWindow.upperBound();
-        int postMoveRatingFactor = getRatingFactorForNextMove(gameState);
         for (Move move : possibleMoves) {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
+            int postMoveRatingFactor = getRatingFactorForNextMove(childGameState);
             if (firstChild) {
                 firstChild = false;
-                SearchWindow newSearchWindow = new SearchWindow(-upperBound, -lowerBound);
+                SearchWindow newSearchWindow = postMoveRatingFactor < 0 ?
+                        new SearchWindow(-upperBound, -lowerBound) :
+                        new SearchWindow(lowerBound, upperBound);
                 Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer,
                                      transPositionTable, moveGenerator)
                         .rating().multiply(
@@ -79,16 +81,20 @@ public class FailSoftPVSMoveGetter implements MoveGetter {
                 }
             }
             else {
-                SearchWindow newSearchWindow = new SearchWindow(-lowerBound - 1, -lowerBound);
-                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, rater, timeMeasurer,
+                SearchWindow zeroWindow = postMoveRatingFactor < 0 ?
+                        new SearchWindow(-lowerBound - 1, -lowerBound):
+                        new SearchWindow(lowerBound, lowerBound + 1);
+                Rating negated = pvs(childGameState, depth - 1, zeroWindow, rater, timeMeasurer,
                                      transPositionTable, moveGenerator).
                         rating().multiply(
                                 postMoveRatingFactor
                         );
                 score = negated.rating(); /* * search with a null window */
                 if (score > lowerBound && score < upperBound) {
-                    SearchWindow newSearchWindowCut = new SearchWindow(-upperBound, -lowerBound);
-                    Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindowCut, rater,
+                    SearchWindow newSearchWindow = postMoveRatingFactor < 0 ?
+                            new SearchWindow(-upperBound, -lowerBound) :
+                            new SearchWindow(lowerBound, upperBound);
+                    Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindow, rater,
                                               timeMeasurer, transPositionTable, moveGenerator).
                             rating().multiply(
                                     postMoveRatingFactor
