@@ -63,7 +63,7 @@ public interface AspirationMoveGetter extends IterativeDeepeningAlphaBetaMoveGet
             SearchWindow searchWindow = new SearchWindow(lowerBound, upperBound);
             RatedMove currentMove = pvs(gameState, depth, searchWindow,
                     new ConstantPVSParameters(rater, timeMeasurer, transPositionTable,
-                            PossibleMoveIterable::new));
+                            FishCountPreSorting::getPossibleMoves));
             Rating currentRating = currentMove.rating();
             boolean inSearchWindow = isInSearchWindow(searchWindow, currentRating);
             if (inSearchWindow) {
