@@ -7,13 +7,12 @@ public class GameOutcomePredictionConverter implements NetworkOutputConverter<Ga
     public GameOutcomePrediction convert(double[] outputs) {
         return new GameOutcomePrediction(
             outputs[0], outputs[1],
-            outputs[2], outputs[3],
-            outputs[4], outputs[5]
+            outputs[2], outputs[3]
         );
     }
 
     @Override
     public int size() {
-        return 6;
+        return 4;
     }
 }
