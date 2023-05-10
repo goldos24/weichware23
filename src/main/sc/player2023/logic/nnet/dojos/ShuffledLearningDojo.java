@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ShuffledLearningDojo extends LearningDojo {
 
-    public ShuffledLearningDojo(NeuralNetwork network, DataSet dataSet, int steps, LearningAlgorithm learningAlgorithm) {
-        super(network, dataSet, steps, learningAlgorithm);
+    public ShuffledLearningDojo(NeuralNetwork network, DataSet dataSet, int steps, int stepSaveInterval, LearningAlgorithm learningAlgorithm) {
+        super(network, dataSet, steps, stepSaveInterval, learningAlgorithm);
     }
 
     @Override
