@@ -11,8 +11,8 @@ public class GameStateConverter implements NetworkInputConverter<ImmutableGameSt
     public static final int SIZE = 2;
     private final BoardConverter boardConverter;
 
-    public GameStateConverter() {
-        this.boardConverter = new BoardConverter();
+    public GameStateConverter(BoardConverter boardConverter) {
+        this.boardConverter = boardConverter;
     }
 
     @Override
