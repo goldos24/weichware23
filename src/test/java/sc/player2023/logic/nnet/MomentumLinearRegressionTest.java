@@ -17,7 +17,7 @@ public class MomentumLinearRegressionTest {
 
     @Test
     void learnLinearRegressionWithMomentum() {
-        Random random = new Random();
+        Random random = new Random(0);
         List<Double> coefficients = List.of(7.0, -5.0, 0.5, 3.0, 0.25, 6.0, -10.0, -1.0, 3.9, 12.3, -6.2);
         DataSet dataSet = LinearRegression.generateLinearRegressionModel(300, coefficients, -3, 3, 0.2, random);
 
