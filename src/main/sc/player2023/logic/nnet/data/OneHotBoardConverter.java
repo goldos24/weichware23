@@ -6,7 +6,7 @@ import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.board.BoardPeek;
 import sc.plugin2023.Field;
 
-public class OneHotBoardConverter implements NetworkInputConverter<BoardPeek> {
+public class OneHotBoardConverter extends BoardConverter {
 
     public static final int POSSIBLE_PENGUIN_STATES = 3;
     public static final int SIZE = GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT * (1 + POSSIBLE_PENGUIN_STATES);
