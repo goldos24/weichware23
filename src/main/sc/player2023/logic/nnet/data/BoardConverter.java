@@ -8,9 +8,11 @@ import sc.plugin2023.Field;
 
 public class BoardConverter implements NetworkInputConverter<BoardPeek> {
 
+    public static final int SIZE = GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT * 2;
+
     @Override
     public double[] convert(BoardPeek board) {
-        double[] data = new double[GameRuleLogic.BOARD_WIDTH * GameRuleLogic.BOARD_HEIGHT * 2];
+        double[] data = new double[SIZE];
 
         for (int j = 0; j < GameRuleLogic.BOARD_HEIGHT; ++j) {
             for (int i = 0; i < GameRuleLogic.BOARD_WIDTH; ++i) {
@@ -34,5 +36,10 @@ public class BoardConverter implements NetworkInputConverter<BoardPeek> {
         return penguin == Team.ONE ? 0.0 :
                penguin == Team.TWO ? 1.0 :
                0.5;
+    }
+
+    @Override
+    public int size() {
+        return SIZE;
     }
 }

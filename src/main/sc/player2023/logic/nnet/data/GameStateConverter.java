@@ -8,6 +8,7 @@ import java.util.stream.DoubleStream;
 
 public class GameStateConverter implements NetworkInputConverter<ImmutableGameState> {
 
+    public static final int SIZE = 2;
     private final BoardConverter boardConverter;
 
     public GameStateConverter() {
@@ -21,12 +22,16 @@ public class GameStateConverter implements NetworkInputConverter<ImmutableGameSt
         int teamOneScore = gameState.getScoreForTeam(Team.ONE).score();
         int teamTwoScore = gameState.getScoreForTeam(Team.TWO).score();
         int scoreSum = teamOneScore + teamTwoScore;
-        double[] scoreData = new double[] {
-            teamOneScore / (double) scoreSum,
-            teamTwoScore / (double) scoreSum
-        };
+        double[] scoreData = new double[SIZE];
+        scoreData[0] = teamOneScore / (double) scoreSum;
+        scoreData[1] = teamTwoScore / (double) scoreSum;
 
         DoubleStream boardAndScoreStream = DoubleStream.concat(Arrays.stream(boardData), Arrays.stream(scoreData));
         return boardAndScoreStream.toArray();
+    }
+
+    @Override
+    public int size() {
+        return this.boardConverter.size() + SIZE;
     }
 }
