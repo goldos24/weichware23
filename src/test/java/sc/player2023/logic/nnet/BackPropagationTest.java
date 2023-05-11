@@ -1,6 +1,7 @@
 package sc.player2023.logic.nnet;
 
 import sc.player2023.logic.nnet.activations.LeakyReLU;
+import sc.player2023.logic.nnet.activations.Linear;
 import sc.player2023.logic.nnet.activations.ReLU;
 import sc.player2023.logic.nnet.costs.MeanSquaredError;
 import sc.player2023.logic.nnet.learning.BackPropagation;
@@ -21,7 +22,7 @@ public class BackPropagationTest {
         Random random = new Random(0);
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(2, 10, 1),
-            List.of(new ReLU(), new ReLU()),
+            List.of(new ReLU(), new Linear()),
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );
@@ -52,7 +53,7 @@ public class BackPropagationTest {
         Random random = new Random(0);
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(2, 10, 1),
-            List.of(new ReLU(), new ReLU()),
+            List.of(new ReLU(), new Linear()),
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );
@@ -83,7 +84,7 @@ public class BackPropagationTest {
         Random random = new Random(0);
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(2, 10, 1),
-            List.of(new LeakyReLU(), new LeakyReLU()),
+            List.of(new LeakyReLU(), new Linear()),
             MatrixInitializer.uniformRandom(random),
             MatrixInitializer.fill(0.0)
         );

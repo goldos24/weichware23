@@ -9,11 +9,11 @@ public interface MatrixInitializer {
     }
 
     static MatrixInitializer uniformRandom(Random random) {
-        return (row, column) -> random.nextDouble() * 2.0 - 1.0;
+        return (row, column) -> random.nextDouble();
     }
 
-    static MatrixInitializer gaussianRandom(Random random) {
-        return (row, column) -> random.nextGaussian() * 2.0 - 1.0;
+    static MatrixInitializer gaussianRandom(Random random, double standardDeviation) {
+        return (row, column) -> random.nextGaussian() * standardDeviation;
     }
 
     double getValue(int row, int column);
