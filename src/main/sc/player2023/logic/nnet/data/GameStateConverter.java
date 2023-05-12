@@ -23,8 +23,13 @@ public class GameStateConverter implements NetworkInputConverter<ImmutableGameSt
         int teamTwoScore = gameState.getScoreForTeam(Team.TWO).score();
         int scoreSum = teamOneScore + teamTwoScore;
         double[] scoreData = new double[SIZE];
-        scoreData[0] = teamOneScore / (double) scoreSum;
-        scoreData[1] = teamTwoScore / (double) scoreSum;
+        if (scoreSum != 0) {
+            scoreData[0] = teamOneScore / (double) scoreSum;
+            scoreData[1] = teamTwoScore / (double) scoreSum;
+        } else {
+            scoreData[0] = 0;
+            scoreData[1] = 0;
+        }
 
         DoubleStream boardAndScoreStream = DoubleStream.concat(Arrays.stream(boardData), Arrays.stream(scoreData));
         return boardAndScoreStream.toArray();
