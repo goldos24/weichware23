@@ -19,7 +19,7 @@ public class OneHotBoardConverter extends BoardConverter {
             for (int i = 0; i < GameRuleLogic.BOARD_WIDTH; ++i) {
                 int index = j * GameRuleLogic.BOARD_WIDTH + i;
                 Field field = board.get(new Coordinates(i * 2 + j % 2, j));
-                data[index * 2] = fishToValue(field.getFish());
+                data[index * 4] = fishToValue(field.getFish());
                 writePenguinValue(field.getPenguin(), data, index);
             }
         }
@@ -34,17 +34,17 @@ public class OneHotBoardConverter extends BoardConverter {
 
     private static void writePenguinValue(Team penguin, double[] data, int index) {
         if (penguin == Team.ONE) {
-            data[index * 2 + 1] = 1.0;
-            data[index * 2 + 2] = 0.0;
-            data[index * 2 + 3] = 0.0;
+            data[index * 4 + 1] = 1.0;
+            data[index * 4 + 2] = 0.0;
+            data[index * 4 + 3] = 0.0;
         } else if (penguin == Team.TWO) {
-            data[index * 2 + 1] = 0.0;
-            data[index * 2 + 2] = 1.0;
-            data[index * 2 + 3] = 0.0;
+            data[index * 4 + 1] = 0.0;
+            data[index * 4 + 2] = 1.0;
+            data[index * 4 + 3] = 0.0;
         } else {
-            data[index * 2 + 1] = 0.0;
-            data[index * 2 + 2] = 0.0;
-            data[index * 2 + 3] = 1.0;
+            data[index * 4 + 1] = 0.0;
+            data[index * 4 + 2] = 0.0;
+            data[index * 4 + 3] = 1.0;
         }
     }
 
