@@ -43,7 +43,9 @@ public class PrincipalVariationSearch {
             ImmutableGameState childGameState = withMovePerformed(gameState, move);
             if (firstChild) {
                 firstChild = false;
-                SearchWindow newSearchWindow = new SearchWindow(-upperBound, -lowerBound);
+                SearchWindow newSearchWindow = postMoveRatingFactor < 0 ?
+                        new SearchWindow(-upperBound, -lowerBound) :
+                        new SearchWindow(lowerBound, upperBound);
                 Rating negated = pvs(childGameState, depth - 1, newSearchWindow, constParams)
                         .rating().multiply(
                                 postMoveRatingFactor
@@ -59,14 +61,18 @@ public class PrincipalVariationSearch {
                 }
             }
             else {
-                SearchWindow newSearchWindow = new SearchWindow(-lowerBound - 1, -lowerBound);
-                Rating negated = pvs(childGameState, depth - 1, newSearchWindow, constParams).
+                SearchWindow newZeroWindow = postMoveRatingFactor < 0 ?
+                        new SearchWindow(-lowerBound - 1, -lowerBound):
+                        new SearchWindow(lowerBound, lowerBound + 1);
+                Rating negated = pvs(childGameState, depth - 1, newZeroWindow, constParams).
                         rating().multiply(
                                 postMoveRatingFactor
                         );
                 score = negated.rating(); /* * search with a null window */
                 if (score > lowerBound && score < upperBound) {
-                    SearchWindow newSearchWindowCut = new SearchWindow(-upperBound, -lowerBound);
+                    SearchWindow newSearchWindowCut = postMoveRatingFactor < 0 ?
+                            new SearchWindow(-upperBound, -lowerBound) :
+                            new SearchWindow(lowerBound, upperBound);
                     Rating otherNegated = pvs(childGameState, depth - 1, newSearchWindowCut, constParams).
                             rating().multiply(
                                     postMoveRatingFactor
