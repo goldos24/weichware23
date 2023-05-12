@@ -24,7 +24,7 @@ public class MomentumLinearRegressionTest {
         NeuralNetwork neuralNetwork = NeuralNetworkFactory.create(
             List.of(10, 25, 1),
             List.of(new LeakyReLU(), new Linear()),
-            MatrixInitializer.gaussianRandom(random, 0.01),
+            MatrixInitializer.gaussianRandom(random, 0.5),
             MatrixInitializer.fill(0.0)
         );
         LearningAlgorithm learningAlgorithm = new MomentumBackPropagation(0.001, 0.9, new MeanSquaredError());
