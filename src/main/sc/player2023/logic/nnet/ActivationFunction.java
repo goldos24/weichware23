@@ -2,7 +2,9 @@ package sc.player2023.logic.nnet;
 
 import sc.player2023.logic.nnet.math.Matrix;
 
-public interface ActivationFunction {
+import java.io.Serializable;
+
+public interface ActivationFunction extends Serializable {
 
     ValueDerivativePair calculate(double input);
 

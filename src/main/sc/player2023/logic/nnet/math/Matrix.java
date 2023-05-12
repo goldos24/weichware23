@@ -1,12 +1,13 @@
 package sc.player2023.logic.nnet.math;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class Matrix {
+public class Matrix implements Serializable {
 
     private final double[][] values;
     private final MatrixDimensions dimensions;
