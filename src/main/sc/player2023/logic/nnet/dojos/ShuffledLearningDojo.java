@@ -11,15 +11,17 @@ import java.util.List;
 
 public class ShuffledLearningDojo extends LearningDojo {
 
-    public ShuffledLearningDojo(NeuralNetwork network, DataSet dataSet, int steps, int stepSaveInterval, LearningAlgorithm learningAlgorithm) {
-        super(network, dataSet, steps, stepSaveInterval, learningAlgorithm);
+    public ShuffledLearningDojo(NeuralNetwork network, DataSet dataSet, int steps, int stepSaveInterval, int accuracyCalculationInterval, LearningAlgorithm learningAlgorithm) {
+        super(network, dataSet, steps, stepSaveInterval, accuracyCalculationInterval, learningAlgorithm);
     }
 
     @Override
     public void doLearnStep() {
         List<DataSetRow> rows = new ArrayList<>(dataSet.rowsList());
         Collections.shuffle(rows);
+        ConsoleProgressUpdate progress = new ConsoleProgressUpdate("Learning row", rows.size());
         for (DataSetRow dataSetRow : rows) {
+            progress.printStateAndIncrement();
             this.network.learn(dataSetRow, learningAlgorithm);
         }
     }
