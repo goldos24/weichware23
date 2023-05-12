@@ -2,6 +2,7 @@ package sc.player2023.logic.rating;
 
 import sc.api.plugins.Coordinates;
 import sc.api.plugins.ITeam;
+import sc.api.plugins.Team;
 import sc.player2023.logic.GameRuleLogic;
 import sc.player2023.logic.Penguin;
 import sc.player2023.logic.gameState.ImmutableGameState;
@@ -28,10 +29,8 @@ public class QuadrantOccupationRater implements Rater {
     static Rating getRatingForTeam(@Nonnull ImmutableGameState gameState, @Nonnull ITeam team) {
         final boolean[] visitedQuadrants = new boolean[QUADRANT_COUNT];
         Stream<Penguin> penguinStream = gameState.getBoard()
-                                                 .getPenguins().stream();
-        var ownPenguinStream = penguinStream
-                .filter(coordinatesTeamPair -> coordinatesTeamPair.team() == team);
-        ownPenguinStream.forEach(coordinatesTeamPair -> {
+                                                 .getPenguins().streamForTeam((Team) team);
+        penguinStream.forEach(coordinatesTeamPair -> {
             int index = getQuadrantIndex(coordinatesTeamPair.coordinates());
             visitedQuadrants[index] = true;
         });
