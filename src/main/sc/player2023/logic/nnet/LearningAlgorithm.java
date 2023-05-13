@@ -14,8 +14,6 @@ public interface LearningAlgorithm {
 
     Matrix updateBiases(Matrix biases, Matrix gradient);
 
-    void notifyNewIteration();
-
     default void updateNetwork(NeuralNetwork network, List<Matrix> gradients, List<Matrix> deltas) {
         Matrix[] weights = network.getWeights();
         Matrix[] biases = network.getBiases();

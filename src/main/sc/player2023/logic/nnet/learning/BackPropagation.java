@@ -53,10 +53,6 @@ public class BackPropagation implements LearningAlgorithm {
     }
 
     @Override
-    public void notifyNewIteration() {
-    }
-
-    @Override
     public Matrix updateWeights(Matrix weights, Matrix delta) {
         delta = this.regularizer.regularize(weights, delta);
         delta = delta.scale(this.learningRate);

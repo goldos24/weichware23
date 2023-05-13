@@ -9,7 +9,6 @@ public class BatchLearning implements LearningStrategy {
 
     @Override
     public void doIteration(NeuralNetwork neuralNetwork, DataSet dataSet, LearningAlgorithm learningAlgorithm) {
-        learningAlgorithm.notifyNewIteration();
         neuralNetwork.learn(dataSet, learningAlgorithm);
     }
 }

@@ -36,7 +36,6 @@ public class MinibatchLearning implements LearningStrategy {
 
     @Override
     public void doIteration(NeuralNetwork neuralNetwork, DataSet dataSet, LearningAlgorithm learningAlgorithm) {
-        learningAlgorithm.notifyNewIteration();
         List<DataSetRow> rows = dataSet.rowsList();
         if (rows.size() < this.batchSize) {
             neuralNetwork.learn(dataSet, learningAlgorithm);

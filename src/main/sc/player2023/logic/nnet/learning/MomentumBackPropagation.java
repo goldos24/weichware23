@@ -37,12 +37,6 @@ public class MomentumBackPropagation extends BackPropagation {
     private List<Matrix> previousBiasDeltas = new ArrayList<>();
 
     @Override
-    public void notifyNewIteration() {
-        this.previousWeightDeltas.clear();
-        this.previousBiasDeltas.clear();
-    }
-
-    @Override
     public void updateNetwork(NeuralNetwork network, List<Matrix> gradients, List<Matrix> deltas) {
         if (previousWeightDeltas.isEmpty()) {
             for (Matrix delta : deltas) {

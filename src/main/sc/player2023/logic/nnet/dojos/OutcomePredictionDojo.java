@@ -37,7 +37,7 @@ public class OutcomePredictionDojo extends LearningDojo {
     }
 
     public static void main(String[] args) {
-        OutcomePredictionData data = new OutcomePredictionData(100, 100000);
+        OutcomePredictionData data = new OutcomePredictionData(100, 1000);
         new OutcomePredictionDojo(data.createDataSet(), 100, 1, 10)
             .learn();
     }
