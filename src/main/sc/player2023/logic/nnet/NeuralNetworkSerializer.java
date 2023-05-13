@@ -25,4 +25,18 @@ public class NeuralNetworkSerializer {
 
         return network;
     }
+
+    public static NeuralNetwork loadFromResource(String resourceFileName) throws IOException, ClassNotFoundException {
+        ClassLoader classLoader = NeuralNetworkSerializer.class.getClassLoader();
+        InputStream resourceInputStream = classLoader.getResourceAsStream(resourceFileName);
+        ObjectInputStream inputStream = new ObjectInputStream(resourceInputStream);
+
+        NeuralNetwork network = (NeuralNetwork) inputStream.readObject();
+
+        assert resourceInputStream != null;
+        resourceInputStream.close();
+        inputStream.close();
+
+        return network;
+    }
 }

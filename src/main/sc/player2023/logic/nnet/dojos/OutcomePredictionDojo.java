@@ -21,24 +21,24 @@ public class OutcomePredictionDojo extends LearningDojo {
     static NeuralNetwork createNetwork() {
         Random random = new Random();
         return NeuralNetworkFactory.create(
-            List.of(258, 400, 256, 128, 4),
-            List.of(new LeakyReLU(), new LeakyReLU(), new LeakyReLU(), new Linear()),
+            List.of(258, 400, 400, 400, 400, 4),
+            List.of(new LeakyReLU(), new LeakyReLU(), new LeakyReLU(), new LeakyReLU(), new Linear()),
             MatrixInitializer.gaussianRandom(random, 0.7),
             MatrixInitializer.fill(0.0)
         );
     }
 
     static LearningAlgorithm createLearningAlgorithm() {
-        return new MomentumBackPropagation(0.0001, 0.85, new MeanSquaredError(), Regularizer.NONE, new NormClipping(8.0));
+        return new MomentumBackPropagation(0.00001, 0.85, new MeanSquaredError(), Regularizer.NONE, new NormClipping(2.0));
     }
 
     public OutcomePredictionDojo(DataSet dataSet, int steps, int accuracyCalculationInterval, int stepSaveInterval) {
-        super(createNetwork(), dataSet, steps, stepSaveInterval, accuracyCalculationInterval, createLearningAlgorithm(), new MinibatchLearning(100));
+        super(createNetwork(), dataSet, steps, stepSaveInterval, accuracyCalculationInterval, createLearningAlgorithm(), new MinibatchLearning(1000));
     }
 
     public static void main(String[] args) {
-        OutcomePredictionData data = new OutcomePredictionData(100, 1000);
-        new OutcomePredictionDojo(data.createDataSet(), 100, 1, 10)
+        OutcomePredictionData data = new OutcomePredictionData(100, 1000000);
+        new OutcomePredictionDojo(data.createDataSet(), 1000, 1, 10)
             .learn();
     }
 }
