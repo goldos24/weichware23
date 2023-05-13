@@ -38,7 +38,7 @@ public class Logic implements IGameHandler {
 
   public static Rater createCombinedRater() {
     StupidRater stupidRater = new StupidRater();
-    WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
+    WeightedRater weightedStupidRater = new WeightedRater(20, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(2, new PenguinCutOffRater());
     Rater weightedQuadrantOccupationRater = new WeightedRater(10, new QuadrantOccupationRater());
     Rater weightedReachableFishRater = new WeightedRater(5, new PenguinOppositionRater());
@@ -51,13 +51,13 @@ public class Logic implements IGameHandler {
 
   public static Rater createNewCombinedRater() {
     StupidRater stupidRater = new StupidRater();
-    WeightedRater weightedStupidRater = new WeightedRater(5, stupidRater);
+    WeightedRater weightedStupidRater = new WeightedRater(20, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(2, new PenguinCutOffRater());
     Rater weightedQuadrantOccupationRater = new WeightedRater(10, new QuadrantOccupationRater());
-    Rater weightedPenguinOppositionRater = new WeightedRater(3, new PenguinOppositionRater());
+    Rater weightedReachableFishRater = new WeightedRater(5, new PenguinOppositionRater());
     EarlyGameRater earlyGameEdgePenalty = new EarlyGameRater(new EdgePenguinPenalty());
     Rater[] raters = {weightedStupidRater, new WeightedRater(3, new PotentialFishRater()),
-            weightedUselessPenguinRater, weightedPenguinOppositionRater, weightedQuadrantOccupationRater,
+            weightedUselessPenguinRater, weightedReachableFishRater, weightedQuadrantOccupationRater,
             earlyGameEdgePenalty};
     return new CompositeRater(raters);
   }
