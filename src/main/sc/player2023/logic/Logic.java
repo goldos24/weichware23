@@ -35,7 +35,7 @@ public class Logic implements IGameHandler {
   }
   public static Rater createCombinedRater() {
     StupidRater stupidRater = new StupidRater();
-    WeightedRater weightedStupidRater = new WeightedRater(11, stupidRater);
+    WeightedRater weightedStupidRater = new WeightedRater(20, stupidRater);
     Rater weightedUselessPenguinRater = new WeightedRater(2, new PenguinCutOffRater());
     Rater weightedQuadrantOccupationRater = new WeightedRater(10, new QuadrantOccupationRater());
     Rater weightedReachableFishRater = new WeightedRater(3, new PenguinOppositionRater());
