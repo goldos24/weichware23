@@ -23,6 +23,7 @@ public class StochasticLearning implements LearningStrategy {
 
     @Override
     public void doIteration(NeuralNetwork neuralNetwork, DataSet dataSet, LearningAlgorithm learningAlgorithm) {
+        learningAlgorithm.notifyNewIteration();
         List<DataSetRow> rows = dataSet.rowsList();
         int randomIndex = random.nextInt(rows.size());
         DataSetRow randomRow = rows.get(randomIndex);
