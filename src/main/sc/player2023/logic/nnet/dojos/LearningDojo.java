@@ -3,6 +3,7 @@ package sc.player2023.logic.nnet.dojos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sc.player2023.logic.nnet.LearningAlgorithm;
+import sc.player2023.logic.nnet.LearningStrategy;
 import sc.player2023.logic.nnet.NeuralNetwork;
 import sc.player2023.logic.nnet.NeuralNetworkSerializer;
 import sc.player2023.logic.nnet.learning.DataSet;
@@ -22,24 +23,18 @@ public class LearningDojo {
     protected final int steps;
     protected final int stepSaveInterval;
     protected final int accuracyCalculationInterval;
-    protected final LearningAlgorithm learningAlgorithm;
 
-    public LearningDojo(NeuralNetwork network, DataSet dataSet, int steps, int stepSaveInterval, int accuracyCalculationInterval, LearningAlgorithm learningAlgorithm) {
+    protected final LearningAlgorithm learningAlgorithm;
+    protected final LearningStrategy learningStrategy;
+
+    public LearningDojo(NeuralNetwork network, DataSet dataSet, int steps, int stepSaveInterval, int accuracyCalculationInterval, LearningAlgorithm learningAlgorithm, LearningStrategy learningStrategy) {
         this.network = network;
         this.dataSet = dataSet;
         this.steps = steps;
         this.stepSaveInterval = stepSaveInterval;
         this.accuracyCalculationInterval = accuracyCalculationInterval;
         this.learningAlgorithm = learningAlgorithm;
-    }
-
-    public void doLearnStep() {
-        List<DataSetRow> rows = dataSet.rowsList();
-        ConsoleProgressUpdate progress = new ConsoleProgressUpdate("Learning row", rows.size());
-        for (DataSetRow dataSetRow : rows) {
-            progress.printStateAndIncrement();
-            this.network.learn(dataSetRow, learningAlgorithm);
-        }
+        this.learningStrategy = learningStrategy;
     }
 
     private final Random random = new Random();
@@ -56,7 +51,8 @@ public class LearningDojo {
 
     public void learn() {
         for (int step = 0; step < steps; ++step) {
-            this.doLearnStep();
+            log.info("Starting iteration {}", step);
+            this.learningStrategy.doIteration(this.network, this.dataSet, this.learningAlgorithm);
 
             if ((step + 1) % this.accuracyCalculationInterval == 0) {
                 log.info("Network error: " + this.calculateNetworkErrorFromRandomSample());

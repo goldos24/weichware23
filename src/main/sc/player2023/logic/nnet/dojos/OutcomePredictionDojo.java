@@ -9,13 +9,14 @@ import sc.player2023.logic.nnet.activations.Linear;
 import sc.player2023.logic.nnet.costs.MeanSquaredError;
 import sc.player2023.logic.nnet.learning.DataSet;
 import sc.player2023.logic.nnet.learning.MomentumBackPropagation;
+import sc.player2023.logic.nnet.learning.strategies.MinibatchLearning;
 import sc.player2023.logic.nnet.math.MatrixInitializer;
 import sc.player2023.logic.nnet.preprocess.NormClipping;
 
 import java.util.List;
 import java.util.Random;
 
-public class OutcomePredictionDojo extends ShuffledLearningDojo {
+public class OutcomePredictionDojo extends LearningDojo {
 
     static NeuralNetwork createNetwork() {
         Random random = new Random();
@@ -32,7 +33,7 @@ public class OutcomePredictionDojo extends ShuffledLearningDojo {
     }
 
     public OutcomePredictionDojo(DataSet dataSet, int steps, int accuracyCalculationInterval, int stepSaveInterval) {
-        super(createNetwork(), dataSet, steps, stepSaveInterval, accuracyCalculationInterval, createLearningAlgorithm());
+        super(createNetwork(), dataSet, steps, stepSaveInterval, accuracyCalculationInterval, createLearningAlgorithm(), new MinibatchLearning(100));
     }
 
     public static void main(String[] args) {
