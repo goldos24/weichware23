@@ -37,8 +37,7 @@ public class PenguinOppositionRater implements Rater {
         }
         set[index] = true;
         Stream<Coordinates> directlyReachableCoords = GameRuleLogic
-                .createCurrentDirectionStream()
-                .map(startCoords::plus);
+                .createCurrentDirectionStream().map(startCoords::plus);
         directlyReachableCoords.forEach(coordinates -> {
             if (!GameRuleLogic.coordsValid(coordinates)) {
                 return;
@@ -50,8 +49,7 @@ public class PenguinOppositionRater implements Rater {
         });
     }
 
-    private static List<Restriction> findRestrictionsForPenguin(Coordinates penguin, List<Coordinates> EnemyPenguins) {
-        List<Restriction> restrictions = new ArrayList<>();
+    private static void findRestrictionsForPenguin(Coordinates penguin, List<Coordinates> EnemyPenguins) {
         int x = penguin.getX();
         int y = penguin.getY();
         for (Coordinates enemyPenguin : EnemyPenguins) {
@@ -61,7 +59,6 @@ public class PenguinOppositionRater implements Rater {
             Optional<Restriction> optionalRestriction = findRestrictionForEnemyPenguin(enemyPenguin, vector);
             optionalRestriction.ifPresent(restrictions::add);
         }
-        return restrictions;
     }
 
     private static Optional<Restriction> findRestrictionForEnemyPenguin(@Nonnull Coordinates enemyPenguin, @Nonnull Vector vector) {
@@ -87,6 +84,8 @@ public class PenguinOppositionRater implements Rater {
 
     private static final int ARRAY_SIZE = GameRuleLogic.BOARD_HEIGHT * GameRuleLogic.BOARD_WIDTH;
 
+    private static final ArrayList<Restriction> restrictions = new ArrayList<>(32);
+
     @Override
     public Rating rate(@Nonnull ImmutableGameState gameState) {
         BoardPeek board = gameState.getBoard();
@@ -98,9 +97,10 @@ public class PenguinOppositionRater implements Rater {
             Coordinates penguinPosition = penguin.coordinates();
             var team = penguin.team();
             boolean[] ownSet = reachableCoords.get(team);
-            List<Restriction> restrictions = findRestrictionsForPenguin(penguinPosition, board.getPenguins()
+            findRestrictionsForPenguin(penguinPosition, board.getPenguins()
                     .streamForTeam(team.opponent()).map(Penguin::coordinates).collect(Collectors.toList()));
             addReachableCoordsToSet(ownSet, penguinPosition, board, restrictions);
+            restrictions.clear();
         }
         Rating ownRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(ownTeam)));
         Rating opponentRating = new Rating(getReachableFishFromCoordSet(board, reachableCoords.get(otherTeam)));
