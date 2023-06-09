@@ -1,30 +1,24 @@
-# Dein Software-Challenge Spieler
+# Software-Challenge-Client
+## des Teams Gym Eckhorst Q2
 
-In diesem Paket ist alles dabei, was du brauchst, um einen Spieler für die
-[Software-Challenge 2023](https://software-challenge.de) zu entwickeln!
-Falls du es noch nicht gemacht hast,
-lies erstmal die [Dokumentation](https://docs.software-challenge.de).
+Der Client benutzt Gradle als Build-System und funktioniert mit den Serverversionen 23.x.x.
+Mittlerweile wurde dieser durch einen in Rust geschriebenen Client mit identischer Logik und bis auf die Programmiersprachensyntax nahezu identischem Code sowie leicht verbesserten Tests abgelöst, welcher durch die bessere Performance bessere Züge berechnen kann.
 
-Dieses Projekt ist mit [Gradle](https://gradle.org) vorkonfiguriert,
-wodurch alle Abhängigkeiten automatisch sichergestellt werden 
-und du dich voll und ganz auf das konzentrieren kannst, was wirklich zählt –
-[deine Strategie umsetzen](https://docs.software-challenge.de/_den_simpleclient_erweitern.html) :)
+## Übersicht
 
-Du kannst Gradle entweder über deine IDE oder über die Kommandozeile aufrufen
-(`./gradlew`). Dazu gibst du Gradle noch einen Auftrag:
-- `run` startet deinen Spieler.
-- `shadowJar` erstellt eine eigenständige ("fat") jar im Projektverzeichnis,
-  die du ausführen, weitergeben und im [Wettkampfsystem](https://contest.software-challenge.de/saison/latest)
-  hochladen kannst.
+### Testspiele
 
-Außerdem gibt es zwei Möglichkeiten, die Abhängigkeiten aktuell zu halten:
-- Wenn du Gradle normal ausführst, wird die in `build.gradle.kts` Zeile 24
-  festgelegte Version des Spiel-Plugins genutzt.
-  Diese kannst du nach der Veröffentlichung einer neuen Version einfach anpassen.
-  Zum erstmaligen Herunterladen der Abhängigkeiten 
-  wird hierbei eine Internetverbindung benötigt.
-- Wenn du Gradle im Offline-Modus ausführst,
-  indem du den Parameter `--offline` mitgibst,
-  werden die lokal gespeicherten Bibliotheken aus dem `lib`-Ordner genutzt 
-  und du benötigst keine Internetverbindung.
-  Bitte beachte, dass du diese manuell aktualisieren musst.
+Neben den Unit Tests lässt sich der Client auch gut testen, indem eine neuere Version mit einer älteren verglichen wird. Hierzu ändert man meistens die Funktion Logic.createNewCombinedRater, welche man dann gegen die bisherige Rating-Funktion testen kann. Dazu wird die main-Methode in ComparisonProgram ausgeführt.
+
+### MoveGetter
+
+Der MoveGetter ist ein Interface, welches dazu dient, Zugsuchalgoritmen oder Varianten dieser austauschbar und folglich gegeneinander ausspielbar zu machen. Ein Zugsuchalgoritmus wird dann unabhängig von der Heuristik implementiert. So ließen sich beispielsweise Principal Variation Search mit und ohne Aspiration-Optimierung leicht gegeneinander testen.
+
+### Rater
+
+Der Rater ist ein Interface für Bewertungsfunktionen von GameStates. Die Strategie zum Berechnen von Zügen wird hauptsächlich mit Ratern realisiert. Durch den WeightedRater und den CompositeRater können mehrere Rater mit einander kombiniert werden.
+
+### PossibleMoveGenerator
+
+Im Gegensatz zu einem normalen Minimax-Algoritmus führt die Principal Variation Search nicht eine, sondern zwei Suchen pro Zug aus: eine ungenaue, aber schnelle Nullfenstersuche und wenn das Ergebnis dieser im normalen Suchfenster liegt, dann eine genaue Suche. Das bedeutet, dass die Suche schneller läuft, wenn das Suchfenster schnell verkleinert wird. Um dies zu erreichen, sollten möglichst gute Züge zuerst ausprobiert werden. Um dies zu erreichen, wurden verschiedene Ansätze erprobt. Um diese leicht auswechselbar zu machen wurde das Interface PossibleMoveGenerator eingeführt.
+
